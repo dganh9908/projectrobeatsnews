@@ -21,7 +21,7 @@ import { safeJson } from '../utils/safeJson';
 interface StreakModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onOpenAccount?: (tab?: 'login' | 'signup') => void;
+  onOpenAccount?: (tab?: 'login' | 'profile') => void;
 }
 
 export const StreakModal: React.FC<StreakModalProps> = ({

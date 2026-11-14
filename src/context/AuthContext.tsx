@@ -2,37 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut, User as FirebaseUser } from 'firebase/auth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, googleProvider } from '../lib/firebase';
-import { syncFirebaseUserDocs } from '../services/firestoreService';
-import { User, UserRole, UserPermissions } from '../types';
+import {
+  syncFirebaseUserDocs,
+  fetchAllUsersFromFirestore,
+  updateUserInFirestoreAsAdmin,
+  deleteUserInFirestoreAsAdmin,
+} from '../services/firestoreService';
+import { User } from '../types';
 import { safeJson } from '../utils/safeJson';
-
-export const DEFAULT_HEAD_ADMIN: User = {
-  id: 'usr_admin_meelo',
-  username: 'meelo',
-  email: 'meelo@robeats.news',
-  displayName: 'Meelo',
-  avatar: 'https://down-vn.img.susercontent.com/file/sg-11134201-81zwv-mih44jns7q4n42',
-  bio: 'Administrator & Lead Curator of RoBeats News',
-  robloxUsername: 'Meelo_RBX',
-  role: 'admin',
-  permissions: {
-    canManageUsers: true,
-    canChangePasswords: true,
-    canEditProfiles: true,
-    canManageRoles: true,
-    canPublishNews: true,
-    canDeleteContent: true,
-    canAccessAdminPanel: true,
-    canEditAllNews: true,
-    canManageSongs: true,
-    canManageWebhooks: true,
-    canManageRanks: true,
-  },
-  createdAt: '2026-10-02T15:30:00.000Z',
-  currentStreak: 1,
-  bestStreak: 1,
-  unlockedFrames: [],
-};
 
 interface AuthContextType {
   user: User | null;
@@ -42,61 +19,22 @@ interface AuthContextType {
   isFirebaseReady: boolean;
   firebaseUser: FirebaseUser | null;
   authError: string | null;
-  login: (identifier: string, password: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<boolean>;
-  signup: (userData: {
-    username: string;
-    email: string;
-    password: string;
-    displayName?: string;
-    avatar?: string;
-    bio?: string;
-    roBeatsRank?: string;
-    preferredNoteSpeed?: string;
-  }) => Promise<boolean>;
   logout: () => void;
   updateProfile: (profileData: Partial<User>) => Promise<boolean>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   deleteAccount: (id?: string) => Promise<boolean>;
   allUsers: User[];
   fetchAllUsers: () => Promise<void>;
-  switchUser: (targetUser: User) => void;
   clearError: () => void;
   isAdmin: boolean;
   isStaff: boolean;
-  // Admin Operations
   adminGetUsers: () => Promise<User[]>;
   adminGetStats: () => Promise<any>;
   adminUpdateUser: (userId: string, data: Partial<User> & { permissions?: any }) => Promise<{ success: boolean; error?: string; user?: User }>;
-  adminResetPassword: (userId: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   adminDeleteUser: (userId: string) => Promise<{ success: boolean; error?: string }>;
-  adminCreateUser: (userData: any) => Promise<{ success: boolean; error?: string; user?: User }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Helper to read users list stored for static hosting fallback
-function getLocalUsersList(): User[] {
-  try {
-    const raw = localStorage.getItem('robeats_client_users');
-    if (!raw) return [DEFAULT_HEAD_ADMIN];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return [DEFAULT_HEAD_ADMIN];
-    // Ensure Meelo is in the list
-    if (!parsed.some(u => u.username.toLowerCase() === 'meelo')) {
-      parsed.unshift(DEFAULT_HEAD_ADMIN);
-    }
-    return parsed;
-  } catch {
-    return [DEFAULT_HEAD_ADMIN];
-  }
-}
-
-function saveLocalUsersList(users: User[]) {
-  try {
-    localStorage.setItem('robeats_client_users', JSON.stringify(users));
-  } catch {}
-}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -107,18 +45,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null;
     }
   });
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('robeats_auth_token') || localStorage.getItem('robeats_token'));
+  const [token, setToken] = useState<string | null>(
+    () => localStorage.getItem('robeats_auth_token') || localStorage.getItem('robeats_token')
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFirebaseReady, setIsFirebaseReady] = useState<boolean>(false);
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [allUsers, setAllUsers] = useState<User[]>(() => getLocalUsersList());
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
-  // Listen to Firebase Auth state changes
+  // Google Auth (Firebase) is the single source of truth
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       setIsFirebaseReady(true);
+
       if (fbUser) {
         try {
           const syncedUser = await syncFirebaseUserDocs(fbUser);
@@ -128,199 +69,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('robeats_auth_token', idToken);
           localStorage.setItem('robeats_token', idToken);
           localStorage.setItem('robeats_current_user', JSON.stringify(syncedUser));
-        } catch (err) {
-          console.error('Failed to sync Firebase user profile:', err);
+        } catch (err: any) {
+          console.error('Failed to sync Google account with Firestore:', err);
+          setAuthError('Unable to sync Google profile with Cloud Firestore.');
         } finally {
           setIsLoading(false);
         }
+      } else {
+        // Signed out
+        localStorage.removeItem('robeats_auth_token');
+        localStorage.removeItem('robeats_token');
+        localStorage.removeItem('robeats_current_user');
+        setUser(null);
+        setToken(null);
+        setIsLoading(false);
       }
     });
+
     return () => unsubscribe();
   }, []);
-
-  // Fetch current user on mount or token change
-  useEffect(() => {
-    const fetchMe = async () => {
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/auth/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.ok) {
-          const data = await safeJson(res, null);
-          if (data && data.user) {
-            setUser(data.user);
-            localStorage.setItem('robeats_current_user', JSON.stringify(data.user));
-          } else {
-            // Keep existing cached user if present
-            const cached = localStorage.getItem('robeats_current_user');
-            if (cached) {
-              setUser(JSON.parse(cached));
-            }
-          }
-        } else if (res.status === 401 && !auth.currentUser) {
-          // Genuine authentication rejection from live backend (only if not signed in via Firebase)
-          localStorage.removeItem('robeats_auth_token');
-          localStorage.removeItem('robeats_token');
-          localStorage.removeItem('robeats_current_user');
-          setToken(null);
-          setUser(null);
-        } else {
-          // Status 404 or other: Running on static hosting like Cloudflare Pages without an Express server
-          // Restore user from localStorage cache
-          const cached = localStorage.getItem('robeats_current_user');
-          if (cached) {
-            setUser(JSON.parse(cached));
-          } else if (token.includes('meelo')) {
-            setUser(DEFAULT_HEAD_ADMIN);
-            localStorage.setItem('robeats_current_user', JSON.stringify(DEFAULT_HEAD_ADMIN));
-          }
-        }
-      } catch (err) {
-        // Network error (e.g. offline or static host): Fallback to cached session
-        const cached = localStorage.getItem('robeats_current_user');
-        if (cached) {
-          setUser(JSON.parse(cached));
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMe();
-  }, [token]);
-
-  const fetchAllUsers = async () => {
-    try {
-      const res = await fetch('/api/auth/users');
-      if (res.ok) {
-        const data = await safeJson(res, []);
-        if (Array.isArray(data) && data.length > 0) {
-          setAllUsers(data);
-          saveLocalUsersList(data);
-          return;
-        }
-      }
-    } catch {}
-    // Fallback to local storage list
-    setAllUsers(getLocalUsersList());
-  };
-
-  const login = async (identifier: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
-    setAuthError(null);
-
-    const cleanId = identifier.trim().toLowerCase().replace(/^@/, '');
-    const isMeelo = cleanId === 'meelo';
-    const isMasterMeeloPass = isMeelo && (password === 'meelovn2005' || password === 'admin' || password === 'meelo');
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, password }),
-      });
-
-      // If backend returned OK
-      if (res.ok) {
-        const data = await safeJson(res, {});
-        if (data?.user && data?.token) {
-          setUser(data.user);
-          setToken(data.token);
-          localStorage.setItem('robeats_auth_token', data.token);
-          localStorage.setItem('robeats_token', data.token);
-          localStorage.setItem('robeats_current_user', JSON.stringify(data.user));
-          return true;
-        }
-      }
-
-      // If backend explicitly rejected password with 401
-      if (res.status === 401 && !isMasterMeeloPass) {
-        const data = await safeJson(res, {});
-        setAuthError(data?.error || 'Invalid username/email or password');
-        return false;
-      }
-
-      // If endpoint returned 404 (Cloudflare Pages static hosting) or isMasterMeeloPass:
-      if (res.status === 404 || isMasterMeeloPass) {
-        // 1. Check Meelo Head Admin
-        if (isMasterMeeloPass) {
-          const meeloUser = { ...DEFAULT_HEAD_ADMIN };
-          const tok = `tok_usr_admin_meelo_${Date.now()}`;
-          setUser(meeloUser);
-          setToken(tok);
-          localStorage.setItem('robeats_auth_token', tok);
-          localStorage.setItem('robeats_token', tok);
-          localStorage.setItem('robeats_current_user', JSON.stringify(meeloUser));
-          return true;
-        }
-
-        // 2. Check local users list for static deployment
-        const localList = getLocalUsersList();
-        const found = localList.find(u => 
-          u.username.toLowerCase() === cleanId || 
-          (u.email && u.email.toLowerCase() === cleanId)
-        );
-
-        if (found) {
-          const tok = `tok_${found.id}_${Date.now()}`;
-          setUser(found);
-          setToken(tok);
-          localStorage.setItem('robeats_auth_token', tok);
-          localStorage.setItem('robeats_token', tok);
-          localStorage.setItem('robeats_current_user', JSON.stringify(found));
-          return true;
-        }
-
-        setAuthError('Account not found. Please verify your credentials or click "Sign Up" to register.');
-        return false;
-      }
-
-      const data = await safeJson(res, {});
-      setAuthError(data?.error || 'Login failed. Please check credentials.');
-      return false;
-    } catch (err: any) {
-      // Network failure fallback
-      if (isMasterMeeloPass) {
-        const meeloUser = { ...DEFAULT_HEAD_ADMIN };
-        const tok = `tok_usr_admin_meelo_${Date.now()}`;
-        setUser(meeloUser);
-        setToken(tok);
-        localStorage.setItem('robeats_auth_token', tok);
-        localStorage.setItem('robeats_token', tok);
-        localStorage.setItem('robeats_current_user', JSON.stringify(meeloUser));
-        return true;
-      }
-
-      const localList = getLocalUsersList();
-      const found = localList.find(u => 
-        u.username.toLowerCase() === cleanId || 
-        (u.email && u.email.toLowerCase() === cleanId)
-      );
-
-      if (found) {
-        const tok = `tok_${found.id}_${Date.now()}`;
-        setUser(found);
-        setToken(tok);
-        localStorage.setItem('robeats_auth_token', tok);
-        localStorage.setItem('robeats_token', tok);
-        localStorage.setItem('robeats_current_user', JSON.stringify(found));
-        return true;
-      }
-
-      setAuthError('Connection error. Please check your network or verify your login credentials.');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const loginWithGoogle = async (): Promise<boolean> => {
     setIsLoading(true);
@@ -341,146 +108,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     } catch (err: any) {
       console.error('Google Sign-In error:', err);
-      setAuthError(err?.message || 'Google sign-in failed. Please try again.');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signup = async (userData: {
-    username: string;
-    email: string;
-    password: string;
-    displayName?: string;
-    avatar?: string;
-    bio?: string;
-    roBeatsRank?: string;
-    preferredNoteSpeed?: string;
-  }): Promise<boolean> => {
-    setIsLoading(true);
-    setAuthError(null);
-
-    const cleanUsername = userData.username.trim().replace(/^@/, '').toLowerCase();
-
-    try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
-
-      if (res.ok) {
-        const data = await safeJson(res, {});
-        if (data?.user && data?.token) {
-          setUser(data.user);
-          setToken(data.token);
-          localStorage.setItem('robeats_auth_token', data.token);
-          localStorage.setItem('robeats_token', data.token);
-          localStorage.setItem('robeats_current_user', JSON.stringify(data.user));
-          return true;
-        }
+      const code = err?.code || '';
+      if (code === 'auth/popup-closed-by-user') {
+        setAuthError('Google sign-in popup was closed before completing.');
+      } else if (code === 'auth/unauthorized-domain') {
+        setAuthError(
+          'This domain is not authorized in Firebase Auth. Add it under Firebase Console → Authentication → Settings → Authorized domains.'
+        );
+      } else {
+        setAuthError(err?.message || 'Google sign-in failed. Please try again.');
       }
-
-      // If running on static host (404), create user locally and sync with Firestore
-      if (res.status === 404) {
-        const isMeelo = cleanUsername === 'meelo';
-        const role: UserRole = isMeelo ? 'admin' : 'player';
-        const permissions: UserPermissions = isMeelo ? DEFAULT_HEAD_ADMIN.permissions : {
-          canManageUsers: false,
-          canChangePasswords: false,
-          canEditProfiles: false,
-          canManageRoles: false,
-          canPublishNews: false,
-          canDeleteContent: false,
-          canAccessAdminPanel: false,
-          canEditAllNews: false,
-          canManageSongs: false,
-          canManageWebhooks: false,
-          canManageRanks: false,
-        };
-
-        const newId = isMeelo ? 'usr_admin_meelo' : 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-        const newUser: User = {
-          id: newId,
-          username: cleanUsername,
-          email: userData.email.trim().toLowerCase(),
-          displayName: userData.displayName?.trim() || cleanUsername,
-          avatar: userData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-          bio: userData.bio || (isMeelo ? DEFAULT_HEAD_ADMIN.bio : 'RoBeats rhythm player'),
-          roBeatsRank: (userData.roBeatsRank as any) || 'Beginner',
-          preferredNoteSpeed: userData.preferredNoteSpeed || '1.8x',
-          role,
-          permissions,
-          createdAt: new Date().toISOString(),
-          currentStreak: 1,
-          bestStreak: 1,
-          unlockedFrames: [],
-        };
-
-        const currentUsers = getLocalUsersList();
-        const updatedUsers = [newUser, ...currentUsers.filter(u => u.username.toLowerCase() !== cleanUsername)];
-        saveLocalUsersList(updatedUsers);
-        setAllUsers(updatedUsers);
-
-        const tok = `tok_${newUser.id}_${Date.now()}`;
-        setUser(newUser);
-        setToken(tok);
-        localStorage.setItem('robeats_auth_token', tok);
-        localStorage.setItem('robeats_token', tok);
-        localStorage.setItem('robeats_current_user', JSON.stringify(newUser));
-        return true;
-      }
-
-      const data = await safeJson(res, {});
-      setAuthError(data?.error || 'Signup failed. Please check required fields.');
       return false;
-    } catch (err: any) {
-      // Fallback for static host / offline
-      const isMeelo = cleanUsername === 'meelo';
-      const role: UserRole = isMeelo ? 'admin' : 'player';
-      const newId = isMeelo ? 'usr_admin_meelo' : 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-      const newUser: User = {
-        id: newId,
-        username: cleanUsername,
-        email: userData.email.trim().toLowerCase(),
-        displayName: userData.displayName?.trim() || cleanUsername,
-        avatar: userData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        bio: userData.bio || 'RoBeats rhythm player',
-        roBeatsRank: (userData.roBeatsRank as any) || 'Beginner',
-        preferredNoteSpeed: userData.preferredNoteSpeed || '1.8x',
-        role,
-        permissions: isMeelo ? DEFAULT_HEAD_ADMIN.permissions : {
-          canManageUsers: false,
-          canChangePasswords: false,
-          canEditProfiles: false,
-          canManageRoles: false,
-          canPublishNews: false,
-          canDeleteContent: false,
-          canAccessAdminPanel: false,
-          canEditAllNews: false,
-          canManageSongs: false,
-          canManageWebhooks: false,
-          canManageRanks: false,
-        },
-        createdAt: new Date().toISOString(),
-        currentStreak: 1,
-        bestStreak: 1,
-        unlockedFrames: [],
-      };
-
-      const currentUsers = getLocalUsersList();
-      const updatedUsers = [newUser, ...currentUsers.filter(u => u.username.toLowerCase() !== cleanUsername)];
-      saveLocalUsersList(updatedUsers);
-      setAllUsers(updatedUsers);
-
-      const tok = `tok_${newUser.id}_${Date.now()}`;
-      setUser(newUser);
-      setToken(tok);
-      localStorage.setItem('robeats_auth_token', tok);
-      localStorage.setItem('robeats_token', tok);
-      localStorage.setItem('robeats_current_user', JSON.stringify(newUser));
-      return true;
     } finally {
       setIsLoading(false);
     }
@@ -497,143 +135,80 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfile = async (profileData: Partial<User>): Promise<boolean> => {
-    if (!user) return false;
+    if (!user || !auth.currentUser) return false;
+
     const updatedUser: User = { ...user, ...profileData };
     setUser(updatedUser);
     localStorage.setItem('robeats_current_user', JSON.stringify(updatedUser));
 
-    // Update in local user list
-    const currentList = getLocalUsersList();
-    const updatedList = currentList.map(u => u.id === updatedUser.id ? updatedUser : u);
-    saveLocalUsersList(updatedList);
-    setAllUsers(updatedList);
-
-    // Sync allowed profile fields to Firebase Firestore if authenticated with Firebase
-    if (auth.currentUser) {
-      try {
-        const fsUpdate: Record<string, any> = { updatedAt: serverTimestamp() };
-        if (profileData.displayName !== undefined) fsUpdate.displayName = String(profileData.displayName).slice(0, 80);
-        if (profileData.robloxUsername !== undefined) fsUpdate.robloxUsername = String(profileData.robloxUsername).slice(0, 64);
-        if (profileData.avatar !== undefined) fsUpdate.avatar = String(profileData.avatar).slice(0, 2048);
-        if (profileData.bio !== undefined) fsUpdate.bio = String(profileData.bio).slice(0, 500);
-        if (profileData.roBeatsRank !== undefined) fsUpdate.roBeatsRank = String(profileData.roBeatsRank).slice(0, 40);
-        if (profileData.preferredNoteSpeed !== undefined) fsUpdate.preferredNoteSpeed = String(profileData.preferredNoteSpeed).slice(0, 20);
-        if (profileData.currentStreak !== undefined) fsUpdate.currentStreak = Number(profileData.currentStreak);
-        if (profileData.bestStreak !== undefined) fsUpdate.bestStreak = Number(profileData.bestStreak);
-        if (profileData.equippedAvatarFrame !== undefined) fsUpdate.equippedAvatarFrame = String(profileData.equippedAvatarFrame).slice(0, 64);
-        if (profileData.unlockedFrames !== undefined) fsUpdate.unlockedFrames = profileData.unlockedFrames.slice(0, 20);
-        await updateDoc(doc(db, 'users', auth.currentUser.uid), fsUpdate);
-      } catch (err) {
-        console.warn('Firestore profile update warning:', err);
-      }
-    }
-
-    // Try backend if token exists
-    if (token) {
-      try {
-        await fetch('/api/auth/profile', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(profileData),
-        });
-      } catch {}
+    try {
+      const fsUpdate: Record<string, any> = { updatedAt: serverTimestamp() };
+      if (profileData.displayName !== undefined) fsUpdate.displayName = String(profileData.displayName).slice(0, 80);
+      if (profileData.robloxUsername !== undefined) fsUpdate.robloxUsername = String(profileData.robloxUsername).slice(0, 64);
+      if (profileData.avatar !== undefined) fsUpdate.avatar = String(profileData.avatar).slice(0, 2048);
+      if (profileData.bio !== undefined) fsUpdate.bio = String(profileData.bio).slice(0, 500);
+      if (profileData.roBeatsRank !== undefined) fsUpdate.roBeatsRank = String(profileData.roBeatsRank).slice(0, 40);
+      if (profileData.preferredNoteSpeed !== undefined) fsUpdate.preferredNoteSpeed = String(profileData.preferredNoteSpeed).slice(0, 20);
+      if (profileData.currentStreak !== undefined) fsUpdate.currentStreak = Number(profileData.currentStreak);
+      if (profileData.bestStreak !== undefined) fsUpdate.bestStreak = Number(profileData.bestStreak);
+      if (profileData.equippedAvatarFrame !== undefined) fsUpdate.equippedAvatarFrame = String(profileData.equippedAvatarFrame).slice(0, 64);
+      if (profileData.unlockedFrames !== undefined) fsUpdate.unlockedFrames = profileData.unlockedFrames.slice(0, 20);
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), fsUpdate);
+    } catch (err) {
+      console.warn('Firestore profile update warning:', err);
+      setAuthError('Failed to update profile in Cloud Firestore.');
+      return false;
     }
 
     return true;
   };
 
-  const changePassword = async (currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> => {
-    if (!token) return { success: false, error: 'Not logged in' };
+  const fetchAllUsers = async () => {
     try {
-      const res = await fetch('/api/auth/password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      });
-
-      if (res.ok) {
-        return { success: true };
-      }
-      if (res.status === 404) {
-        // Static hosting mode
-        return { success: true };
-      }
-      const data = await safeJson(res, {});
-      return { success: false, error: data?.error || 'Failed to change password' };
-    } catch {
-      return { success: true };
+      const list = await fetchAllUsersFromFirestore();
+      setAllUsers(list);
+    } catch (err) {
+      console.warn('Could not list Firestore users:', err);
     }
   };
 
   const deleteAccount = async (targetId?: string): Promise<boolean> => {
     const idToDelete = targetId || user?.id;
     if (!idToDelete) return false;
-
-    // Remove from local list
-    const currentList = getLocalUsersList();
-    const filtered = currentList.filter(u => u.id !== idToDelete);
-    saveLocalUsersList(filtered);
-    setAllUsers(filtered);
-
-    if (token) {
-      try {
-        await fetch(`/api/auth/account/${idToDelete}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      } catch {}
+    try {
+      await deleteUserInFirestoreAsAdmin(idToDelete);
+      setAllUsers((prev) => prev.filter((u) => u.id !== idToDelete));
+      if (idToDelete === user?.id) {
+        logout();
+      }
+      return true;
+    } catch (err) {
+      console.error('Failed to delete Firestore user:', err);
+      return false;
     }
-
-    if (idToDelete === user?.id) {
-      logout();
-    }
-    return true;
-  };
-
-  const switchUser = (targetUser: User) => {
-    const switchTok = `tok_${targetUser.id}_${Date.now()}`;
-    setUser(targetUser);
-    setToken(switchTok);
-    localStorage.setItem('robeats_auth_token', switchTok);
-    localStorage.setItem('robeats_token', switchTok);
-    localStorage.setItem('robeats_current_user', JSON.stringify(targetUser));
   };
 
   const clearError = () => setAuthError(null);
 
-  // Admin Actions
   const adminGetUsers = async (): Promise<User[]> => {
     try {
-      if (token) {
-        const res = await fetch('/api/admin/users', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await safeJson(res, []);
-          if (Array.isArray(data) && data.length > 0) {
-            setAllUsers(data);
-            saveLocalUsersList(data);
-            return data;
-          }
-        }
-      }
-    } catch {}
-    return getLocalUsersList();
+      const list = await fetchAllUsersFromFirestore();
+      setAllUsers(list);
+      return list;
+    } catch (err) {
+      console.warn('Firestore admin user list fallback:', err);
+      return allUsers;
+    }
   };
 
   const adminGetStats = async (): Promise<any> => {
     if (!token) return null;
     try {
       const res = await fetch('/api/admin/stats', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'X-Firebase-Token': token,
+        },
       });
       if (res.ok) {
         return await safeJson(res, null);
@@ -649,112 +224,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     data: Partial<User> & { permissions?: any }
   ): Promise<{ success: boolean; error?: string; user?: User }> => {
     try {
-      if (token) {
-        const res = await fetch(`/api/admin/users/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        });
-        if (res.ok) {
-          const resData = await safeJson(res, {});
-          if (resData.user) {
-            if (user?.id === userId) setUser(resData.user);
-            await adminGetUsers();
-            return { success: true, user: resData.user };
-          }
+      const updated = await updateUserInFirestoreAsAdmin(userId, {
+        displayName: data.displayName,
+        avatar: data.avatar,
+        role: data.role,
+      });
+      if (updated) {
+        setAllUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)));
+        if (user?.id === userId) {
+          setUser(updated);
+          localStorage.setItem('robeats_current_user', JSON.stringify(updated));
         }
+        return { success: true, user: updated };
       }
-    } catch {}
-
-    // Fallback update in local user list
-    const currentList = getLocalUsersList();
-    const updatedList = currentList.map(u => u.id === userId ? { ...u, ...data } : u);
-    saveLocalUsersList(updatedList);
-    setAllUsers(updatedList);
-    const targetUser = updatedList.find(u => u.id === userId);
-    if (user?.id === userId && targetUser) setUser(targetUser);
-    return { success: true, user: targetUser };
-  };
-
-  const adminResetPassword = async (
-    userId: string,
-    newPassword: string
-  ): Promise<{ success: boolean; error?: string }> => {
-    try {
-      if (token) {
-        await fetch(`/api/admin/users/${userId}/password`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ newPassword }),
-        });
-      }
-    } catch {}
-    return { success: true };
+      return { success: false, error: 'User not found in Firestore' };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to update user in Firestore' };
+    }
   };
 
   const adminDeleteUser = async (userId: string): Promise<{ success: boolean; error?: string }> => {
-    await deleteAccount(userId);
-    return { success: true };
-  };
-
-  const adminCreateUser = async (
-    userData: any
-  ): Promise<{ success: boolean; error?: string; user?: User }> => {
-    try {
-      if (token) {
-        const res = await fetch('/api/admin/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(userData),
-        });
-        if (res.ok) {
-          const data = await safeJson(res, {});
-          if (data?.user) {
-            await adminGetUsers();
-            return { success: true, user: data.user };
-          }
-        }
-      }
-    } catch {}
-
-    const newId = 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-    const createdUser: User = {
-      id: newId,
-      username: userData.username,
-      email: userData.email,
-      displayName: userData.displayName || userData.username,
-      avatar: userData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      role: userData.role || 'player',
-      permissions: userData.permissions || {
-        canManageUsers: false,
-        canChangePasswords: false,
-        canEditProfiles: false,
-        canManageRoles: false,
-        canPublishNews: false,
-        canDeleteContent: false,
-        canAccessAdminPanel: false,
-        canEditAllNews: false,
-        canManageSongs: false,
-        canManageWebhooks: false,
-        canManageRanks: false,
-      },
-      createdAt: new Date().toISOString(),
-    };
-
-    const currentList = getLocalUsersList();
-    const updated = [createdUser, ...currentList];
-    saveLocalUsersList(updated);
-    setAllUsers(updated);
-    return { success: true, user: createdUser };
+    const ok = await deleteAccount(userId);
+    return ok ? { success: true } : { success: false, error: 'Failed to delete user' };
   };
 
   const isAdmin = user?.role === 'admin' || user?.role === 'robeatsdev';
@@ -772,23 +263,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isFirebaseReady,
         firebaseUser,
         authError,
-        login,
         loginWithGoogle,
-        signup,
         logout,
         updateProfile,
-        changePassword,
         deleteAccount,
         allUsers,
         fetchAllUsers,
-        switchUser,
         clearError,
         adminGetUsers,
         adminGetStats,
         adminUpdateUser,
-        adminResetPassword,
         adminDeleteUser,
-        adminCreateUser,
       }}
     >
       {children}

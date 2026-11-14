@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Shield, User as UserIcon, Lock, Image, Check, AlertCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { X, Shield, User as UserIcon, Image, Check, AlertCircle, Sparkles } from 'lucide-react';
 import { User, UserRole, UserPermissions } from '../types';
 
 interface AdminEditUserModalProps {
@@ -11,7 +11,6 @@ interface AdminEditUserModalProps {
     avatar?: string;
     role?: UserRole;
     permissions?: UserPermissions;
-    newPassword?: string;
   }) => Promise<{ success: boolean; error?: string }>;
 }
 
@@ -31,8 +30,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
   const [displayName, setDisplayName] = useState('');
   const [avatar, setAvatar] = useState('');
   const [role, setRole] = useState<UserRole>('player');
-  const [newPassword, setNewPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [showPermissions, setShowPermissions] = useState(false);
   const [permissions, setPermissions] = useState<UserPermissions>({
     canPublishNews: false,
@@ -51,7 +48,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
       setDisplayName(user.displayName || user.username || '');
       setAvatar(user.avatar || '');
       setRole(user.role || 'player');
-      setNewPassword('');
       setError(null);
       setPermissions({
         canPublishNews: user.permissions?.canPublishNews || false,
@@ -133,11 +129,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
     e.preventDefault();
     setError(null);
 
-    if (newPassword && newPassword.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       const payload: any = {
@@ -146,9 +137,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
         role,
         permissions,
       };
-      if (newPassword.trim()) {
-        payload.newPassword = newPassword.trim();
-      }
 
       const res = await onSave(payload);
       if (!res.success) {
@@ -186,7 +174,7 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
                   </span>
                 )}
               </h2>
-              <p className="text-xs text-zinc-400">Update role, permissions, avatar, nickname, and password</p>
+              <p className="text-xs text-zinc-400">Update role, permissions, avatar, and display name</p>
             </div>
           </div>
           <button
@@ -423,18 +411,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-2.5 p-2 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/40 cursor-pointer transition border border-zinc-800/50">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(permissions.canChangePasswords)}
-                      onChange={() => handleTogglePermission('canChangePasswords')}
-                      className="rounded bg-zinc-800 border-zinc-700 text-cyan-500 focus:ring-0"
-                    />
-                    <div className="text-[11px]">
-                      <span className="font-semibold text-zinc-200">Can Change Passwords</span>
-                      <p className="text-[10px] text-zinc-400">Reset credentials for others</p>
-                    </div>
-                  </label>
 
                   <label className="flex items-center gap-2.5 p-2 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/40 cursor-pointer transition border border-zinc-800/50">
                     <input
@@ -479,32 +455,6 @@ export const AdminEditUserModal: React.FC<AdminEditUserModalProps> = ({
             )}
           </div>
 
-          {/* 4. Change Password */}
-          <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-1.5 flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-emerald-400" />
-              Change / Reset Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Leave blank to keep existing password"
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-emerald-500 pr-10 transition"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-200 transition"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-            <p className="text-[11px] text-zinc-500 mt-1">
-              Minimum 6 characters. If provided, the user's password will be immediately updated.
-            </p>
-          </div>
 
           {/* Footer Controls */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800/80">

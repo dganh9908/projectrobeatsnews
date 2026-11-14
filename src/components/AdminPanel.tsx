@@ -12,7 +12,6 @@ import {
   Save,
   CheckCircle,
   AlertCircle,
-  UserPlus,
   Lock,
   RotateCcw,
   Square,
@@ -20,7 +19,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { AdminEditUserModal } from './AdminEditUserModal';
-import { AdminCreateUserModal } from './AdminCreateUserModal';
 import {
   fetchElementsList,
   updateElementsList,
@@ -47,13 +45,12 @@ export const AdminPanel: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onDataChanged?: () => void;
-  onOpenAccount?: (tab?: 'login' | 'profile' | 'signup') => void;
-}> = ({ isOpen, onClose, onDataChanged, onOpenAccount }) => {
+  onOpenAccount?: (tab?: 'login' | 'profile') => void;
+}> = ({ isOpen, onClose, onDataChanged }) => {
   const { 
     user: currentUser,
     adminGetUsers,
     adminUpdateUser,
-    adminCreateUser,
     adminDeleteUser,
   } = useAuth();
   const [activeTab, setActiveTab] = useState<'users' | 'webhooks' | 'ranks' | 'elements' | 'frames'>('users');
@@ -63,7 +60,6 @@ export const AdminPanel: React.FC<{
   const [usersLoading, setUsersLoading] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState<User | null>(null);
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
-  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
   // Webhooks state
@@ -114,15 +110,9 @@ export const AdminPanel: React.FC<{
   const loadUsers = async () => {
     setUsersLoading(true);
     try {
-      const token = localStorage.getItem('robeats_token') || localStorage.getItem('robeats_auth_token');
-      const res = await fetch('/api/admin/users', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-      if (res.ok) {
-        const data = await safeJson(res, []);
-        if (Array.isArray(data)) {
-          setUserList(data);
-        }
+      const data = await adminGetUsers();
+      if (Array.isArray(data)) {
+        setUserList(data);
       }
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -141,20 +131,6 @@ export const AdminPanel: React.FC<{
     const res = await adminUpdateUser(selectedUserForEdit.id, updatedData);
     if (res.success) {
       showBanner(`User @${selectedUserForEdit.username} updated successfully!`);
-      loadUsers();
-      if (onDataChanged) onDataChanged();
-    }
-    return res;
-  };
-
-  const handleOpenCreateUser = () => {
-    setIsCreateUserModalOpen(true);
-  };
-
-  const handleCreateNewUser = async (userData: any) => {
-    const res = await adminCreateUser(userData);
-    if (res.success) {
-      showBanner(`User @${userData.username} created successfully!`);
       loadUsers();
       if (onDataChanged) onDataChanged();
     }
@@ -878,24 +854,17 @@ export const AdminPanel: React.FC<{
                 <div>
                   <h3 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
                     <Shield className="w-4 h-4 text-cyan-400" />
-                    Registered Accounts & Role Management
+                    Google Users & Role Management
                   </h3>
                   <p className="text-xs text-zinc-400 mt-0.5">
-                    Admins have <strong>full permissions</strong> (manage users, passwords, avatars, nicknames, roles). Staff <strong>can post posts</strong>.
+                    Users appear here after signing in with Google. Admins have <strong>full permissions</strong>; Staff <strong>can create and manage posts</strong>.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
-                    onClick={handleOpenCreateUser}
-                    className="px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs rounded-xl shadow-md shadow-cyan-950/40 flex items-center gap-1.5 transition"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" />
-                    Create Account
-                  </button>
-                  <button
                     onClick={loadUsers}
                     disabled={usersLoading}
-                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs rounded-xl transition"
+                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs rounded-xl transition cursor-pointer"
                   >
                     Refresh
                   </button>
@@ -1040,13 +1009,6 @@ export const AdminPanel: React.FC<{
           setSelectedUserForEdit(null);
         }}
         onSave={handleSaveEditedUser}
-      />
-
-      {/* Admin Create User Modal */}
-      <AdminCreateUserModal
-        isOpen={isCreateUserModalOpen}
-        onClose={() => setIsCreateUserModalOpen(false)}
-        onCreate={handleCreateNewUser}
       />
     </div>
   );

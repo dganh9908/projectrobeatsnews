@@ -44,7 +44,7 @@ export default function App() {
 
   // Account Modal State
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
-  const [accountModalTab, setAccountModalTab] = useState<'login' | 'signup' | 'profile'>('login');
+  const [accountModalTab, setAccountModalTab] = useState<'login' | 'profile'>('login');
 
   // Streak Modal State
   const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
@@ -142,7 +142,7 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const handleOpenAccount = (tab: 'login' | 'signup' | 'profile' = 'login') => {
+  const handleOpenAccount = (tab: 'login' | 'profile' = 'login') => {
     setAccountModalTab(tab);
     setIsAccountModalOpen(true);
   };

@@ -1042,144 +1042,118 @@ function writeArticles(articles: NewsArticle[]) {
 // AUTHENTICATION & ACCOUNT MANAGEMENT ROUTES
 // ----------------------------------------------------
 
-// 1. Sign up (registration with required fields)
-app.post('/api/auth/signup', (req, res) => {
+const BOOTSTRAP_ADMIN_EMAILS = ['chautuan9461@gmail.com', 'anh6052018@gmail.com'];
+
+function decodeFirebaseJwtPayload(jwtToken: string): Record<string, any> | null {
   try {
-    const { username, email, password, displayName, avatar, bio, roBeatsRank, preferredNoteSpeed } = req.body;
-
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username, email, and password are required' });
-    }
-
-    if (username.trim().length < 3) {
-      return res.status(400).json({ error: 'Username must be at least 3 characters long' });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Please enter a valid email address' });
-    }
-
-    const users = readUsers();
-    const cleanUsername = username.trim().replace(/^@/, '').toLowerCase();
-
-    // If registering or claiming the @meelo admin account
-    if (cleanUsername === 'meelo') {
-      const meeloIdx = users.findIndex(u => u.username.toLowerCase() === 'meelo' || u.username.toLowerCase() === '@meelo');
-      if (meeloIdx !== -1) {
-        users[meeloIdx].passwordHash = hashPassword(password);
-        if (email) users[meeloIdx].email = email.trim().toLowerCase();
-        if (displayName) users[meeloIdx].displayName = displayName.trim();
-        users[meeloIdx].role = 'admin';
-        users[meeloIdx].permissions = getDefaultPermissions('admin');
-        writeUsers(users);
-        const token = `tok_${users[meeloIdx].id}_${Date.now()}`;
-        return res.status(201).json({ user: sanitizeUser(users[meeloIdx]), token });
-      }
-    }
-
-    if (users.some(u => u.username.toLowerCase() === cleanUsername)) {
-      return res.status(400).json({ error: 'This username is already taken. Please choose another.' });
-    }
-
-    if (users.some(u => u.email.toLowerCase() === email.trim().toLowerCase())) {
-      return res.status(400).json({ error: 'An account with this email already exists.' });
-    }
-
-    const role = users.length === 0 ? 'admin' : 'player';
-    const newUser: UserRecord = {
-      id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-      username: cleanUsername,
-      email: email.trim().toLowerCase(),
-      passwordHash: hashPassword(password),
-      displayName: displayName?.trim() || cleanUsername,
-      avatar: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      bio: bio || 'RoBeats rhythm player',
-      roBeatsRank: roBeatsRank || 'Rhythm Adept',
-      preferredNoteSpeed: preferredNoteSpeed || '1.8x',
-      role,
-      permissions: getDefaultPermissions(role),
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    writeUsers(users);
-
-    const token = `tok_${newUser.id}_${Date.now()}`;
-    res.status(201).json({ user: sanitizeUser(newUser), token });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Signup failed' });
+    if (!jwtToken || typeof jwtToken !== 'string') return null;
+    const parts = jwtToken.split('.');
+    if (parts.length !== 3) return null;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    return JSON.parse(Buffer.from(padded, 'base64').toString('utf-8'));
+  } catch {
+    return null;
   }
+}
+
+function buildGoogleUserRecord(claims: Record<string, any>, existing?: UserRecord): UserRecord {
+  const uid = String(claims.user_id || claims.sub || existing?.id || '').trim();
+  const email = String(claims.email || existing?.email || '').trim().toLowerCase();
+  const emailVerified = Boolean(claims.email_verified);
+  const isBootstrapAdmin = BOOTSTRAP_ADMIN_EMAILS.includes(email) && emailVerified;
+  const role: UserRole = isBootstrapAdmin ? 'admin' : (existing?.role || 'player');
+  const fallbackUsername = (email ? email.split('@')[0] : uid).toLowerCase().replace(/[^a-z0-9_]/g, '_') || 'player';
+
+  return {
+    id: uid,
+    username: existing?.username || fallbackUsername,
+    email,
+    passwordHash: '',
+    displayName: existing?.displayName || String(claims.name || fallbackUsername),
+    avatar:
+      existing?.avatar ||
+      String(claims.picture || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
+    bio: existing?.bio || 'RoBeats rhythm player',
+    robloxUsername: existing?.robloxUsername,
+    roBeatsRank: existing?.roBeatsRank || 'Beginner',
+    preferredNoteSpeed: existing?.preferredNoteSpeed || '1.8x',
+    role,
+    permissions: isBootstrapAdmin ? getDefaultPermissions('admin') : (existing?.permissions || getDefaultPermissions(role)),
+    createdAt: existing?.createdAt || new Date().toISOString(),
+    currentStreak: existing?.currentStreak,
+    bestStreak: existing?.bestStreak,
+    lastCheckInDate: existing?.lastCheckInDate,
+    unlockedFrames: existing?.unlockedFrames,
+    equippedAvatarFrame: existing?.equippedAvatarFrame,
+  };
+}
+
+// 1. Sign up disabled (Google Login only)
+app.post('/api/auth/signup', (_req, res) => {
+  return res.status(403).json({
+    success: false,
+    error: 'Account creation is disabled. Please sign in with Google.',
+  });
 });
 
-// 2. Login
+// 2. Login (Firebase Google ID Token only)
 app.post('/api/auth/login', (req, res) => {
   try {
-    const { identifier, password } = req.body;
-    if (!identifier || !password) {
-      return res.status(400).json({ error: 'Username/email and password are required' });
+    const fbHeader = typeof req.headers['x-firebase-token'] === 'string' ? req.headers['x-firebase-token'].trim() : '';
+    const authHeader = typeof req.headers.authorization === 'string'
+      ? req.headers.authorization.replace(/^Bearer\s+/i, '').trim()
+      : '';
+    const bodyToken = typeof req.body?.firebaseToken === 'string' ? req.body.firebaseToken.trim() : '';
+
+    const candidateJwt = [fbHeader, authHeader, bodyToken].find((t) => t && t.split('.').length === 3) || '';
+    const claims = candidateJwt ? decodeFirebaseJwtPayload(candidateJwt) : null;
+    const uid = claims?.user_id || claims?.sub;
+
+    if (!uid) {
+      return res.status(403).json({
+        success: false,
+        error: 'Password login is disabled. Please sign in with Google.',
+      });
     }
 
     const users = readUsers();
-    const rawId = identifier.trim().toLowerCase();
-    const idClean = rawId.replace(/^@/, '');
-    const user = users.find(u => 
-      u.username.toLowerCase() === idClean || 
-      u.username.toLowerCase() === rawId ||
-      u.email.toLowerCase() === rawId
-    );
+    const email = String(claims?.email || '').trim().toLowerCase();
+    const existing = users.find((u) => u.id === uid || (email && u.email?.toLowerCase() === email));
+    const userRecord = buildGoogleUserRecord(claims!, existing);
 
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid username/email or password' });
-    }
-
-    const isMeelo = user.username.toLowerCase() === 'meelo' || user.username.toLowerCase() === '@meelo';
-    const isMasterMeeloPass = isMeelo && (password === 'meelovn2005' || password === 'admin' || password === 'meelo');
-    const isPassValid = isMasterMeeloPass || user.passwordHash === hashPassword(password);
-
-    if (!isPassValid) {
-      return res.status(401).json({ error: 'Invalid username/email or password' });
-    }
-
-    // Ensure @meelo is always admin role with full permissions
-    if (isMeelo && user.role !== 'admin') {
-      user.role = 'admin';
-      user.permissions = getDefaultPermissions('admin');
-      writeUsers(users);
-    }
-
-    const token = `tok_${user.id}_${Date.now()}`;
-    res.json({ user: sanitizeUser(user), token });
+    return res.json({ success: true, user: sanitizeUser(userRecord), token: candidateJwt });
   } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Login failed' });
+    return res.status(500).json({ success: false, error: err?.message || 'Login failed' });
   }
 });
 
-// Helper to extract user from token
+// Helper to extract authenticated Google user from Firebase JWT
 function getAuthUser(req: any): UserRecord | null {
-  const authHeader = req.headers.authorization || '';
-  const token = authHeader.replace(/^Bearer\s+/, '').trim() || req.headers['x-auth-token'];
-  if (!token || typeof token !== 'string') return null;
+  const fbHeader = typeof req.headers['x-firebase-token'] === 'string' ? req.headers['x-firebase-token'].trim() : '';
+  const authHeader = typeof req.headers.authorization === 'string'
+    ? req.headers.authorization.replace(/^Bearer\s+/i, '').trim()
+    : '';
+  const xAuthHeader = typeof req.headers['x-auth-token'] === 'string' ? req.headers['x-auth-token'].trim() : '';
+
+  const candidateJwt = [fbHeader, authHeader, xAuthHeader].find((t) => t && t.split('.').length === 3);
+  if (!candidateJwt) return null;
+
+  const claims = decodeFirebaseJwtPayload(candidateJwt);
+  const uid = claims?.user_id || claims?.sub;
+  if (!uid) return null;
 
   const users = readUsers();
-  // Format is tok_<userId>_<timestamp>
-  const match = token.match(/^tok_(.+)_\d+$/);
-  if (match) {
-    const userId = match[1];
-    return users.find(u => u.id === userId) || null;
-  }
-  return null;
+  const email = String(claims?.email || '').trim().toLowerCase();
+  const existing = users.find((u) => u.id === uid || (email && u.email?.toLowerCase() === email));
+  return buildGoogleUserRecord(claims!, existing);
 }
 
 // 3. Current User Session
 app.get('/api/auth/me', (req, res) => {
   const user = getAuthUser(req);
   if (!user) {
-    return res.status(401).json({ error: 'Not authenticated' });
+    return res.status(401).json({ error: 'Not authenticated. Please sign in with Google.' });
   }
   res.json({ user: sanitizeUser(user) });
 });
@@ -1193,10 +1167,13 @@ app.put('/api/auth/profile', (req, res) => {
 
   const { displayName, avatar, bio, roBeatsRank, preferredNoteSpeed, username, robloxUsername, equippedAvatarFrame } = req.body;
   const users = readUsers();
-  const index = users.findIndex(u => u.id === user.id);
-  if (index === -1) return res.status(404).json({ error: 'User not found' });
+  let index = users.findIndex(u => u.id === user.id);
+  if (index === -1) {
+    users.push(user);
+    index = users.length - 1;
+  }
 
-  if (username && username.trim().toLowerCase() !== user.username.toLowerCase()) {
+  if (username && username.trim().toLowerCase() !== users[index].username.toLowerCase()) {
     if (users.some(u => u.id !== user.id && u.username.toLowerCase() === username.trim().toLowerCase())) {
       return res.status(400).json({ error: 'Username already in use' });
     }
@@ -1215,32 +1192,12 @@ app.put('/api/auth/profile', (req, res) => {
   res.json({ user: sanitizeUser(users[index]) });
 });
 
-// 5. Change Password
-app.put('/api/auth/password', (req, res) => {
-  const user = getAuthUser(req);
-  if (!user) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
-
-  const { currentPassword, newPassword } = req.body;
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ error: 'Current password and new password are required' });
-  }
-
-  if (user.passwordHash !== hashPassword(currentPassword)) {
-    return res.status(400).json({ error: 'Current password is incorrect' });
-  }
-
-  if (newPassword.length < 6) {
-    return res.status(400).json({ error: 'New password must be at least 6 characters' });
-  }
-
-  const users = readUsers();
-  const index = users.findIndex(u => u.id === user.id);
-  users[index].passwordHash = hashPassword(newPassword);
-  writeUsers(users);
-
-  res.json({ success: true, message: 'Password updated successfully' });
+// 5. Change Password disabled (Google Login only)
+app.put('/api/auth/password', (_req, res) => {
+  return res.status(403).json({
+    success: false,
+    error: 'Password authentication is disabled. Please manage your account via Google.',
+  });
 });
 
 // 6. List all registered accounts (Account management & switcher)
@@ -1305,8 +1262,11 @@ app.post('/api/streak/check-in', (req, res) => {
     }
 
     const users = readUsers();
-    const index = users.findIndex(u => u.id === user.id);
-    if (index === -1) return res.status(404).json({ error: 'User not found' });
+    let index = users.findIndex(u => u.id === user.id);
+    if (index === -1) {
+      users.push(user);
+      index = users.length - 1;
+    }
 
     const u = users[index];
     const lastCheckIn = u.lastCheckInDate || '';
@@ -1401,8 +1361,11 @@ app.post('/api/streak/equip-frame', (req, res) => {
 
     const { frameId } = req.body;
     const users = readUsers();
-    const index = users.findIndex(u => u.id === user.id);
-    if (index === -1) return res.status(404).json({ error: 'User not found' });
+    let index = users.findIndex(u => u.id === user.id);
+    if (index === -1) {
+      users.push(user);
+      index = users.length - 1;
+    }
 
     const u = users[index];
     const unlocked = u.unlockedFrames || [];
@@ -1485,50 +1448,19 @@ app.get('/api/admin/stats', requireAdmin, (req, res) => {
   res.json(stats);
 });
 
-// 3. Admin create a new user directly
-app.post('/api/admin/users', requireAdmin, (req, res) => {
-  try {
-    const { username, email, password, displayName, avatar, bio, role, permissions } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username, email, and password are required' });
-    }
-
-    const users = readUsers();
-    if (users.some(u => u.username.toLowerCase() === username.trim().toLowerCase())) {
-      return res.status(400).json({ error: 'Username already in use' });
-    }
-    if (users.some(u => u.email.toLowerCase() === email.trim().toLowerCase())) {
-      return res.status(400).json({ error: 'Email already in use' });
-    }
-
-    const validRoles: UserRole[] = ['admin', 'staff', 'robeatsdev', 'player'];
-    const userRole: UserRole = validRoles.includes(role) ? role : 'player';
-    const newUser: UserRecord = {
-      id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-      username: username.trim().toLowerCase(),
-      email: email.trim().toLowerCase(),
-      passwordHash: hashPassword(password),
-      displayName: displayName?.trim() || username.trim(),
-      avatar: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      bio: bio || '',
-      role: userRole,
-      permissions: permissions || getDefaultPermissions(userRole),
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    writeUsers(users);
-    res.status(201).json({ user: sanitizeUser(newUser) });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Failed to create user' });
-  }
+// 3. Admin create user disabled (Google Sign-In only)
+app.post('/api/admin/users', requireAdmin, (_req, res) => {
+  return res.status(403).json({
+    success: false,
+    error: 'Manual account creation is disabled. Users must sign in with Google.',
+  });
 });
 
 // 4. Admin update anything on another user (profile, role, permissions, username, email)
 app.put('/api/admin/users/:id', requireAdmin, (req, res) => {
   try {
     const targetId = req.params.id;
-    const { displayName, username, email, avatar, bio, role, permissions, newPassword } = req.body;
+    const { displayName, username, email, avatar, bio, role, permissions } = req.body;
     const users = readUsers();
     const index = users.findIndex(u => u.id === targetId);
     if (index === -1) {
@@ -1568,10 +1500,6 @@ app.put('/api/admin/users/:id', requireAdmin, (req, res) => {
       };
     }
 
-    if (newPassword && typeof newPassword === 'string' && newPassword.trim().length >= 6) {
-      users[index].passwordHash = hashPassword(newPassword.trim());
-    }
-
     writeUsers(users);
     res.json({ user: sanitizeUser(users[index]), message: 'User updated successfully' });
   } catch (err: any) {
@@ -1579,28 +1507,12 @@ app.put('/api/admin/users/:id', requireAdmin, (req, res) => {
   }
 });
 
-// 5. Admin change/reset password for another user
-app.put('/api/admin/users/:id/password', requireAdmin, (req, res) => {
-  try {
-    const targetId = req.params.id;
-    const { newPassword } = req.body;
-    if (!newPassword || newPassword.length < 6) {
-      return res.status(400).json({ error: 'New password must be at least 6 characters long' });
-    }
-
-    const users = readUsers();
-    const index = users.findIndex(u => u.id === targetId);
-    if (index === -1) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    users[index].passwordHash = hashPassword(newPassword);
-    writeUsers(users);
-
-    res.json({ success: true, message: `Password for @${users[index].username} successfully reset` });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Failed to update password' });
-  }
+// 5. Admin password reset disabled (Google Login only)
+app.put('/api/admin/users/:id/password', requireAdmin, (_req, res) => {
+  return res.status(403).json({
+    success: false,
+    error: 'Password management is disabled. Users sign in with Google.',
+  });
 });
 
 // 6. Admin delete user

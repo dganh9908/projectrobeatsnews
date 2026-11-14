@@ -17,6 +17,10 @@ import { db, auth, OperationType, handleFirestoreError } from '../lib/firebase';
 import { NewsArticle, SongEntry, User, UserPermissions, UserRole, Comment } from '../types';
 
 export const BOOTSTRAP_ADMIN_EMAIL = 'chautuan9461@gmail.com';
+export const BOOTSTRAP_ADMIN_EMAILS = [
+  'chautuan9461@gmail.com',
+  'anh6052018@gmail.com',
+];
 
 export function sanitizeFirestoreId(raw: string): string {
   const cleaned = String(raw || '')
@@ -307,7 +311,8 @@ export async function fetchSongsFromFirestore(): Promise<SongEntry[]> {
 }
 
 export async function resolveUserRoleFromFirestore(firebaseUser: FirebaseUser): Promise<UserRole> {
-  if (firebaseUser.email?.toLowerCase() === BOOTSTRAP_ADMIN_EMAIL && firebaseUser.emailVerified) {
+  const userEmail = firebaseUser.email?.toLowerCase() || '';
+  if (BOOTSTRAP_ADMIN_EMAILS.includes(userEmail) && firebaseUser.emailVerified) {
     return 'admin';
   }
   try {
@@ -462,4 +467,125 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
     unlockedFrames: Array.isArray(existingPublic?.unlockedFrames) ? existingPublic.unlockedFrames : [],
     equippedAvatarFrame: existingPublic?.equippedAvatarFrame || undefined,
   };
+}
+
+export async function fetchAllUsersFromFirestore(): Promise<User[]> {
+  const path = 'users';
+  try {
+    const snap = await getDocs(collection(db, path));
+    const list: User[] = snap.docs.map((d) => {
+      const data = d.data();
+      const role = (data.role || 'player') as UserRole;
+      return {
+        id: String(data.id || d.id),
+        username: String(data.username || 'player'),
+        displayName: String(data.displayName || data.username || 'Player'),
+        robloxUsername: data.robloxUsername || '',
+        avatar: data.avatar || '',
+        bio: data.bio || '',
+        roBeatsRank: data.roBeatsRank || 'Beginner',
+        preferredNoteSpeed: data.preferredNoteSpeed || '1.8x',
+        role,
+        permissions: getPermissionsForRole(role),
+        createdAt: normalizeTimestamp(data.createdAt),
+        currentStreak: data.currentStreak ?? 1,
+        bestStreak: data.bestStreak ?? 1,
+        unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
+        equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+      };
+    });
+    list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return list;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export async function updateUserInFirestoreAsAdmin(
+  targetUid: string,
+  updates: { displayName?: string; avatar?: string; role?: UserRole }
+): Promise<User | null> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Google Admin authentication required.');
+  }
+  const safeUid = sanitizeFirestoreId(targetUid);
+  const userRef = doc(db, 'users', safeUid);
+  const adminRef = doc(db, 'admins', safeUid);
+
+  const userUpdate: Record<string, any> = {
+    updatedAt: serverTimestamp(),
+  };
+  if (updates.displayName !== undefined) userUpdate.displayName = String(updates.displayName).slice(0, 80);
+  if (updates.avatar !== undefined) userUpdate.avatar = String(updates.avatar).slice(0, 2048);
+  if (updates.role !== undefined) userUpdate.role = updates.role;
+
+  try {
+    await updateDoc(userRef, userUpdate);
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `users/${safeUid}`);
+  }
+
+  if (updates.role === 'admin' || updates.role === 'staff') {
+    try {
+      const existingAdmin = await getDoc(adminRef);
+      if (existingAdmin.exists()) {
+        await updateDoc(adminRef, {
+          role: updates.role,
+          grantedBy: sanitizeFirestoreId(currentUser.uid),
+        });
+      } else {
+        await setDoc(adminRef, {
+          uid: safeUid,
+          role: updates.role,
+          grantedBy: sanitizeFirestoreId(currentUser.uid),
+          createdAt: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, `admins/${safeUid}`);
+    }
+  } else if (updates.role === 'player') {
+    try {
+      await deleteDoc(adminRef);
+    } catch {
+      // Ignore if admin role doc did not exist
+    }
+  }
+
+  try {
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) return null;
+    const data = snap.data();
+    const finalRole = (data.role || 'player') as UserRole;
+    return {
+      id: safeUid,
+      username: String(data.username || 'player'),
+      displayName: data.displayName || data.username,
+      robloxUsername: data.robloxUsername || '',
+      avatar: data.avatar || '',
+      bio: data.bio || '',
+      roBeatsRank: data.roBeatsRank || 'Beginner',
+      preferredNoteSpeed: data.preferredNoteSpeed || '1.8x',
+      role: finalRole,
+      permissions: getPermissionsForRole(finalRole),
+      createdAt: normalizeTimestamp(data.createdAt),
+      currentStreak: data.currentStreak ?? 1,
+      bestStreak: data.bestStreak ?? 1,
+      unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
+      equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteUserInFirestoreAsAdmin(targetUid: string): Promise<void> {
+  const safeUid = sanitizeFirestoreId(targetUid);
+  try {
+    await deleteDoc(doc(db, 'admins', safeUid)).catch(() => {});
+    await deleteDoc(doc(db, 'users', safeUid));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, `users/${safeUid}`);
+  }
 }

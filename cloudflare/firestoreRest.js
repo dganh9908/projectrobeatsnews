@@ -235,6 +235,7 @@ export async function resolveFirestoreAuth(request, env) {
     idToken: candidateIdToken,
     uid: idClaims?.user_id || idClaims?.sub || null,
     email: idClaims?.email || null,
+    emailVerified: Boolean(idClaims?.email_verified),
     appToken: authHeader || null,
   };
 }

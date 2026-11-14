@@ -9,7 +9,7 @@ interface HeaderProps {
   onSelectCategory: (cat: NewsCategory) => void;
   searchQuery?: string;
   onSearchChange?: (q: string) => void;
-  onOpenAccount: (tab?: 'login' | 'signup' | 'profile') => void;
+  onOpenAccount: (tab?: 'login' | 'profile') => void;
   onOpenAdminPanel?: () => void;
   onOpenCreatePost?: () => void;
   onOpenStreak?: () => void;
@@ -201,10 +201,10 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={() => onOpenAccount('login')}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-[11px] sm:text-xs font-semibold transition-all cursor-pointer shadow-xs shadow-cyan-500/10 shrink-0 active:scale-95"
-                title="Account (Log In / Sign Up)"
+                title="Sign in with Google"
               >
                 <User className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Account</span>
+                <span>Sign In</span>
               </button>
             )}
           </div>

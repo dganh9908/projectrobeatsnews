@@ -46,7 +46,7 @@ interface PostCardProps {
   onDelete?: (id: string) => Promise<void> | void;
   onEdit?: (post: NewsArticle) => void;
   onSongClick?: (song: SongEntry) => void;
-  onOpenAccount?: (tab?: 'login' | 'signup') => void;
+  onOpenAccount?: (tab?: 'login' | 'profile') => void;
   onUserClick?: (author: any) => void;
 }
 

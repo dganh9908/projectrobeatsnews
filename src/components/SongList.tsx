@@ -7,7 +7,7 @@ import { Music, Plus, Trash2, Edit2, Search, Image as ImageIcon, Eye, Sparkles }
 import { SongDetailsModal } from './SongDetailsModal';
 import { FramedSongCover } from './FramedSongCover';
 
-export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile' | 'signup') => void }> = () => {
+export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') => void }> = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [elements, setElements] = useState<ElementConfig[]>([]);
   const [frames, setFrames] = useState<DifficultyFramesConfig>(DEFAULT_DIFFICULTY_FRAMES);
