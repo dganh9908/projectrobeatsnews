@@ -182,7 +182,18 @@ export interface WebUpdateEntry {
   description: string;
   authorUid: string;
   authorName: string;
+  reactions?: Record<string, number>;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface StreakLeaderboardEntry {
+  uid: string;
+  username: string;
+  displayName: string;
+  avatar?: string;
+  currentStreak: number;
+  bestStreak: number;
   updatedAt: string;
 }
 

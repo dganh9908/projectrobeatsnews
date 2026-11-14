@@ -98,7 +98,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
           }
           return {
             ...s,
-            mapper: s.mapper || 'Official RoBeats',
+            mapper: (!s.mapper || s.mapper === 'Official RoBeats') ? 'Unknown' : s.mapper,
             uniqueKey: s.uniqueKey || `${s.id}_${idx}_${Date.now()}`,
             chosenDifficulty: s.chosenDifficulty || 'N',
             missionRank: rank,
@@ -762,12 +762,12 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
                       {/* Mapper edit input box - Hidden for Daily mission and Weekly mission */}
                       {category !== 'Daily mission' && category !== 'Weekly mission' && (
                         <div className="flex items-center gap-1.5 text-[10px] bg-zinc-950/60 p-1.5 rounded-lg border border-zinc-800/60">
-                          <span className="text-zinc-400 font-semibold shrink-0">Mapper(s):</span>
+                          <span className="text-zinc-400 font-semibold shrink-0">Mapper:</span>
                           <input
                             type="text"
                             value={song.mapper || ''}
                             onChange={e => handleUpdateSongMapper(songKey, e.target.value)}
-                            placeholder="Official RoBeats or Mapper Name"
+                            placeholder="Unknown or Mapper Name"
                             className="w-full px-2 py-0.5 text-[10px] bg-zinc-900 border border-zinc-800 rounded text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-cyan-500"
                           />
                         </div>

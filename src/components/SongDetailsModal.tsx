@@ -174,8 +174,8 @@ export const SongDetailsModal: React.FC<SongDetailsModalProps> = ({ song: initia
               
               {/* Mapper */}
               <p className="text-xs text-zinc-400">
-                <span className="text-zinc-500 font-semibold">Mapper(s): </span>
-                <strong className="text-zinc-200">{song.mapper || 'Official RoBeats'}</strong>
+                <span className="text-zinc-500 font-semibold">Mapper: </span>
+                <strong className="text-zinc-200">{(!song.mapper || song.mapper === 'Official RoBeats') ? 'Unknown' : song.mapper}</strong>
               </p>
 
               {/* Linked Element Image & Name, BPM, Duration */}

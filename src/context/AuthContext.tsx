@@ -7,6 +7,7 @@ import {
   fetchAllUsersFromFirestore,
   updateUserInFirestoreAsAdmin,
   deleteUserInFirestoreAsAdmin,
+  syncStreakLeaderboardEntryInFirestore,
 } from '../services/firestoreService';
 import { User } from '../types';
 import { safeJson } from '../utils/safeJson';
@@ -169,6 +170,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await updateDoc(doc(db, 'users', uid, 'private', 'info'), {
           lastCheckInDate: String(profileData.lastCheckInDate).slice(0, 32),
           updatedAt: serverTimestamp(),
+        }).catch(() => {});
+      }
+
+      if (
+        (updatedUser.currentStreak ?? 0) > 0 ||
+        (updatedUser.bestStreak ?? 0) > 0
+      ) {
+        syncStreakLeaderboardEntryInFirestore({
+          uid,
+          username: updatedUser.username,
+          displayName: updatedUser.displayName || updatedUser.username,
+          avatar: updatedUser.avatar || '',
+          currentStreak: Number(updatedUser.currentStreak) || 0,
+          bestStreak: Number(updatedUser.bestStreak) || 0,
         }).catch(() => {});
       }
 

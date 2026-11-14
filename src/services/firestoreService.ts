@@ -29,6 +29,7 @@ import {
   DEFAULT_ROBEATS_RANKS,
   DiscordWebhooksConfig,
   WebUpdateEntry,
+  StreakLeaderboardEntry,
 } from '../types';
 import { normalizeElementName } from '../constants/elements';
 import {
@@ -527,7 +528,7 @@ export async function saveSongInFirestore(
       };
       if (song.title !== undefined) updatePayload.title = String(song.title || '').trim().slice(0, 200) || 'Untitled Song';
       if (song.artist !== undefined) updatePayload.artist = String(song.artist || '').trim().slice(0, 200) || 'Unknown Artist';
-      if (song.mapper !== undefined) updatePayload.mapper = String(song.mapper || 'Official RoBeats').trim().slice(0, 120);
+      if (song.mapper !== undefined) updatePayload.mapper = String(song.mapper || 'Unknown').trim().slice(0, 120);
       if (song.coverArt !== undefined) updatePayload.coverArt = String(song.coverArt || '').trim().slice(0, 2048);
       if (song.coverArtEasy !== undefined) updatePayload.coverArtEasy = String(song.coverArtEasy || '').trim().slice(0, 2048);
       if (song.coverArtNormal !== undefined) updatePayload.coverArtNormal = String(song.coverArtNormal || '').trim().slice(0, 2048);
@@ -576,7 +577,7 @@ export async function saveSongInFirestore(
       id: songId,
       title: String(song.title || '').trim().slice(0, 200) || 'Untitled Song',
       artist: String(song.artist || '').trim().slice(0, 200) || 'Unknown Artist',
-      mapper: String(song.mapper || 'Official RoBeats').trim().slice(0, 120),
+      mapper: String(song.mapper || 'Unknown').trim().slice(0, 120),
       coverArt: primaryCover,
       coverArtEasy: String(song.coverArtEasy || primaryCover).slice(0, 2048),
       coverArtNormal: String(song.coverArtNormal || primaryCover).slice(0, 2048),
@@ -719,7 +720,7 @@ export async function syncSongsBatchInFirestore(
           id: songId,
           title: cleanTitle,
           artist: cleanArtist,
-          mapper: String(rawSong.mapper || 'Official RoBeats').trim().slice(0, 120),
+          mapper: String(rawSong.mapper || 'Unknown').trim().slice(0, 120),
           coverArt: incomingCover,
           coverArtEasy: incomingCover,
           coverArtNormal: incomingCover,
@@ -1166,6 +1167,19 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
     handleFirestoreError(err, OperationType.WRITE, `users/${uid}/private/info`);
   }
 
+  const initialCurrentStreak = Number(existingPublic?.currentStreak ?? 0);
+  const initialBestStreak = Number(existingPublic?.bestStreak ?? 0);
+  if (initialCurrentStreak > 0 || initialBestStreak > 0) {
+    syncStreakLeaderboardEntryInFirestore({
+      uid,
+      username: baseUsername,
+      displayName,
+      avatar,
+      currentStreak: initialCurrentStreak,
+      bestStreak: initialBestStreak,
+    }).catch(() => {});
+  }
+
   return {
     id: uid,
     username: baseUsername,
@@ -1179,8 +1193,8 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
     role,
     permissions: getPermissionsForRole(role),
     createdAt: normalizeTimestamp(existingPublic?.createdAt),
-    currentStreak: existingPublic?.currentStreak ?? 0,
-    bestStreak: existingPublic?.bestStreak ?? 0,
+    currentStreak: initialCurrentStreak,
+    bestStreak: initialBestStreak,
     lastCheckInDate: existingPrivate?.lastCheckInDate || '',
   };
 }
@@ -1267,6 +1281,15 @@ export async function checkInStreakInFirestore(): Promise<{
   } catch (err) {
     handleFirestoreError(err, OperationType.WRITE, `users/${uid}/private/info`);
   }
+
+  await syncStreakLeaderboardEntryInFirestore({
+    uid,
+    username: String(pubData?.username || currentUser.email?.split('@')[0] || 'player'),
+    displayName: String(pubData?.displayName || currentUser.displayName || pubData?.username || 'Player'),
+    avatar: String(pubData?.avatar || currentUser.photoURL || ''),
+    currentStreak: newStreak,
+    bestStreak,
+  }).catch(() => {});
 
   return {
     success: true,
@@ -1421,6 +1444,7 @@ export async function deleteUserInFirestoreAsAdmin(targetUid: string): Promise<v
   const safeUid = sanitizeFirestoreId(targetUid);
   try {
     await deleteDoc(doc(db, 'admins', safeUid)).catch(() => {});
+    await deleteDoc(doc(db, 'streak_leaderboard', safeUid)).catch(() => {});
     await deleteDoc(doc(db, 'users', safeUid));
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, `users/${safeUid}`);
@@ -1438,6 +1462,7 @@ function mapDocToWebUpdate(docId: string, data: any): WebUpdateEntry {
     description: String(data.description || ''),
     authorUid: String(data.authorUid || ''),
     authorName: String(data.authorName || 'Admin'),
+    reactions: data.reactions && typeof data.reactions === 'object' ? data.reactions : {},
     createdAt: normalizeTimestamp(data.createdAt),
     updatedAt: normalizeTimestamp(data.updatedAt || data.createdAt),
   };
@@ -1506,6 +1531,7 @@ export async function createWebUpdateInFirestore(
     description: cleanDescription,
     authorUid,
     authorName: safeAuthorName,
+    reactions: {},
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -1519,11 +1545,34 @@ export async function createWebUpdateInFirestore(
       description: cleanDescription,
       authorUid,
       authorName: safeAuthorName,
+      reactions: {},
       createdAt: nowIso,
       updatedAt: nowIso,
     };
   } catch (err) {
     handleFirestoreError(err, OperationType.CREATE, path);
+  }
+}
+
+export async function toggleWebUpdateReactionInFirestore(
+  updateId: string,
+  reactions: Record<string, number>
+): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return;
+  const safeId = sanitizeFirestoreId(updateId);
+  const path = `web_updates/${safeId}`;
+  const docRef = doc(db, 'web_updates', safeId);
+
+  try {
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) return;
+    await updateDoc(docRef, {
+      reactions: stripUndefinedDeep(reactions),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, path);
   }
 }
 
@@ -1539,4 +1588,111 @@ export async function deleteWebUpdateInFirestore(updateId: string): Promise<void
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, path);
   }
+}
+
+// ====================================================
+// STREAK LEADERBOARD (Public, PII-free)
+// ====================================================
+
+function mapDocToStreakLeaderboardEntry(docId: string, data: any): StreakLeaderboardEntry {
+  return {
+    uid: String(data.uid || docId),
+    username: String(data.username || 'player'),
+    displayName: String(data.displayName || data.username || 'Player'),
+    avatar: String(data.avatar || ''),
+    currentStreak: Math.max(0, Number(data.currentStreak) || 0),
+    bestStreak: Math.max(0, Number(data.bestStreak) || 0),
+    updatedAt: normalizeTimestamp(data.updatedAt),
+  };
+}
+
+function sortStreakLeaderboard(entries: StreakLeaderboardEntry[]): StreakLeaderboardEntry[] {
+  return entries
+    .filter((e) => e.currentStreak > 0 || e.bestStreak > 0)
+    .sort((a, b) => {
+      if (b.currentStreak !== a.currentStreak) return b.currentStreak - a.currentStreak;
+      if (b.bestStreak !== a.bestStreak) return b.bestStreak - a.bestStreak;
+      return a.displayName.localeCompare(b.displayName);
+    });
+}
+
+export async function syncStreakLeaderboardEntryInFirestore(entry: {
+  uid: string;
+  username: string;
+  displayName: string;
+  avatar?: string;
+  currentStreak: number;
+  bestStreak: number;
+}): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return;
+  const safeUid = sanitizeFirestoreId(entry.uid || currentUser.uid);
+  const path = `streak_leaderboard/${safeUid}`;
+  const docRef = doc(db, 'streak_leaderboard', safeUid);
+
+  const safeUsername =
+    String(entry.username || 'player')
+      .trim()
+      .slice(0, 64) || 'player';
+  const safeDisplayName =
+    String(entry.displayName || safeUsername)
+      .trim()
+      .slice(0, 80) || safeUsername;
+  const safeAvatar = String(entry.avatar || '').trim().slice(0, 2048);
+  const safeCurrent = Math.min(10000, Math.max(0, Number(entry.currentStreak) || 0));
+  const safeBest = Math.min(10000, Math.max(safeCurrent, Number(entry.bestStreak) || 0));
+
+  const payload = stripUndefinedDeep({
+    uid: safeUid,
+    username: safeUsername,
+    displayName: safeDisplayName,
+    avatar: safeAvatar,
+    currentStreak: safeCurrent,
+    bestStreak: safeBest,
+    updatedAt: serverTimestamp(),
+  });
+
+  try {
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const { uid: _omitUid, ...updateFields } = payload;
+      await updateDoc(docRef, updateFields);
+    } else {
+      await setDoc(docRef, payload);
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, path);
+  }
+}
+
+export async function fetchStreakLeaderboardFromFirestore(): Promise<StreakLeaderboardEntry[]> {
+  const path = 'streak_leaderboard';
+  try {
+    const snap = await getDocs(collection(db, path));
+    const items = snap.docs.map((d) => mapDocToStreakLeaderboardEntry(d.id, d.data()));
+    return sortStreakLeaderboard(items);
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export function subscribeToStreakLeaderboard(
+  onData: (entries: StreakLeaderboardEntry[]) => void,
+  onError?: (error: Error) => void
+): Unsubscribe {
+  const path = 'streak_leaderboard';
+  return onSnapshot(
+    collection(db, path),
+    (snapshot) => {
+      const items = snapshot.docs.map((d) => mapDocToStreakLeaderboardEntry(d.id, d.data()));
+      onData(sortStreakLeaderboard(items));
+    },
+    (error) => {
+      try {
+        handleFirestoreError(error, OperationType.LIST, path);
+      } catch (wrapped: any) {
+        if (onError) onError(wrapped);
+      }
+    }
+  );
 }

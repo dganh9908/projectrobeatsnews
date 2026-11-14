@@ -183,10 +183,26 @@
         "description": { "type": "string", "minLength": 1, "maxLength": 10000 },
         "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
         "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "reactions": { "type": "object" },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "title", "description", "authorUid", "authorName", "createdAt", "updatedAt"]
+    },
+    "StreakLeaderboardEntry": {
+      "title": "StreakLeaderboardEntry",
+      "description": "Public PII-free daily login streak leaderboard entry",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "username": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "avatar": { "type": "string", "maxLength": 2048 },
+        "currentStreak": { "type": "number" },
+        "bestStreak": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username", "displayName", "currentStreak", "bestStreak", "updatedAt"]
     }
   },
   "firestore": {
@@ -233,6 +249,10 @@
     "/web_updates/{updateId}": {
       "schema": { "$ref": "#/entities/WebUpdate" },
       "description": "Website owner updates archive managed strictly by Admin accounts"
+    },
+    "/streak_leaderboard/{userId}": {
+      "schema": { "$ref": "#/entities/StreakLeaderboardEntry" },
+      "description": "Public PII-free daily streak leaderboard entries"
     }
   }
 }

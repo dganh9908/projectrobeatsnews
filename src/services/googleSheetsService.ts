@@ -221,7 +221,7 @@ export async function fetchSongsFromGoogleSheet(
             id: makeSheetSlugId(title, artist, usedIds),
             title: title.slice(0, 200),
             artist: artist.slice(0, 200),
-            mapper: 'Official RoBeats',
+            mapper: 'Unknown',
             coverArt,
             difficulty: {
               easy: easy.slice(0, 16),
@@ -282,7 +282,7 @@ export async function fetchSongsFromGoogleSheet(
         id: makeSheetSlugId(title, artist, usedIds),
         title: title.slice(0, 200),
         artist: artist.slice(0, 200),
-        mapper: 'Official RoBeats',
+        mapper: 'Unknown',
         coverArt,
         difficulty: {
           easy: easy.slice(0, 16),

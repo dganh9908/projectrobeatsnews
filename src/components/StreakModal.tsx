@@ -6,28 +6,28 @@ import {
   Sparkles,
   Check,
   Calendar,
-  Lock,
   ShieldCheck,
   RefreshCw,
+  Crown,
+  Medal,
+  Loader2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { safeJson } from '../utils/safeJson';
 import { auth } from '../lib/firebase';
-import { checkInStreakInFirestore } from '../services/firestoreService';
+import { StreakLeaderboardEntry } from '../types';
+import { UserAvatar } from './UserAvatar';
+import {
+  checkInStreakInFirestore,
+  fetchStreakLeaderboardFromFirestore,
+  subscribeToStreakLeaderboard,
+} from '../services/firestoreService';
 
 interface StreakModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenAccount?: (tab?: 'login' | 'profile') => void;
 }
-
-const STREAK_MILESTONES = [
-  { id: 'day_1', label: 'Day 1', title: 'First Check-In', requiredDays: 1 },
-  { id: 'day_3', label: 'Day 3', title: 'Rhythm Spark', requiredDays: 3 },
-  { id: 'day_7', label: 'Day 7', title: 'Weekly Maestro', requiredDays: 7 },
-  { id: 'day_14', label: 'Day 14', title: 'Two-Week Pro', requiredDays: 14 },
-  { id: 'day_30', label: 'Day 30', title: 'Monthly Legend', requiredDays: 30 },
-];
 
 export const StreakModal: React.FC<StreakModalProps> = ({
   isOpen,
@@ -41,6 +41,9 @@ export const StreakModal: React.FC<StreakModalProps> = ({
   const [lastCheckInDate, setLastCheckInDate] = useState<string>(() => user?.lastCheckInDate || '');
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [checkInMessage, setCheckInMessage] = useState<string | null>(null);
+
+  const [leaderboard, setLeaderboard] = useState<StreakLeaderboardEntry[]>([]);
+  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
 
   const getGmt8Today = () => {
     const now = new Date();
@@ -66,6 +69,67 @@ export const StreakModal: React.FC<StreakModalProps> = ({
       setLastCheckInDate('');
     }
   }, [user, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let mounted = true;
+
+    const loadLeaderboard = async () => {
+      setIsLoadingLeaderboard(true);
+      let fsEntries: StreakLeaderboardEntry[] = [];
+      let apiEntries: StreakLeaderboardEntry[] = [];
+
+      try {
+        fsEntries = await fetchStreakLeaderboardFromFirestore();
+      } catch (err) {
+        console.warn('Firestore streak_leaderboard fetch warning:', err);
+      }
+
+      try {
+        const res = await fetch('/api/streak/leaderboard');
+        if (res.ok) {
+          const data = await safeJson<StreakLeaderboardEntry[] | null>(res, null);
+          if (Array.isArray(data)) {
+            apiEntries = data;
+          }
+        }
+      } catch (err) {
+        console.warn('API /api/streak/leaderboard fetch warning:', err);
+      }
+
+      if (!mounted) return;
+      const merged = new Map<string, StreakLeaderboardEntry>();
+      for (const item of apiEntries) merged.set(item.uid, item);
+      for (const item of fsEntries) merged.set(item.uid, item);
+      const list = Array.from(merged.values())
+        .filter((e) => e.currentStreak > 0 || e.bestStreak > 0)
+        .sort((a, b) => {
+          if (b.currentStreak !== a.currentStreak) return b.currentStreak - a.currentStreak;
+          if (b.bestStreak !== a.bestStreak) return b.bestStreak - a.bestStreak;
+          return a.displayName.localeCompare(b.displayName);
+        });
+      setLeaderboard(list);
+      setIsLoadingLeaderboard(false);
+    };
+
+    loadLeaderboard();
+
+    const unsubscribe = subscribeToStreakLeaderboard(
+      (fsEntries) => {
+        if (!mounted) return;
+        setLeaderboard(fsEntries);
+        setIsLoadingLeaderboard(false);
+      },
+      (err) => {
+        console.warn('Firestore streak_leaderboard subscription warning:', err.message);
+      }
+    );
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -124,9 +188,9 @@ export const StreakModal: React.FC<StreakModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in">
       <div
-        className="w-full max-w-xl bg-[#0D111A] border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-post-entrance"
+        className="w-full max-w-xl bg-[#0D111A] border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-modal-pop"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar */}
@@ -142,9 +206,6 @@ export const StreakModal: React.FC<StreakModalProps> = ({
                   Login Streak
                 </span>
               </div>
-              <p className="text-xs text-zinc-400">
-                Check in daily to build and maintain your login streak!
-              </p>
             </div>
           </div>
 
@@ -214,7 +275,7 @@ export const StreakModal: React.FC<StreakModalProps> = ({
                       <span>·</span>
                       <span className="flex items-center gap-1 font-mono text-zinc-500">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>Reset: GMT-8 Midnight</span>
+                        <span>Reset via RoBeats!Time</span>
                       </span>
                     </div>
                   </div>
@@ -249,80 +310,116 @@ export const StreakModal: React.FC<StreakModalProps> = ({
 
                 {/* Check-in Message Feedback */}
                 {checkInMessage && (
-                  <div className="mt-4 p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-200 text-xs font-medium flex items-center gap-2 animate-fadeIn">
+                  <div className="mt-4 p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-200 text-xs font-medium flex items-center gap-2 animate-fade-in">
                     <Sparkles className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                     <span>{checkInMessage}</span>
                   </div>
                 )}
               </div>
 
-              {/* Streak Milestone Track */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>Streak Milestones</span>
-                  </h4>
-                  <span className="text-[11px] text-zinc-500">
-                    {STREAK_MILESTONES.filter((m) => bestStreak >= m.requiredDays || currentStreak >= m.requiredDays).length} of {STREAK_MILESTONES.length} Reached
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                  {STREAK_MILESTONES.map((milestone) => {
-                    const isReached = currentStreak >= milestone.requiredDays || bestStreak >= milestone.requiredDays;
-
-                    return (
-                      <div
-                        key={milestone.id}
-                        className={`p-3 rounded-2xl border text-center flex flex-col items-center justify-between gap-2 transition-all ${
-                          isReached
-                            ? 'bg-orange-950/30 border-orange-500/50 shadow-sm shadow-orange-500/10'
-                            : 'bg-zinc-950/60 border-zinc-900 opacity-65'
-                        }`}
-                      >
-                        <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                            isReached
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              : 'bg-zinc-800 text-zinc-500'
-                          }`}
-                        >
-                          {milestone.label}
-                        </span>
-
-                        <div
-                          className={`w-9 h-9 rounded-full flex items-center justify-center border ${
-                            isReached
-                              ? 'bg-orange-500/20 border-orange-400/50 text-orange-300'
-                              : 'bg-zinc-900 border-zinc-800 text-zinc-600'
-                          }`}
-                        >
-                          {isReached ? <Check className="w-4 h-4 stroke-[3]" /> : <Lock className="w-3.5 h-3.5" />}
-                        </div>
-
-                        <div className="space-y-0.5">
-                          <div className="text-[11px] font-bold text-white truncate max-w-[95px]">
-                            {milestone.title}
-                          </div>
-                          <div className="text-[9px] text-zinc-400 font-mono">
-                            {isReached ? 'Completed' : `${milestone.requiredDays}d streak`}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/90 flex items-center justify-center gap-2.5 text-center">
+                <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+                <p className="text-xs sm:text-sm font-medium text-zinc-200">
+                  Keep your streak! Streak benefits coming soon!
+                </p>
               </div>
             </>
           )}
+
+          {/* Streak Leaderboard */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                <span className="font-display tracking-wide text-sm text-white normal-case">
+                  Streak Leaderboard
+                </span>
+              </h4>
+              <span className="text-[11px] text-zinc-500 font-mono">
+                {leaderboard.length} {leaderboard.length === 1 ? 'player' : 'players'}
+              </span>
+            </div>
+
+            {isLoadingLeaderboard ? (
+              <div className="py-8 flex flex-col items-center justify-center text-zinc-400 space-y-2 bg-zinc-900/40 border border-zinc-800/70 rounded-2xl">
+                <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
+                <span className="text-xs">Loading leaderboard...</span>
+              </div>
+            ) : leaderboard.length === 0 ? (
+              <div className="py-6 px-4 bg-zinc-900/40 border border-zinc-800/70 rounded-2xl text-center text-xs text-zinc-400">
+                No streak records yet. Claim your daily check-in to take #1!
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                {leaderboard.slice(0, 20).map((entry, idx) => {
+                  const rank = idx + 1;
+                  const isMe = Boolean(user?.id && entry.uid === user.id);
+
+                  return (
+                    <div
+                      key={entry.uid}
+                      className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl border transition-all duration-200 ${
+                        isMe
+                          ? 'bg-cyan-950/35 border-cyan-500/40 shadow-sm shadow-cyan-500/10'
+                          : rank === 1
+                          ? 'bg-amber-950/25 border-amber-500/35'
+                          : 'bg-zinc-900/60 border-zinc-800/80 hover:border-zinc-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className={`w-7 h-7 rounded-xl flex items-center justify-center font-mono text-xs font-black shrink-0 ${
+                            rank === 1
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                              : rank === 2
+                              ? 'bg-zinc-300/15 text-zinc-200 border border-zinc-400/40'
+                              : rank === 3
+                              ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40'
+                              : 'bg-zinc-800/80 text-zinc-400 border border-zinc-700/60'
+                          }`}
+                        >
+                          {rank === 1 ? (
+                            <Crown className="w-3.5 h-3.5 text-amber-300" />
+                          ) : rank === 2 || rank === 3 ? (
+                            <Medal className="w-3.5 h-3.5" />
+                          ) : (
+                            rank
+                          )}
+                        </div>
+
+                        <UserAvatar src={entry.avatar} size="xs" />
+
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs sm:text-sm font-semibold text-white truncate">
+                              {entry.displayName}
+                            </span>
+                            {isMe && (
+                              <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shrink-0">
+                                You
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-zinc-500 font-mono truncate">
+                            @{entry.username} · Best: {entry.bestStreak}d
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-300 font-mono text-xs font-bold shrink-0">
+                        <Flame className="w-3.5 h-3.5 text-orange-400" />
+                        <span>{entry.currentStreak}d</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-zinc-800 bg-[#111622] flex items-center justify-between">
-          <span className="text-[11px] text-zinc-500 font-mono">
-            RoBeats! Login Streak · Claim Every 24h
-          </span>
+        <div className="px-6 py-3 border-t border-zinc-800 bg-[#111622] flex items-center justify-end">
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs cursor-pointer transition-colors"

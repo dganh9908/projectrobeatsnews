@@ -343,7 +343,7 @@ export default function App() {
           )}
         </main>
       ) : (
-        <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6">
+        <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 animate-page-enter">
           {/* Feed Title & Action Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-zinc-800/80">
             <div>

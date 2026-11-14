@@ -21,16 +21,16 @@ export const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
       aria-modal="true"
       aria-labelledby="welcome-popup-heading"
     >
-      <div className="relative w-full max-w-xl rounded-2xl bg-[#0F1420] border border-cyan-500/30 shadow-2xl shadow-cyan-950/40 overflow-hidden">
+      <div className="relative w-full max-w-xl rounded-2xl bg-[#0F1420] border border-cyan-500/30 shadow-2xl shadow-cyan-950/40 overflow-hidden animate-modal-pop">
         {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500" />
+        <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 animate-gradient-flow" />
 
         <div className="p-5 sm:p-7 space-y-5">
           {/* Header */}
           <div className="flex items-start justify-between gap-3">
             <h2
               id="welcome-popup-heading"
-              className="text-xl sm:text-2xl text-white font-display tracking-wide leading-snug bg-gradient-to-r from-cyan-300 via-sky-200 to-indigo-300 bg-clip-text text-transparent"
+              className="text-xl sm:text-2xl text-white font-display tracking-wide leading-snug bg-gradient-to-r from-cyan-300 via-sky-200 to-indigo-300 bg-clip-text text-transparent animate-gradient-flow"
             >
               WELCOME TO ROBEATS! NEWS DEMO WEBSITE
             </h2>
@@ -38,7 +38,7 @@ export const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
               type="button"
               onClick={onClose}
               aria-label="Close welcome notice"
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors cursor-pointer shrink-0"
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
@@ -63,7 +63,7 @@ export const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
                   onClose();
                   onOpenWebUpdates();
                 }}
-                className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2 font-semibold cursor-pointer"
+                className="text-cyan-300 hover:text-cyan-200 underline underline-offset-2 font-semibold cursor-pointer transition-colors"
               >
                 Web Updates
               </button>
@@ -86,7 +86,7 @@ export const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
                 onClose();
                 onOpenWebUpdates();
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-cyan-300 border border-zinc-700/80 hover:border-cyan-500/40 text-xs font-semibold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-cyan-300 border border-zinc-700/80 hover:border-cyan-500/40 text-xs font-semibold transition-all duration-200 active:scale-95 cursor-pointer"
             >
               <Megaphone className="w-3.5 h-3.5" />
               <span>Web Updates</span>
@@ -94,7 +94,7 @@ export const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-zinc-950 text-xs font-bold shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-zinc-950 text-xs font-bold shadow-md shadow-cyan-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
             >
               Got it
             </button>

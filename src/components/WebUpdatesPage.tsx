@@ -8,18 +8,23 @@ import {
   Calendar,
   Shield,
   AlertCircle,
+  Smile,
 } from 'lucide-react';
 import { WebUpdateEntry } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { auth } from '../lib/firebase';
 import { safeJson } from '../utils/safeJson';
+import { EmojiPickerPopover } from './EmojiPickerPopover';
 import {
   fetchWebUpdatesFromFirestore,
   subscribeToWebUpdates,
   createWebUpdateInFirestore,
+  toggleWebUpdateReactionInFirestore,
   deleteWebUpdateInFirestore,
   getFirebaseIdToken,
 } from '../services/firestoreService';
+
+const DEFAULT_REACTION_EMOJI = '👍';
 
 interface WebUpdatesPageProps {
   onBackToFeed: () => void;
@@ -37,6 +42,8 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [openPickerId, setOpenPickerId] = useState<string | null>(null);
+  const [userReactionsMap, setUserReactionsMap] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     let mounted = true;
@@ -188,6 +195,69 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
     }
   };
 
+  const getUserReactionsForEntry = (entryId: string): string[] => {
+    if (userReactionsMap[entryId]) return userReactionsMap[entryId];
+    try {
+      const stored = localStorage.getItem(`robeats_webupdate_reactions_${entryId}`);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const handleToggleReaction = async (entry: WebUpdateEntry, emoji: string) => {
+    const currentUserReactions = getUserReactionsForEntry(entry.id);
+    const hasReacted = currentUserReactions.includes(emoji);
+    const nextUserReactions = hasReacted
+      ? currentUserReactions.filter((e) => e !== emoji)
+      : [...currentUserReactions, emoji];
+
+    const currentReactions = entry.reactions || {};
+    const currentCount = currentReactions[emoji] || 0;
+    const nextReactions: Record<string, number> = {
+      ...currentReactions,
+      [emoji]: Math.max(0, currentCount + (hasReacted ? -1 : 1)),
+    };
+    if (nextReactions[emoji] === 0) delete nextReactions[emoji];
+
+    setUserReactionsMap((prev) => ({ ...prev, [entry.id]: nextUserReactions }));
+    setUpdates((prev) =>
+      prev.map((u) => (u.id === entry.id ? { ...u, reactions: nextReactions } : u))
+    );
+    try {
+      localStorage.setItem(
+        `robeats_webupdate_reactions_${entry.id}`,
+        JSON.stringify(nextUserReactions)
+      );
+    } catch {}
+
+    try {
+      if (auth.currentUser) {
+        await toggleWebUpdateReactionInFirestore(entry.id, nextReactions);
+      } else {
+        const fbToken = await getFirebaseIdToken();
+        const res = await fetch(`/api/web-updates/${entry.id}/reactions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
+          },
+          body: JSON.stringify({ emoji }),
+        });
+        if (res.ok) {
+          const data = await safeJson<any>(res, null);
+          if (data && data.reactions) {
+            setUpdates((prev) =>
+              prev.map((u) => (u.id === entry.id ? { ...u, reactions: data.reactions } : u))
+            );
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to update web update reaction', err);
+    }
+  };
+
   const formatDate = (iso: string) => {
     try {
       return new Intl.DateTimeFormat('en-US', {
@@ -203,13 +273,13 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
   };
 
   return (
-    <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 animate-page-enter">
       {/* Return action */}
       <div className="mb-6">
         <button
           type="button"
           onClick={onBackToFeed}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 hover:border-zinc-700 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 hover:border-zinc-700 text-xs font-semibold transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-cyan-400" />
           <span>Back to News Feed</span>
@@ -227,7 +297,7 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
           </h1>
         </div>
         <p className="text-xs sm:text-sm text-zinc-400 font-sans">
-          Website owner announcements, maintenance notices, and platform changelogs. All published updates are archived here.
+          @meelo: I will post all website updates here for yall :)
         </p>
       </header>
 
@@ -324,19 +394,16 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
             <p className="text-xs">Loading web updates...</p>
           </div>
         ) : updates.length === 0 ? (
-          <div className="py-14 px-4 bg-[#111622]/70 border border-zinc-800/80 rounded-2xl text-center space-y-2">
+          <div className="py-14 px-4 bg-[#111622]/70 border border-zinc-800/80 rounded-2xl text-center space-y-2 animate-fade-in">
             <Megaphone className="w-7 h-7 text-zinc-600 mx-auto" />
             <h3 className="text-base text-white font-display">No web updates yet</h3>
-            <p className="text-xs text-zinc-400 max-w-sm mx-auto font-sans">
-              Website owner announcements and update logs will appear here once posted by @Admin.
-            </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-post-entrance">
             {updates.map((entry) => (
               <article
                 key={entry.id}
-                className="p-5 sm:p-6 rounded-2xl bg-[#111622] border border-zinc-800/90 hover:border-zinc-700/90 transition-colors space-y-3"
+                className="p-5 sm:p-6 rounded-2xl bg-[#111622] border border-zinc-800/90 hover:border-cyan-500/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-950/20 transition-all duration-200 space-y-3 animate-post-entrance"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1.5 min-w-0">
@@ -376,6 +443,70 @@ export const WebUpdatesPage: React.FC<WebUpdatesPageProps> = ({ onBackToFeed }) 
                 <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap break-words font-sans font-normal">
                   {entry.description}
                 </p>
+
+                {/* Reactions Bar */}
+                <div className="pt-3 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {(() => {
+                      const entryReactions = entry.reactions || {};
+                      const userReactions = getUserReactionsForEntry(entry.id);
+                      const extraEmojis = Object.keys(entryReactions).filter(
+                        (emoji) =>
+                          emoji !== DEFAULT_REACTION_EMOJI &&
+                          ((entryReactions[emoji] || 0) > 0 || userReactions.includes(emoji))
+                      );
+                      const displayedEmojis = [DEFAULT_REACTION_EMOJI, ...extraEmojis];
+
+                      return displayedEmojis.map((emoji) => {
+                        const count = entryReactions[emoji] || 0;
+                        const hasReacted = userReactions.includes(emoji);
+
+                        return (
+                          <button
+                            key={emoji}
+                            type="button"
+                            onClick={() => handleToggleReaction(entry, emoji)}
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer ${
+                              hasReacted
+                                ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/50 shadow-xs shadow-cyan-500/20 scale-105'
+                                : count > 0
+                                ? 'bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800'
+                                : 'bg-zinc-900/40 text-zinc-500 border border-zinc-800/80 hover:text-zinc-300 hover:border-zinc-700'
+                            }`}
+                            title={`React with ${emoji}`}
+                          >
+                            <span className="text-sm leading-none">{emoji}</span>
+                            {count > 0 && (
+                              <span className="font-mono text-[11px] font-bold">{count}</span>
+                            )}
+                          </button>
+                        );
+                      });
+                    })()}
+                  </div>
+
+                  {/* Custom Emoji Reaction Picker Button */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenPickerId((prev) => (prev === entry.id ? null : entry.id))
+                      }
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-cyan-300 text-xs font-medium cursor-pointer transition-all duration-150 active:scale-95"
+                      title="Add custom emoji reaction"
+                    >
+                      <Smile className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>React</span>
+                    </button>
+
+                    {openPickerId === entry.id && (
+                      <EmojiPickerPopover
+                        onSelectEmoji={(emoji) => handleToggleReaction(entry, emoji)}
+                        onClose={() => setOpenPickerId(null)}
+                      />
+                    )}
+                  </div>
+                </div>
               </article>
             ))}
           </div>

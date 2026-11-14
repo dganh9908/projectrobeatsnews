@@ -763,7 +763,7 @@ const DEFAULT_SONGS: any[] = [
     id: 'wiki_0',
     title: 'Monday Night Monsters',
     artist: 'FinnMK',
-    mapper: 'Official RoBeats',
+    mapper: 'Unknown',
     coverArt: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
     coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
@@ -777,7 +777,7 @@ const DEFAULT_SONGS: any[] = [
     id: 'wiki_1',
     title: 'Daily Life',
     artist: 'FinnMK',
-    mapper: 'Official RoBeats',
+    mapper: 'Unknown',
     coverArt: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
     coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
@@ -791,7 +791,7 @@ const DEFAULT_SONGS: any[] = [
     id: 'wiki_2',
     title: '[@_@]',
     artist: 'Chroma',
-    mapper: 'Official RoBeats',
+    mapper: 'Unknown',
     coverArt: 'https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614',
     coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614',
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614',
@@ -805,7 +805,7 @@ const DEFAULT_SONGS: any[] = [
     id: 'wiki_3',
     title: 'Adopt Me',
     artist: 'BSlick',
-    mapper: 'Official RoBeats',
+    mapper: 'Unknown',
     coverArt: 'https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804',
     coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804',
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804',
@@ -819,7 +819,7 @@ const DEFAULT_SONGS: any[] = [
     id: 'wiki_4',
     title: 'Better Run',
     artist: 'Rutra',
-    mapper: 'Official RoBeats',
+    mapper: 'Unknown',
     coverArt: 'https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801',
     coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801',
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801',
@@ -999,6 +999,8 @@ export interface WebUpdateRecord {
   description: string;
   authorUid: string;
   authorName: string;
+  reactions?: Record<string, number>;
+  userReactions?: Record<string, string[]>;
   createdAt: string;
   updatedAt: string;
 }
@@ -1331,6 +1333,34 @@ app.post('/api/streak/check-in', (req, res) => {
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Streak check-in failed' });
+  }
+});
+
+// 6c-2. Get Streak Leaderboard (Public, PII-free)
+app.get('/api/streak/leaderboard', (_req, res) => {
+  try {
+    const users = readUsers();
+    const leaderboard = users
+      .filter((u) => (u.currentStreak || 0) > 0 || (u.bestStreak || 0) > 0)
+      .map((u) => ({
+        uid: u.id,
+        username: u.username,
+        displayName: u.displayName || u.username,
+        avatar: u.avatar || '',
+        currentStreak: Number(u.currentStreak) || 0,
+        bestStreak: Number(u.bestStreak) || 0,
+        updatedAt: u.createdAt || new Date().toISOString(),
+      }))
+      .sort((a, b) => {
+        if (b.currentStreak !== a.currentStreak) return b.currentStreak - a.currentStreak;
+        if (b.bestStreak !== a.bestStreak) return b.bestStreak - a.bestStreak;
+        return a.displayName.localeCompare(b.displayName);
+      })
+      .slice(0, 50);
+
+    res.json(leaderboard);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to load streak leaderboard' });
   }
 });
 
@@ -2658,6 +2688,61 @@ app.post('/api/web-updates', requireAdmin, (req: any, res) => {
     res.status(201).json(entry);
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to create web update' });
+  }
+});
+
+app.post('/api/web-updates/:id/reactions', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { emoji } = req.body;
+    if (!emoji || typeof emoji !== 'string') {
+      return res.status(400).json({ error: 'Reaction emoji is required' });
+    }
+
+    const updates = readWebUpdates();
+    const idx = updates.findIndex((u) => u.id === id);
+    if (idx === -1) {
+      return res.status(404).json({ error: 'Web update not found' });
+    }
+
+    const entry = updates[idx];
+    if (!entry.reactions || typeof entry.reactions !== 'object') {
+      entry.reactions = {};
+    }
+    if (!entry.userReactions || typeof entry.userReactions !== 'object') {
+      entry.userReactions = {};
+    }
+
+    const authUser = getAuthUser(req);
+    const userKey = authUser ? authUser.id : String(req.headers['x-client-id'] || req.ip || 'guest');
+
+    const currentList: string[] = Array.isArray(entry.userReactions[userKey])
+      ? entry.userReactions[userKey]
+      : [];
+    const hasReacted = currentList.includes(emoji);
+
+    if (hasReacted) {
+      entry.userReactions[userKey] = currentList.filter((e) => e !== emoji);
+      entry.reactions[emoji] = Math.max(0, (entry.reactions[emoji] || 1) - 1);
+      if (entry.reactions[emoji] === 0) {
+        delete entry.reactions[emoji];
+      }
+    } else {
+      entry.userReactions[userKey] = [...currentList, emoji];
+      entry.reactions[emoji] = (entry.reactions[emoji] || 0) + 1;
+    }
+
+    entry.updatedAt = new Date().toISOString();
+    updates[idx] = entry;
+    writeWebUpdates(updates);
+
+    res.json({
+      success: true,
+      reactions: entry.reactions,
+      userReactions: entry.userReactions[userKey] || [],
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to toggle web update reaction' });
   }
 });
 

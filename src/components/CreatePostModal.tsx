@@ -71,7 +71,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   // Category State: 'Daily mission' | 'Weekly mission' | 'Weekly Leaderboard' | 'New song' | 'Updates'
   const [category, setCategory] = useState<PostCategoryType>('Daily mission');
   const [missionRank, setMissionRank] = useState<RoBeatsRank>('Star');
-  const [shopMapper, setShopMapper] = useState('Official RoBeats');
+  const [shopMapper, setShopMapper] = useState('Unknown');
   const [customTitle, setCustomTitle] = useState('');
   const [content, setContent] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState('');
@@ -87,7 +87,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
       id: 'draft-1',
       title: '',
       artist: '',
-      mapper: 'Official RoBeats',
+      mapper: 'Unknown',
       bpm: '',
       duration: '',
       easyLevel: '1',
@@ -189,7 +189,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         id: `draft-${Date.now()}-${prev.length + 1}`,
         title: '',
         artist: '',
-        mapper: 'Official RoBeats',
+        mapper: 'Unknown',
         bpm: '',
         duration: '',
         easyLevel: '1',
@@ -438,7 +438,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
             uniqueKey: s.id,
             title: s.title.trim(),
             artist: s.artist.trim(),
-            mapper: s.mapper.trim() || 'Official RoBeats',
+            mapper: s.mapper.trim() || 'Unknown',
             bpm: s.bpm?.trim() || '',
             duration: s.duration?.trim() || '',
             coverArt: primaryCover,
@@ -894,13 +894,13 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
                         <div>
                           <label className="block text-[11px] font-semibold text-zinc-300 mb-1">
-                            Mapper(s)
+                            Mapper
                           </label>
                           <input
                             type="text"
                             value={draft.mapper}
                             onChange={e => handleUpdateNewSongDraft(draft.id, { mapper: e.target.value })}
-                            placeholder="Official RoBeats or Mapper"
+                            placeholder="Unknown or Mapper"
                             className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500"
                           />
                         </div>

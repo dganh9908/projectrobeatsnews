@@ -137,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
                   e.preventDefault();
                   onOpenPrivacy();
                 }}
-                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-colors cursor-pointer ${
+                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-all duration-200 active:scale-95 cursor-pointer ${
                   isPrivacyPage
                     ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/60'
                     : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-cyan-300 border-zinc-700/80 hover:border-cyan-500/40'
@@ -155,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({
                   e.preventDefault();
                   onOpenWebUpdates();
                 }}
-                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-colors cursor-pointer ${
+                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-all duration-200 active:scale-95 cursor-pointer ${
                   isWebUpdatesPage
                     ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/60'
                     : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-cyan-300 border-zinc-700/80 hover:border-cyan-500/40'
@@ -259,7 +259,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="py-2.5 sm:py-3 flex flex-row items-center justify-between gap-2">
           <h1 
             onClick={() => onSelectCategory('All')}
-            className="text-xl sm:text-3xl font-black tracking-tight text-white cursor-pointer text-left inline-block bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="text-xl sm:text-3xl font-black tracking-tight text-white cursor-pointer text-left inline-block bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent animate-gradient-flow hover:opacity-90 active:scale-[0.98] transition-all whitespace-nowrap"
           >
             RoBeats! News
           </h1>
@@ -285,7 +285,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={category}
                   onClick={() => onSelectCategory(category)}
-                  className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap cursor-pointer flex items-center gap-1.5 border transition-all ${borderStyle}`}
+                  className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap cursor-pointer flex items-center gap-1.5 border transition-all duration-200 active:scale-95 ${borderStyle}`}
                 >
                   <span>{category}</span>
                 </button>

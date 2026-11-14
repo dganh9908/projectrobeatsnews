@@ -78,7 +78,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
         ...editingSong,
         title: editingSong.title.trim(),
         artist: editingSong.artist?.trim() || 'Unknown Artist',
-        mapper: editingSong.mapper?.trim() || 'Official RoBeats',
+        mapper: editingSong.mapper?.trim() || 'Unknown',
         element: normalizeElementName(editingSong.element),
         coverArt: singleCover,
         coverArtNormal: singleCover,
@@ -207,7 +207,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                 setEditingSong({
                   title: '',
                   artist: '',
-                  mapper: 'Official RoBeats',
+                  mapper: 'Unknown',
                   element: '',
                   difficulty: { easy: '1', normal: '5', hard: '12' },
                   coverArt: '',
@@ -331,7 +331,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                     <p className="text-xs text-zinc-400 truncate">{song.artist}</p>
                     {song.mapper && (
                       <p className="text-[11px] text-zinc-500 truncate mt-0.5">
-                        <span className="text-zinc-600">Map:</span> {song.mapper}
+                        <span className="text-zinc-600">Mapper:</span> {song.mapper === 'Official RoBeats' ? 'Unknown' : song.mapper}
                       </p>
                     )}
                   </div>
@@ -419,7 +419,10 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => {
-                          setEditingSong(song);
+                          setEditingSong({
+                            ...song,
+                            mapper: (!song.mapper || song.mapper === 'Official RoBeats') ? 'Unknown' : song.mapper,
+                          });
                           setModalPreviewDiff('normal');
                           setShowModal(true);
                         }}
@@ -499,7 +502,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                     value={editingSong.mapper || ''}
                     onChange={(e) => setEditingSong({ ...editingSong, mapper: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 focus:outline-none focus:border-cyan-500"
-                    placeholder="Official RoBeats"
+                    placeholder="Unknown"
                   />
                 </div>
               </div>

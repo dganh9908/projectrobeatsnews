@@ -9,7 +9,7 @@ const CONTACT_EMAIL = 'anh6052018@gmail.com';
 
 export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBackToFeed }) => {
   return (
-    <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 animate-page-enter">
       {/* Return action */}
       <div className="mb-8">
         <button

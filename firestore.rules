@@ -231,13 +231,26 @@ service cloud.firestore {
 
     function isValidWebUpdate(data) {
       return data.keys().hasAll(['id', 'title', 'description', 'authorUid', 'authorName', 'createdAt', 'updatedAt'])
-        && data.keys().hasOnly(['id', 'title', 'description', 'authorUid', 'authorName', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'title', 'description', 'authorUid', 'authorName', 'reactions', 'createdAt', 'updatedAt'])
         && isValidId(data.id)
         && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
         && data.description is string && data.description.size() >= 1 && data.description.size() <= 10000
         && isValidId(data.authorUid)
         && data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 80
         && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (!('reactions' in data) || data.reactions is map);
+    }
+
+    function isValidStreakLeaderboardEntry(data) {
+      return data.keys().hasAll(['uid', 'username', 'displayName', 'currentStreak', 'bestStreak', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'username', 'displayName', 'avatar', 'currentStreak', 'bestStreak', 'updatedAt'])
+        && isValidId(data.uid)
+        && data.username is string && data.username.size() >= 1 && data.username.size() <= 64
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 80
+        && (!('avatar' in data) || (data.avatar is string && data.avatar.size() <= 2048))
+        && data.currentStreak is number && data.currentStreak >= 0 && data.currentStreak <= 10000
+        && data.bestStreak is number && data.bestStreak >= 0 && data.bestStreak <= 10000
         && data.updatedAt is timestamp;
     }
 
@@ -525,16 +538,46 @@ service cloud.firestore {
         && incoming().createdAt == request.time
         && incoming().updatedAt == request.time;
 
-      allow update: if isAdmin()
+      allow update: if isVerified()
         && isValidId(updateId)
         && isValidWebUpdate(incoming())
         && incoming().id == existing().id
         && incoming().authorUid == existing().authorUid
         && incoming().createdAt == existing().createdAt
         && incoming().updatedAt == request.time
-        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'updatedAt']);
+        && (
+          (
+            isAdmin()
+            && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'reactions', 'updatedAt'])
+          ) ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['reactions', 'updatedAt'])
+        );
 
       allow delete: if isAdmin() && isValidId(updateId);
+    }
+
+    match /streak_leaderboard/{userId} {
+      allow get: if isValidId(userId);
+      allow list: if true;
+
+      allow create: if isVerified()
+        && isValidId(userId)
+        && isValidStreakLeaderboardEntry(incoming())
+        && incoming().uid == userId
+        && incoming().updatedAt == request.time
+        && (isOwner(userId) || isAdmin());
+
+      allow update: if isVerified()
+        && isValidId(userId)
+        && isValidStreakLeaderboardEntry(incoming())
+        && incoming().uid == existing().uid
+        && incoming().updatedAt == request.time
+        && (isOwner(userId) || isAdmin())
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'username', 'displayName', 'avatar', 'currentStreak', 'bestStreak', 'updatedAt'
+        ]);
+
+      allow delete: if isValidId(userId) && (isOwner(userId) || isAdmin());
     }
   }
 }
