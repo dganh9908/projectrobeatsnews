@@ -355,7 +355,7 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/posts/$(postId))
           && get(/databases/$(database)/documents/posts/$(postId)).data.status == 'published';
 
-        allow list: if resource.data.postId is string;
+        allow list: if resource.data.postId == postId;
 
         allow create: if isVerified()
           && isValidId(postId)
@@ -393,7 +393,7 @@ service cloud.firestore {
 
     match /songs/{songId} {
       allow get: if isValidId(songId);
-      allow list: if resource.data.id is string;
+      allow list: if true;
 
       allow create: if isAdmin()
         && isValidId(songId)
@@ -419,7 +419,7 @@ service cloud.firestore {
 
     match /elements/{elementId} {
       allow get: if isValidId(elementId);
-      allow list: if resource.data.id is string;
+      allow list: if true;
 
       allow create: if isAdmin()
         && isValidId(elementId)
@@ -439,7 +439,7 @@ service cloud.firestore {
 
     match /ranks/{rankId} {
       allow get: if isValidId(rankId);
-      allow list: if resource.data.id is string;
+      allow list: if true;
 
       allow create: if isAdmin()
         && isValidId(rankId)
@@ -459,7 +459,7 @@ service cloud.firestore {
 
     match /settings/{settingId} {
       allow get: if isValidId(settingId);
-      allow list: if resource.data.id is string;
+      allow list: if true;
 
       allow create: if isAdmin()
         && isValidId(settingId)
@@ -481,7 +481,7 @@ service cloud.firestore {
 
     match /webhooks/{webhookId} {
       allow get: if isAdmin() && isValidId(webhookId);
-      allow list: if isSignedIn() && isBootstrapAdmin() && resource.data.id is string;
+      allow list: if isBootstrapAdmin();
 
       allow create: if isAdmin()
         && isValidId(webhookId)

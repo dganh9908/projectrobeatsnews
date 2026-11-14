@@ -6,35 +6,9 @@ import {
   queryFirestoreCollection,
   commitFirestoreDocument,
 } from '../../cloudflare/firestoreRest.js';
+import { SHEET_SONGS } from '../../cloudflare/sheetSongs.js';
 
-const DEFAULT_SEED_SONGS = [
-  {
-    id: 'seed_1',
-    title: 'Monday Night Monsters',
-    artist: 'FinnMK',
-    coverArt: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    difficulty: { easy: '1', normal: '1', hard: '14' },
-    element: 'Flow',
-    duration: '2:14',
-    bpm: '100',
-  },
-  {
-    id: 'seed_2',
-    title: 'Daily Life',
-    artist: 'FinnMK',
-    coverArt: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    difficulty: { easy: '-', normal: '2', hard: '17' },
-    element: 'Chill',
-    duration: '2:02',
-    bpm: '106',
-  },
-];
+const DEFAULT_SEED_SONGS = SHEET_SONGS;
 
 export async function onRequestOptions() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });

@@ -95,6 +95,10 @@ export const FramedSongCover: React.FC<FramedSongCoverProps> = ({
 
   const cleanCover = (coverArt || '').trim();
 
+  useEffect(() => {
+    setImgError(false);
+  }, [cleanCover]);
+
   return (
     <div
       onClick={onClick}

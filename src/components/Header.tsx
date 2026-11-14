@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Shield, PlusCircle, Clock, Music, Flame } from 'lucide-react';
+import { User, Shield, PlusCircle, Clock, Music, Flame, Lock } from 'lucide-react';
 import { NewsCategory } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { UserAvatar } from './UserAvatar';
@@ -13,6 +13,8 @@ interface HeaderProps {
   onOpenAdminPanel?: () => void;
   onOpenCreatePost?: () => void;
   onOpenStreak?: () => void;
+  isPrivacyPage?: boolean;
+  onOpenPrivacy?: () => void;
 }
 
 const CATEGORIES: NewsCategory[] = [
@@ -64,6 +66,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdminPanel,
   onOpenCreatePost,
   onOpenStreak,
+  isPrivacyPage = false,
+  onOpenPrivacy,
 }) => {
   const { user, isAuthenticated } = useAuth();
 
@@ -112,8 +116,8 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Top date bar + Account trigger: Guaranteed SAME LINE with Date and Hello "user" on mobile & desktop */}
         <div className="pt-2 sm:pt-2.5 pb-1 flex flex-row items-center justify-between gap-1.5 sm:gap-2 text-xs text-zinc-400 font-mono-numbers w-full flex-nowrap">
-          {/* Left: Date + Hello "user" */}
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs truncate min-w-0">
+          {/* Left: Date + Hello "user" + Privacy button */}
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs min-w-0">
             <span className="shrink-0 text-zinc-400">
               <span className="hidden sm:inline">{weekdayFormatted}, </span>
               <span>{monthDayYearFormatted}</span>
@@ -122,6 +126,24 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="font-sans font-medium text-cyan-300 truncate">
               Hello <span className="font-bold text-white">"{user?.displayName || user?.username || 'user'}"</span>!
             </span>
+            {onOpenPrivacy && (
+              <a
+                href="/privacy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenPrivacy();
+                }}
+                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-colors cursor-pointer ${
+                  isPrivacyPage
+                    ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/60'
+                    : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-cyan-300 border-zinc-700/80 hover:border-cyan-500/40'
+                }`}
+                title="View Privacy Policy (/privacy)"
+              >
+                <Lock className="w-2.5 h-2.5 text-cyan-400" />
+                <span>Privacy</span>
+              </a>
+            )}
           </div>
 
           {/* Right: Merged Account button + Staff/Admin actions on same line */}

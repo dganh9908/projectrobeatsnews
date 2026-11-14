@@ -10,6 +10,7 @@ import { EditPostModal } from './components/EditPostModal';
 import { SongDetailsModal } from './components/SongDetailsModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { StreakModal } from './components/StreakModal';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { useAuth } from './context/AuthContext';
 import { 
   PlusCircle, 
@@ -36,6 +37,10 @@ export default function App() {
 
   // Navigation & Category State
   const [currentCategory, setCurrentCategory] = useState<NewsCategory>('All');
+  const [currentPath, setCurrentPath] = useState<string>(() =>
+    typeof window !== 'undefined' ? window.location.pathname : '/'
+  );
+  const isPrivacyPage = currentPath === '/privacy' || currentPath === '/privacy/';
 
   // Posts State
   const [posts, setPosts] = useState<NewsArticle[]>([]);
@@ -132,6 +137,37 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    document.title = isPrivacyPage
+      ? 'Privacy Policy - RoBeats! News'
+      : 'RoBeats! News - Where you can find latest robeats news';
+  }, [isPrivacyPage]);
+
+  const navigateTo = (targetPath: '/' | '/privacy') => {
+    if (typeof window !== 'undefined' && window.location.pathname !== targetPath) {
+      window.history.pushState({}, '', targetPath);
+    }
+    setCurrentPath(targetPath);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectCategory = (cat: NewsCategory) => {
+    setCurrentCategory(cat);
+    if (isPrivacyPage) {
+      navigateTo('/');
+    }
+  };
+
   const handleOpenAccount = (tab: 'login' | 'profile' = 'login') => {
     setAccountModalTab(tab);
     setIsAccountModalOpen(true);
@@ -200,15 +236,19 @@ export default function App() {
       */}
       <Header
         currentCategory={currentCategory}
-        onSelectCategory={setCurrentCategory}
+        onSelectCategory={handleSelectCategory}
         onOpenAccount={handleOpenAccount}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
         onOpenCreatePost={() => setIsCreatePostModalOpen(true)}
         onOpenStreak={() => setIsStreakModalOpen(true)}
+        isPrivacyPage={isPrivacyPage}
+        onOpenPrivacy={() => navigateTo('/privacy')}
       />
 
       {/* Main Content Area */}
-      {currentCategory === 'Song List' ? (
+      {isPrivacyPage ? (
+        <PrivacyPolicy onBackToFeed={() => navigateTo('/')} />
+      ) : currentCategory === 'Song List' ? (
         <main className="flex-1">
           {user?.role === 'admin' ? (
             <SongList onOpenAccount={handleOpenAccount} />
@@ -377,8 +417,19 @@ export default function App() {
           <div className="font-semibold text-zinc-300">
             RoBeats! News
           </div>
-          <div>
-            © 2026 RoBeats! News
+          <div className="flex items-center gap-4">
+            <a
+              href="/privacy"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo('/privacy');
+              }}
+              className="text-zinc-400 hover:text-cyan-300 transition-colors underline-offset-4 hover:underline"
+            >
+              Privacy Policy
+            </a>
+            <span aria-hidden="true" className="text-zinc-700">·</span>
+            <span>© 2026 RoBeats! News</span>
           </div>
         </div>
       </footer>

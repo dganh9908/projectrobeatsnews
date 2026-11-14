@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Song, ElementConfig, SongEntry, DifficultyFramesConfig, DEFAULT_DIFFICULTY_FRAMES, hasDifficulty } from '../types';
 import { fetchSongsList, saveSong, deleteSong, fetchElementsList } from '../services/api';
-import { fetchDifficultyFrames } from '../services/fandomService';
+import { fetchDifficultyFrames, adminResetOverrides } from '../services/fandomService';
 import { useAuth } from '../context/AuthContext';
-import { Music, Plus, Trash2, Edit2, Search, Image as ImageIcon, Eye, Sparkles } from 'lucide-react';
+import { Music, Plus, Trash2, Edit2, Search, Image as ImageIcon, Eye, Sparkles, FileSpreadsheet, RefreshCw, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import { SongDetailsModal } from './SongDetailsModal';
 import { FramedSongCover } from './FramedSongCover';
+import { DEFAULT_GOOGLE_SHEET_URL } from '../constants/sheetSongs';
+import { fetchSongsFromGoogleSheet, ParsedSheetSong, clearLiveSheetCache } from '../services/googleSheetsService';
+import { syncSongsBatchInFirestore } from '../services/firestoreService';
+import { auth } from '../lib/firebase';
 
 export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') => void }> = () => {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -24,17 +28,31 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
   // Modal for viewing / editing song details and frames
   const [selectedSongDetail, setSelectedSongDetail] = useState<SongEntry | null>(null);
 
+  // Pagination for large song catalog
+  const [visibleCount, setVisibleCount] = useState(60);
+
+  // Google Sheets Sync Modal State
+  const [showSheetModal, setShowSheetModal] = useState(false);
+  const [sheetUrl, setSheetUrl] = useState(DEFAULT_GOOGLE_SHEET_URL);
+  const [sheetPreview, setSheetPreview] = useState<ParsedSheetSong[] | null>(null);
+  const [isFetchingSheet, setIsFetchingSheet] = useState(false);
+  const [isSyncingSheet, setIsSyncingSheet] = useState(false);
+  const [syncProgress, setSyncProgress] = useState<{ done: number; total: number } | null>(null);
+  const [sheetError, setSheetError] = useState<string | null>(null);
+  const [sheetSuccess, setSheetSuccess] = useState<string | null>(null);
+  const [strictSheetCoverArt, setStrictSheetCoverArt] = useState<boolean>(true);
+
   const { isStaff, isAdmin } = useAuth();
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (forceRefreshSheet: boolean = false) => {
     setLoading(true);
     try {
       const [songsData, elementsData, framesData] = await Promise.all([
-        fetchSongsList().catch(() => []),
+        fetchSongsList(forceRefreshSheet).catch(() => []),
         fetchElementsList().catch(() => []),
         fetchDifficultyFrames().catch(() => DEFAULT_DIFFICULTY_FRAMES),
       ]);
@@ -85,6 +103,55 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
     }
   };
 
+  const handlePreviewSheet = async () => {
+    setIsFetchingSheet(true);
+    setSheetError(null);
+    setSheetSuccess(null);
+    try {
+      clearLiveSheetCache();
+      const parsed = await fetchSongsFromGoogleSheet(sheetUrl);
+      setSheetPreview(parsed);
+    } catch (err: any) {
+      setSheetError(err?.message || 'Failed to read Google Sheet.');
+      setSheetPreview(null);
+    } finally {
+      setIsFetchingSheet(false);
+    }
+  };
+
+  const handleSyncSheetToFirestore = async () => {
+    setIsSyncingSheet(true);
+    setSheetError(null);
+    setSheetSuccess(null);
+    setSyncProgress(null);
+
+    try {
+      clearLiveSheetCache();
+      const parsed = await fetchSongsFromGoogleSheet(sheetUrl);
+      setSheetPreview(parsed);
+
+      if (!auth.currentUser) {
+        throw new Error('Please sign in with an Admin Google account to sync songs into Firebase Firestore.');
+      }
+
+      const result = await syncSongsBatchInFirestore(parsed, {
+        preserveExistingMedia: !strictSheetCoverArt,
+        onProgress: (done, total) => setSyncProgress({ done, total }),
+      });
+
+      adminResetOverrides();
+      const coverCount = parsed.filter((s) => Boolean(s.coverArt)).length;
+      setSheetSuccess(
+        `Synced ${result.total} songs (${coverCount} cover art links) to Firebase Cloud Firestore (${result.created} new, ${result.updated} updated).`
+      );
+      await loadData(true);
+    } catch (err: any) {
+      setSheetError(err?.message || 'Failed to sync Google Sheet to Firestore.');
+    } finally {
+      setIsSyncingSheet(false);
+    }
+  };
+
   const filteredSongs = songs.filter((s) => {
     const matchSearch =
       s.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -93,6 +160,12 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
     const matchElement = selectedElement === 'all' || s.element?.toLowerCase() === selectedElement.toLowerCase();
     return matchSearch && matchElement;
   });
+
+  useEffect(() => {
+    setVisibleCount(60);
+  }, [search, selectedElement]);
+
+  const displayedSongs = filteredSongs.slice(0, visibleCount);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto px-4 sm:px-6 py-6">
@@ -109,24 +182,41 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
         </div>
 
         {isStaff && (
-          <button
-            onClick={() => {
-              setEditingSong({
-                title: '',
-                artist: '',
-                mapper: 'Official RoBeats',
-                element: 'Flow',
-                difficulty: { easy: '1', normal: '5', hard: '12' },
-                coverArt: '',
-              });
-              setModalPreviewDiff('normal');
-              setShowModal(true);
-            }}
-            className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs rounded-xl flex items-center gap-1.5 transition self-start sm:self-auto cursor-pointer shadow-md"
-          >
-            <Plus className="w-4 h-4" />
-            Add New Song Chart
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSheetError(null);
+                  setSheetSuccess(null);
+                  setSyncProgress(null);
+                  setShowSheetModal(true);
+                }}
+                className="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 font-semibold text-xs rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+                <span>Sync Google Sheet</span>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setEditingSong({
+                  title: '',
+                  artist: '',
+                  mapper: 'Official RoBeats',
+                  element: 'Flow',
+                  difficulty: { easy: '1', normal: '5', hard: '12' },
+                  coverArt: '',
+                });
+                setModalPreviewDiff('normal');
+                setShowModal(true);
+              }}
+              className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-md"
+            >
+              <Plus className="w-4 h-4" />
+              Add New Song Chart
+            </button>
+          </div>
         )}
       </div>
 
@@ -183,8 +273,15 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
           No songs found matching your search.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSongs.map((song) => {
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-xs text-zinc-400">
+            <span>
+              Showing <strong className="text-zinc-200 font-mono">{displayedSongs.length}</strong> of{' '}
+              <strong className="text-zinc-200 font-mono">{filteredSongs.length}</strong> songs
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {displayedSongs.map((song) => {
             const diff = typeof song.difficulty === 'object' ? song.difficulty : {};
             const hasEasy = hasDifficulty(diff.easy);
             const hasNormal = hasDifficulty(diff.normal);
@@ -335,6 +432,18 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
               </div>
             );
           })}
+          </div>
+          {visibleCount < filteredSongs.length && (
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((prev) => prev + 60)}
+                className="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-cyan-300 border border-zinc-800 hover:border-cyan-500/40 text-xs font-semibold transition cursor-pointer"
+              >
+                Load More Songs ({Math.min(60, filteredSongs.length - visibleCount)} more · {filteredSongs.length - visibleCount} remaining)
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -634,6 +743,153 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
             loadData();
           }}
         />
+      )}
+
+      {/* Google Sheets Sync Modal */}
+      {showSheetModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-[#0E131E] border border-zinc-800 rounded-2xl w-full max-w-xl p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center gap-2">
+                <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-white">
+                    Sync Song List from Google Sheets
+                  </h3>
+                  <p className="text-[11px] text-zinc-400">
+                    Pulls song titles, artists, and Easy/Normal/Hard ratings into Firebase Cloud Firestore.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSheetModal(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <label className="block text-zinc-300 font-semibold">
+                Google Spreadsheet URL or ID
+              </label>
+              <input
+                type="text"
+                value={sheetUrl}
+                onChange={(e) => setSheetUrl(e.target.value)}
+                placeholder="https://docs.google.com/spreadsheets/d/..."
+                className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 font-mono text-[11px]"
+              />
+              <p className="text-[11px] text-zinc-500">
+                Requires the Google Sheet to be shared as &quot;Anyone with the link can view&quot;. Cover art URLs in the &quot;Cover art(s)&quot; column are automatically synced to the website and Firestore.
+              </p>
+              <label className="flex items-center gap-2 pt-1 text-[11px] text-zinc-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={strictSheetCoverArt}
+                  onChange={(e) => setStrictSheetCoverArt(e.target.checked)}
+                  className="rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500"
+                />
+                <span>Use Google Sheet Cover Art strictly (empty cell clears old Firestore cover art)</span>
+              </label>
+            </div>
+
+            {sheetError && (
+              <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-xs text-red-300 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <span>{sheetError}</span>
+              </div>
+            )}
+
+            {sheetSuccess && (
+              <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs text-emerald-300 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>{sheetSuccess}</span>
+              </div>
+            )}
+
+            {syncProgress && (
+              <div className="space-y-1.5 text-xs">
+                <div className="flex justify-between text-zinc-400 font-mono text-[11px]">
+                  <span>Syncing to Firebase Firestore...</span>
+                  <span>
+                    {syncProgress.done} / {syncProgress.total}
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-zinc-900 overflow-hidden border border-zinc-800">
+                  <div
+                    className="h-full bg-emerald-500 transition-all"
+                    style={{ width: `${Math.round((syncProgress.done / Math.max(1, syncProgress.total)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {sheetPreview && (
+              <div className="p-3 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-zinc-200">
+                    Sheet Preview ({sheetPreview.length} songs, {sheetPreview.filter((s) => Boolean(s.coverArt)).length} cover art links)
+                  </span>
+                  <span className="text-[11px] text-zinc-500">Sample rows</span>
+                </div>
+                <div className="divide-y divide-zinc-800/80 text-[11px]">
+                  {[
+                    ...sheetPreview.filter((s) => Boolean(s.coverArt)).slice(0, 3),
+                    ...sheetPreview.filter((s) => !s.coverArt).slice(0, 3),
+                  ]
+                    .slice(0, 5)
+                    .map((item) => (
+                      <div key={item.id} className="py-1.5 flex items-center justify-between gap-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {item.coverArt ? (
+                            <img
+                              src={item.coverArt}
+                              alt={item.title}
+                              className="w-7 h-7 rounded object-cover border border-zinc-700 shrink-0"
+                            />
+                          ) : (
+                            <div className="w-7 h-7 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[9px] text-zinc-600 shrink-0">
+                              —
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <div className="font-semibold text-zinc-100 truncate">{item.title}</div>
+                            <div className="text-zinc-400 truncate">{item.artist}</div>
+                          </div>
+                        </div>
+                        <div className="font-mono text-zinc-300 shrink-0">
+                          {item.difficulty.easy} / {item.difficulty.normal} / {item.difficulty.hard}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-zinc-800">
+              <button
+                type="button"
+                disabled={isFetchingSheet || isSyncingSheet}
+                onClick={handlePreviewSheet}
+                className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isFetchingSheet ? 'animate-spin' : ''}`} />
+                <span>{isFetchingSheet ? 'Reading Sheet...' : 'Preview Sheet'}</span>
+              </button>
+              <button
+                type="button"
+                disabled={isFetchingSheet || isSyncingSheet}
+                onClick={handleSyncSheetToFirestore}
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <span>{isSyncingSheet ? 'Syncing to Firestore...' : 'Sync to Firebase Firestore'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

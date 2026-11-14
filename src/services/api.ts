@@ -1,5 +1,7 @@
 import { Article, Song, ElementConfig, RankConfig, DiscordWebhooksConfig, Comment } from '../types';
 import { buildDefaultElements } from '../constants/elements';
+import { DEFAULT_GOOGLE_SHEET_URL, SHEET_SONGS } from '../constants/sheetSongs';
+import { getCachedLiveSheetSongs, mergeSongsWithSheetData } from './googleSheetsService';
 import { safeJson } from '../utils/safeJson';
 import { auth } from '../lib/firebase';
 import {
@@ -190,16 +192,45 @@ export async function deleteComment(postId: string, commentId: string): Promise<
   if (!res.ok) throw new Error('Failed to delete comment');
 }
 
-export async function fetchSongsList(): Promise<Song[]> {
+export async function fetchSongsList(forceRefreshSheet: boolean = false): Promise<Song[]> {
+  let baseSongs: Song[] = [];
+
   try {
     const fsSongs = await fetchSongsFromFirestore();
-    if (fsSongs.length > 0) return fsSongs;
+    if (fsSongs.length > 0) baseSongs = fsSongs;
   } catch (err) {
     console.warn('Firestore fetchSongs fallback:', err);
   }
-  const res = await fetch('/api/songs');
-  if (!res.ok) throw new Error('Failed to fetch songs');
-  return safeJson(res, []);
+
+  if (baseSongs.length === 0) {
+    try {
+      const res = await fetch('/api/songs');
+      if (res.ok) {
+        const apiSongs = await safeJson<Song[]>(res, []);
+        if (Array.isArray(apiSongs) && apiSongs.length > 0) baseSongs = apiSongs;
+      }
+    } catch (err) {
+      console.warn('API fetchSongs fallback:', err);
+    }
+  }
+
+  if (baseSongs.length === 0) {
+    baseSongs = SHEET_SONGS;
+  }
+
+  try {
+    const liveSheetSongs = await getCachedLiveSheetSongs(DEFAULT_GOOGLE_SHEET_URL, forceRefreshSheet);
+    if (liveSheetSongs.length > 0) {
+      return mergeSongsWithSheetData(baseSongs, liveSheetSongs, {
+        appendMissing: true,
+        strictSheetCover: false,
+      });
+    }
+  } catch (err) {
+    console.warn('Live Google Sheet cover art merge skipped:', err);
+  }
+
+  return baseSongs;
 }
 
 export async function saveSong(song: Partial<Song>, id?: string): Promise<Song> {

@@ -10,6 +10,7 @@ import {
   where,
   onSnapshot,
   serverTimestamp,
+  writeBatch,
   Unsubscribe,
 } from 'firebase/firestore';
 import { User as FirebaseUser } from 'firebase/auth';
@@ -429,8 +430,7 @@ export async function deleteCommentInFirestore(postId: string, commentId: string
 export async function fetchSongsFromFirestore(): Promise<SongEntry[]> {
   const path = 'songs';
   try {
-    const q = query(collection(db, path), where('id', '!=', ''));
-    const snap = await getDocs(q);
+    const snap = await getDocs(collection(db, path));
     return snap.docs.map((d) => {
       const data = d.data();
       return {
@@ -465,8 +465,8 @@ export async function saveSongInFirestore(
       const updatePayload: Record<string, any> = {
         updatedAt: serverTimestamp(),
       };
-      if (song.title !== undefined) updatePayload.title = String(song.title || 'Untitled Song').trim().slice(0, 200);
-      if (song.artist !== undefined) updatePayload.artist = String(song.artist || 'Unknown Artist').trim().slice(0, 200);
+      if (song.title !== undefined) updatePayload.title = String(song.title || '').trim().slice(0, 200) || 'Untitled Song';
+      if (song.artist !== undefined) updatePayload.artist = String(song.artist || '').trim().slice(0, 200) || 'Unknown Artist';
       if (song.mapper !== undefined) updatePayload.mapper = String(song.mapper || 'Official RoBeats').trim().slice(0, 120);
       if (song.coverArt !== undefined) updatePayload.coverArt = String(song.coverArt || '').trim().slice(0, 2048);
       if (song.coverArtEasy !== undefined) updatePayload.coverArtEasy = String(song.coverArtEasy || '').trim().slice(0, 2048);
@@ -508,8 +508,8 @@ export async function saveSongInFirestore(
 
     const createPayload: Record<string, any> = stripUndefinedDeep({
       id: songId,
-      title: String(song.title || 'Untitled Song').trim().slice(0, 200),
-      artist: String(song.artist || 'Unknown Artist').trim().slice(0, 200),
+      title: String(song.title || '').trim().slice(0, 200) || 'Untitled Song',
+      artist: String(song.artist || '').trim().slice(0, 200) || 'Unknown Artist',
       mapper: String(song.mapper || 'Official RoBeats').trim().slice(0, 120),
       coverArt: primaryCover,
       coverArtEasy: String(song.coverArtEasy || primaryCover).slice(0, 2048),
@@ -551,6 +551,130 @@ export async function deleteSongInFirestore(songId: string): Promise<void> {
   }
 }
 
+export async function syncSongsBatchInFirestore(
+  sheetSongs: Partial<SongEntry>[],
+  options?: {
+    preserveExistingMedia?: boolean;
+    onProgress?: (done: number, total: number) => void;
+  }
+): Promise<{ created: number; updated: number; total: number }> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to sync songs to Firestore.');
+  }
+
+  const preserveMedia = options?.preserveExistingMedia !== false;
+  const existingById = new Map<string, Record<string, any>>();
+  const existingIdByKey = new Map<string, string>();
+
+  try {
+    const snap = await getDocs(collection(db, 'songs'));
+    for (const d of snap.docs) {
+      const data = d.data() || {};
+      existingById.set(d.id, data);
+      const key = `${String(data.title || '').toLowerCase().trim()}::${String(data.artist || '').toLowerCase().trim()}`;
+      if (key !== '::' && !existingIdByKey.has(key)) {
+        existingIdByKey.set(key, d.id);
+      }
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, 'songs');
+  }
+
+  let created = 0;
+  let updated = 0;
+  const CHUNK_SIZE = 400;
+  const total = sheetSongs.length;
+
+  for (let i = 0; i < total; i += CHUNK_SIZE) {
+    const chunk = sheetSongs.slice(i, i + CHUNK_SIZE);
+    const batch = writeBatch(db);
+
+    for (const rawSong of chunk) {
+      const cleanTitle = String(rawSong.title || '').trim().slice(0, 200) || 'Untitled Song';
+      const cleanArtist = String(rawSong.artist || '').trim().slice(0, 200) || 'Unknown Artist';
+      const matchKey = `${cleanTitle.toLowerCase()}::${cleanArtist.toLowerCase()}`;
+      const matchedExistingId = existingIdByKey.get(matchKey);
+      const songId = sanitizeFirestoreId(
+        matchedExistingId || rawSong.id || `sheet_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+      );
+      const songRef = doc(db, 'songs', songId);
+      const existingData = existingById.get(songId);
+
+      const safeDiff = {
+        easy: String(rawSong.difficulty?.easy ?? '-').slice(0, 16) || '-',
+        normal: String(rawSong.difficulty?.normal ?? '-').slice(0, 16) || '-',
+        hard: String(rawSong.difficulty?.hard ?? '-').slice(0, 16) || '-',
+      };
+
+      const incomingCover = String(
+        rawSong.coverArt || rawSong.coverArtNormal || rawSong.coverArtEasy || rawSong.coverArtHard || ''
+      )
+        .trim()
+        .slice(0, 2048);
+
+      const incomingElement = String(rawSong.element || '').trim().slice(0, 64);
+
+      if (existingData) {
+        const updatePayload: Record<string, any> = {
+          title: cleanTitle,
+          artist: cleanArtist,
+          difficulty: safeDiff,
+          updatedAt: serverTimestamp(),
+        };
+
+        if (incomingCover || !preserveMedia) {
+          updatePayload.coverArt = incomingCover;
+          updatePayload.coverArtEasy = incomingCover;
+          updatePayload.coverArtNormal = incomingCover;
+          updatePayload.coverArtHard = incomingCover;
+        }
+
+        if (incomingElement && (incomingElement !== 'Standard' || !preserveMedia || !existingData.element)) {
+          updatePayload.element = incomingElement;
+        }
+
+        batch.update(songRef, stripUndefinedDeep(updatePayload));
+        updated++;
+      } else {
+        const createPayload: Record<string, any> = stripUndefinedDeep({
+          id: songId,
+          title: cleanTitle,
+          artist: cleanArtist,
+          mapper: String(rawSong.mapper || 'Official RoBeats').trim().slice(0, 120),
+          coverArt: incomingCover,
+          coverArtEasy: incomingCover,
+          coverArtNormal: incomingCover,
+          coverArtHard: incomingCover,
+          difficulty: safeDiff,
+          element: incomingElement || 'Standard',
+          duration: String(rawSong.duration || '').slice(0, 32),
+          bpm: String(rawSong.bpm || '').slice(0, 32),
+          dateAdded: new Date().toLocaleDateString('en-US'),
+          isCustom: false,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        batch.set(songRef, createPayload);
+        existingById.set(songId, createPayload);
+        created++;
+      }
+    }
+
+    try {
+      await batch.commit();
+      if (options?.onProgress) {
+        options.onProgress(Math.min(i + chunk.length, total), total);
+      }
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'songs');
+    }
+  }
+
+  return { created, updated, total };
+}
+
 // ====================================================
 // ELEMENTS, RANKS, DIFFICULTY FRAMES, DISCORD WEBHOOKS
 // ====================================================
@@ -558,8 +682,7 @@ export async function deleteSongInFirestore(songId: string): Promise<void> {
 export async function fetchElementsFromFirestore(): Promise<ElementConfig[]> {
   const path = 'elements';
   try {
-    const q = query(collection(db, path), where('id', '!=', ''));
-    const snap = await getDocs(q);
+    const snap = await getDocs(collection(db, path));
     return snap.docs.map((d) => {
       const data = d.data();
       return {
@@ -612,8 +735,7 @@ export async function saveElementsInFirestore(elements: ElementConfig[]): Promis
 export async function fetchRanksFromFirestore(): Promise<RankConfig[]> {
   const path = 'ranks';
   try {
-    const q = query(collection(db, path), where('id', '!=', ''));
-    const snap = await getDocs(q);
+    const snap = await getDocs(collection(db, path));
     const list = snap.docs.map((d) => {
       const data = d.data();
       return {
@@ -650,7 +772,7 @@ export async function saveRanksInFirestore(ranks: RankConfig[]): Promise<RankCon
 
   const incomingIds = new Set<string>();
   try {
-    const existingSnap = await getDocs(query(collection(db, 'ranks'), where('id', '!=', '')));
+    const existingSnap = await getDocs(collection(db, 'ranks'));
     for (const rank of ranks) {
       const rankId = sanitizeFirestoreId(rank.id || rank.name.toLowerCase());
       incomingIds.add(rankId);

@@ -9,6 +9,12 @@ import {
   DiscordWebhooksConfig,
 } from '../types';
 import { buildDefaultElements } from '../constants/elements';
+import { DEFAULT_GOOGLE_SHEET_URL, SHEET_SONGS } from '../constants/sheetSongs';
+import {
+  clearLiveSheetCache,
+  getCachedLiveSheetSongs,
+  mergeSongsWithSheetData,
+} from './googleSheetsService';
 import { safeJson } from '../utils/safeJson';
 import { auth } from '../lib/firebase';
 import {
@@ -59,33 +65,49 @@ export async function fetchSongList(forceRefresh: boolean = false): Promise<Song
     return cachedSongs;
   }
 
+  let baseSongs: SongEntry[] = [];
+
   try {
     const fsSongs = await fetchSongsFromFirestore();
     if (fsSongs.length > 0) {
-      cachedSongs = fsSongs;
-      return fsSongs;
+      baseSongs = fsSongs;
     }
   } catch (err) {
     console.warn('Firestore fetchSongs fallback:', err);
   }
 
-  try {
-    const res = await fetch('/api/songs');
-    if (res.ok) {
-      const data: SongEntry[] = await safeJson(res, []);
-      if (Array.isArray(data) && data.length > 0) {
-        cachedSongs = data;
-        return data;
+  if (baseSongs.length === 0) {
+    try {
+      const res = await fetch('/api/songs');
+      if (res.ok) {
+        const data: SongEntry[] = await safeJson(res, []);
+        if (Array.isArray(data) && data.length > 0) {
+          baseSongs = data;
+        }
       }
+    } catch (err) {
+      console.error('Error fetching songs from API fallback', err);
     }
-  } catch (err) {
-    console.error('Error fetching songs from API fallback', err);
   }
 
-  if (cachedSongs && cachedSongs.length > 0) {
-    return cachedSongs;
+  if (baseSongs.length === 0) {
+    baseSongs = cachedSongs && cachedSongs.length > 0 ? cachedSongs : DEFAULT_SEED_SONGS;
   }
-  return DEFAULT_SEED_SONGS;
+
+  try {
+    const liveSheetSongs = await getCachedLiveSheetSongs(DEFAULT_GOOGLE_SHEET_URL, forceRefresh);
+    if (liveSheetSongs.length > 0) {
+      baseSongs = mergeSongsWithSheetData(baseSongs, liveSheetSongs, {
+        appendMissing: true,
+        strictSheetCover: false,
+      });
+    }
+  } catch (err) {
+    console.warn('Live Google Sheet cover art merge skipped:', err);
+  }
+
+  cachedSongs = baseSongs;
+  return baseSongs;
 }
 
 /**
@@ -188,6 +210,7 @@ export async function adminDeleteSong(songId: string): Promise<void> {
 
 export function adminResetOverrides() {
   cachedSongs = null;
+  clearLiveSheetCache();
 }
 
 /**
@@ -666,42 +689,7 @@ export async function updateDifficultyFrames(frames: DifficultyFramesConfig): Pr
   return finalFrames;
 }
 
-export const DEFAULT_SEED_SONGS: SongEntry[] = [
-  {
-    id: 'seed_1',
-    title: 'Monday Night Monsters',
-    artist: 'FinnMK',
-    coverArt:
-      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtEasy:
-      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtNormal:
-      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtHard:
-      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    difficulty: { easy: '1', normal: '1', hard: '14' },
-    element: 'Flow',
-    duration: '2:14',
-    bpm: '100',
-  },
-  {
-    id: 'seed_2',
-    title: 'Daily Life',
-    artist: 'FinnMK',
-    coverArt:
-      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtEasy:
-      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtNormal:
-      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtHard:
-      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    difficulty: { easy: '-', normal: '2', hard: '17' },
-    element: 'Chill',
-    duration: '2:02',
-    bpm: '106',
-  },
-];
+export const DEFAULT_SEED_SONGS: SongEntry[] = SHEET_SONGS;
 
 export async function fetchUserProfile(identifier: string): Promise<User> {
   const fsUser = await fetchUserProfileFromFirestore(identifier);
