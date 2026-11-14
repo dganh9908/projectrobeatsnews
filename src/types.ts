@@ -72,9 +72,9 @@ export interface DifficultyFramesConfig {
 }
 
 export const DEFAULT_DIFFICULTY_FRAMES: DifficultyFramesConfig = {
-  easy: '/frames/easy-frame.svg',
+  easy: '',
   normal: '',
-  hard: '/frames/hard-frame.svg',
+  hard: '',
 };
 
 export interface SongDifficulty {

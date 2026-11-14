@@ -890,6 +890,12 @@ export async function saveRanksInFirestore(ranks: RankConfig[]): Promise<RankCon
   return ranks;
 }
 
+function sanitizeFrameUrl(val: unknown): string {
+  const s = typeof val === 'string' ? val.trim() : '';
+  if (s === '/frames/easy-frame.svg' || s === '/frames/hard-frame.svg') return '';
+  return s;
+}
+
 export async function fetchDifficultyFramesFromFirestore(): Promise<DifficultyFramesConfig> {
   const path = 'settings/frames';
   try {
@@ -897,9 +903,9 @@ export async function fetchDifficultyFramesFromFirestore(): Promise<DifficultyFr
     if (!snap.exists()) return DEFAULT_DIFFICULTY_FRAMES;
     const data = snap.data();
     return {
-      easy: data.easy ?? DEFAULT_DIFFICULTY_FRAMES.easy,
-      normal: data.normal ?? DEFAULT_DIFFICULTY_FRAMES.normal,
-      hard: data.hard ?? DEFAULT_DIFFICULTY_FRAMES.hard,
+      easy: sanitizeFrameUrl(data.easy),
+      normal: sanitizeFrameUrl(data.normal),
+      hard: sanitizeFrameUrl(data.hard),
     };
   } catch (err) {
     handleFirestoreError(err, OperationType.GET, path);

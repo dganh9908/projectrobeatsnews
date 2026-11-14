@@ -78,19 +78,25 @@ export const FramedSongCover: React.FC<FramedSongCoverProps> = ({
     return 'normal';
   })();
 
+  const cleanFrame = (val?: string) => {
+    const s = val?.trim() || '';
+    if (s === '/frames/easy-frame.svg' || s === '/frames/hard-frame.svg') return '';
+    return s;
+  };
+
   // Resolve frame overlay URL:
   // Any song that doesn't have "Easy difficulty" will NOT include easy difficulty frame!
   const activeFrameUrl = (() => {
     if (normalizedDiff === 'easy') {
       if (!easyAvailable) return '';
-      return internalFrames.easy?.trim() || '';
+      return cleanFrame(internalFrames.easy);
     }
     if (normalizedDiff === 'hard') {
       if (!hardAvailable) return '';
-      return internalFrames.hard?.trim() || '';
+      return cleanFrame(internalFrames.hard);
     }
     // Normal difficulty has nothing frame
-    return internalFrames.normal?.trim() || '';
+    return cleanFrame(internalFrames.normal);
   })();
 
   const cleanCover = (coverArt || '').trim();

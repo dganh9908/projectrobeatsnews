@@ -337,7 +337,7 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  {currentCategory === 'All' ? 'RoBeats Feed' : currentCategory}
+                  {currentCategory === 'All' ? 'News Feed' : currentCategory}
                 </h1>
                 {currentCategory === 'Daily mission' && (
                   <CountdownBadge type="daily" />

@@ -8,13 +8,10 @@ import {
   Search, 
   Music, 
   Check, 
-  Calendar,
   Shield,
   Crown,
   AlertCircle,
-  Sun,
   Disc,
-  Bell,
   ExternalLink,
   GripVertical,
   ArrowUp,
@@ -122,7 +119,9 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleSelectCategory = (newCat: PostCategoryType) => {
     setCategory(newCat);
-    if (newCat === 'Weekly mission') {
+    if (newCat === 'Updates') {
+      setShowSongPicker(false);
+    } else if (newCat === 'Weekly mission') {
       setSelectedSongs(prev => {
         const sliced = prev.slice(0, 2);
         return sliced.map((s, i) => ({
@@ -457,6 +456,9 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           };
         });
         finalCover = finalSongs[0]?.coverArt || undefined;
+      } else if (category === 'Updates') {
+        finalSongs = [];
+        finalCover = coverImageUrl.trim() || undefined;
       } else {
         // Daily or Weekly mission or Weekly Leaderboard
         finalSongs = selectedSongs.map((s, idx) => ({
@@ -605,111 +607,79 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           {/* Category Selector */}
           <div>
             <label className="block text-xs font-bold text-zinc-200 uppercase tracking-wider mb-2">
-              Post Type & Category
+              SELECT POST TYPE
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
-              {/* Daily mission button */}
+              {/* Daily Mission button */}
               <button
                 type="button"
                 onClick={() => handleSelectCategory('Daily mission')}
-                className={`p-3 rounded-xl border text-left cursor-pointer flex flex-col justify-between transition-all ${
+                className={`p-3 rounded-xl border text-left cursor-pointer flex items-center justify-between transition-all ${
                   category === 'Daily mission'
                     ? 'bg-purple-500/15 border-purple-400 ring-1 ring-purple-500/50 shadow-sm shadow-purple-500/10'
                     : 'bg-zinc-900/60 border-purple-500/30 hover:border-purple-400/60 text-purple-200/80'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <Sun className={`w-4 h-4 ${category === 'Daily mission' ? 'text-purple-300' : 'text-purple-400/70'}`} />
-                  {category === 'Daily mission' && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                  )}
-                </div>
-                <div>
-                  <span className={`text-xs font-bold block ${category === 'Daily mission' ? 'text-white' : 'text-zinc-200'}`}>
-                    Daily mission
-                  </span>
-                  <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
-                    Today rotation
-                  </span>
-                </div>
+                <span className={`text-xs font-bold block ${category === 'Daily mission' ? 'text-white' : 'text-zinc-200'}`}>
+                  Daily Mission
+                </span>
+                {category === 'Daily mission' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />
+                )}
               </button>
 
-              {/* Weekly mission button */}
+              {/* Weekly Mission button */}
               <button
                 type="button"
                 onClick={() => handleSelectCategory('Weekly mission')}
-                className={`p-3 rounded-xl border text-left cursor-pointer flex flex-col justify-between transition-all ${
+                className={`p-3 rounded-xl border text-left cursor-pointer flex items-center justify-between transition-all ${
                   category === 'Weekly mission'
                     ? 'bg-orange-500/15 border-orange-400 ring-1 ring-orange-500/50 shadow-sm shadow-orange-500/10'
                     : 'bg-zinc-900/60 border-orange-500/30 hover:border-orange-400/60 text-orange-200/80'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <Calendar className={`w-4 h-4 ${category === 'Weekly mission' ? 'text-orange-300' : 'text-orange-400/70'}`} />
-                  {category === 'Weekly mission' && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                  )}
-                </div>
-                <div>
-                  <span className={`text-xs font-bold block ${category === 'Weekly mission' ? 'text-white' : 'text-zinc-200'}`}>
-                    Weekly mission
-                  </span>
-                  <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
-                    Week rotation
-                  </span>
-                </div>
+                <span className={`text-xs font-bold block ${category === 'Weekly mission' ? 'text-white' : 'text-zinc-200'}`}>
+                  Weekly Mission
+                </span>
+                {category === 'Weekly mission' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
+                )}
               </button>
 
               {/* Weekly Leaderboard button */}
               <button
                 type="button"
                 onClick={() => handleSelectCategory('Weekly Leaderboard')}
-                className={`p-3 rounded-xl border text-left cursor-pointer flex flex-col justify-between transition-all ${
+                className={`p-3 rounded-xl border text-left cursor-pointer flex items-center justify-between transition-all ${
                   category === 'Weekly Leaderboard'
                     ? 'bg-amber-500/15 border-amber-400 ring-1 ring-amber-500/50 shadow-sm shadow-amber-500/10'
                     : 'bg-zinc-900/60 border-amber-500/30 hover:border-amber-400/60 text-amber-200/80'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <Trophy className={`w-4 h-4 ${category === 'Weekly Leaderboard' ? 'text-amber-300' : 'text-amber-400/70'}`} />
-                  {category === 'Weekly Leaderboard' && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  )}
-                </div>
-                <div>
-                  <span className={`text-xs font-bold block ${category === 'Weekly Leaderboard' ? 'text-white' : 'text-zinc-200'}`}>
-                    Weekly Leaderboard
-                  </span>
-                  <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
-                    Leaderboard stats
-                  </span>
-                </div>
+                <span className={`text-xs font-bold block ${category === 'Weekly Leaderboard' ? 'text-white' : 'text-zinc-200'}`}>
+                  Weekly Leaderboard
+                </span>
+                {category === 'Weekly Leaderboard' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                )}
               </button>
 
               {/* New song button */}
               <button
                 type="button"
                 onClick={() => handleSelectCategory('New song')}
-                className={`p-3 rounded-xl border text-left cursor-pointer flex flex-col justify-between transition-all ${
+                className={`p-3 rounded-xl border text-left cursor-pointer flex items-center justify-between transition-all ${
                   category === 'New song'
                     ? 'bg-blue-500/15 border-blue-400 ring-1 ring-blue-500/50 shadow-sm shadow-blue-500/10'
                     : 'bg-zinc-900/60 border-blue-500/30 hover:border-blue-400/60 text-blue-200/80'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <Sparkles className={`w-4 h-4 ${category === 'New song' ? 'text-blue-300' : 'text-blue-400/70'}`} />
-                  {category === 'New song' && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  )}
-                </div>
-                <div>
-                  <span className={`text-xs font-bold block ${category === 'New song' ? 'text-white' : 'text-zinc-200'}`}>
-                    New song
-                  </span>
-                  <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
-                    Song release
-                  </span>
-                </div>
+                <span className={`text-xs font-bold block ${category === 'New song' ? 'text-white' : 'text-zinc-200'}`}>
+                  New song
+                </span>
+                {category === 'New song' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                )}
               </button>
 
               {/* Updates button */}
@@ -722,20 +692,17 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                     : 'bg-zinc-900/60 border-emerald-500/30 hover:border-emerald-400/60 text-emerald-200/80'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <Bell className={`w-4 h-4 ${category === 'Updates' ? 'text-emerald-300' : 'text-emerald-400/70'}`} />
-                  {category === 'Updates' && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  )}
-                </div>
-                <div>
+                <div className="flex items-center justify-between w-full">
                   <span className={`text-xs font-bold block ${category === 'Updates' ? 'text-white' : 'text-zinc-200'}`}>
                     Updates
                   </span>
-                  <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
-                    Patch & notes
-                  </span>
+                  {category === 'Updates' && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                  )}
                 </div>
+                <span className="text-[10px] text-zinc-400 leading-tight block mt-0.5">
+                  Patch & notes
+                </span>
               </button>
             </div>
           </div>
@@ -753,7 +720,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 category === 'New song'
                   ? 'Laur - Alteregoism'
                   : category === 'Updates'
-                  ? 'RoBeats Update: Version 2.5'
+                  ? 'New Mini, Icon'
                   : category === 'Weekly Leaderboard'
                   ? 'Weekly Leaderboard (leave blank for default)'
                   : category === 'Weekly mission'
@@ -791,9 +758,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               placeholder={
                 category === 'Updates'
                   ? '• New Song List added\n• Audio sync improvements\n• Bug fixes for mobile controls\n• Join Discord: [Official Discord](https://discord.gg/robeats)'
-                  : category === 'New song'
-                  ? 'Check out the new high-speed challenge Alteregoism by Laur now available in RoBeats!'
-                  : 'Enter mission notes and objectives...'
+                  : 'Add something if you want or leave it blank'
               }
               className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-500 leading-relaxed"
             />
@@ -1075,7 +1040,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                             className="w-full px-2.5 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-cyan-500"
                           />
                           <p className="text-[10px] text-zinc-500 mt-1">
-                            Difficulty frames (Easy frame, Hard frame, Normal nothing frame) are applied over this cover art.
+                            You can add only Image URL
                           </p>
                         </div>
 
@@ -1103,7 +1068,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                                       className="w-12 h-12 rounded shadow"
                                       showDifficultyBadge
                                     />
-                                    <span className="text-[9px] font-semibold text-emerald-400">Easy Frame</span>
+                                    <span className="text-[9px] font-semibold text-emerald-400">Easy</span>
                                   </div>
                                 )}
                                 {draftHasNormal && (
@@ -1114,7 +1079,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                                       className="w-12 h-12 rounded shadow"
                                       showDifficultyBadge
                                     />
-                                    <span className="text-[9px] font-semibold text-blue-400">Nothing Frame</span>
+                                    <span className="text-[9px] font-semibold text-blue-400">Normal</span>
                                   </div>
                                 )}
                                 {draftHasHard && (
@@ -1125,7 +1090,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                                       className="w-12 h-12 rounded shadow"
                                       showDifficultyBadge
                                     />
-                                    <span className="text-[9px] font-semibold text-rose-400">Hard Frame</span>
+                                    <span className="text-[9px] font-semibold text-rose-400">Hard</span>
                                   </div>
                                 )}
                               </div>
@@ -1189,14 +1154,14 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 })}
               </div>
             </div>
-          ) : (
+          ) : category !== 'Updates' ? (
             /* MISSION POSTS: Featured Songs from Song List */
             <div className="pt-2 border-t border-zinc-800/80">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <div>
                   <div className="flex items-center gap-2">
                     <label className="block text-xs font-bold text-zinc-200 uppercase tracking-wider">
-                      Featured Songs ({selectedSongs.length}
+                      Add Songs ({selectedSongs.length}
                       {category === 'Weekly mission' ? '/2' : category === 'Weekly Leaderboard' ? '/8' : ''})
                     </label>
                     {((category === 'Weekly mission' && selectedSongs.length >= 2) || (category === 'Weekly Leaderboard' && selectedSongs.length >= 8)) && (
@@ -1563,7 +1528,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               </div>
             )}
           </div>
-          )}
+          ) : null}
 
           {/* Modal Actions */}
           <div className="pt-4 border-t border-zinc-800 flex items-center justify-between">

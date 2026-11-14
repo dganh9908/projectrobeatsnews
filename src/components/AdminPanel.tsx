@@ -262,7 +262,7 @@ export const AdminPanel: React.FC<{
   };
 
   const handleResetFrames = () => {
-    if (!window.confirm('Reset difficulty frames to default settings? (Easy frame, Normal nothing frame, Hard frame)')) return;
+    if (!window.confirm('Clear all difficulty frames? (No default frames for Easy, Normal, or Hard)')) return;
     setFrames(DEFAULT_DIFFICULTY_FRAMES);
   };
 
@@ -703,7 +703,7 @@ export const AdminPanel: React.FC<{
                         className="w-28 h-28 rounded-xl shadow-lg"
                         showDifficultyBadge
                       />
-                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Easy Frame)</span>
+                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Easy)</span>
                     </div>
 
                     <div>
@@ -720,14 +720,7 @@ export const AdminPanel: React.FC<{
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-800/60">
-                    <button
-                      type="button"
-                      onClick={() => setFrames({ ...frames, easy: '/frames/easy-frame.svg' })}
-                      className="text-[10px] text-zinc-400 hover:text-emerald-400 cursor-pointer"
-                    >
-                      Use Default SVG Frame
-                    </button>
+                  <div className="flex items-center justify-end pt-2 border-t border-zinc-800/60">
                     {frames.easy && (
                       <button
                         type="button"
@@ -749,7 +742,7 @@ export const AdminPanel: React.FC<{
                         <span>Normal Difficulty Frame</span>
                       </span>
                       <span className="text-[10px] font-mono text-blue-300 px-1.5 py-0.5 rounded bg-blue-950/80 border border-blue-800/40">
-                        Nothing Frame (Clean)
+                        Normal (Clean)
                       </span>
                     </div>
 
@@ -762,7 +755,7 @@ export const AdminPanel: React.FC<{
                         className="w-28 h-28 rounded-xl shadow-lg"
                         showDifficultyBadge
                       />
-                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Normal - Nothing Frame)</span>
+                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Normal)</span>
                     </div>
 
                     <div>
@@ -773,7 +766,7 @@ export const AdminPanel: React.FC<{
                         type="text"
                         value={frames.normal}
                         onChange={(e) => setFrames({ ...frames, normal: e.target.value })}
-                        placeholder="Leave empty for nothing frame (default)"
+                        placeholder="Leave empty for Normal (default)"
                         className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-white text-xs placeholder-zinc-600 focus:outline-none focus:border-blue-500"
                       />
                     </div>
@@ -785,7 +778,7 @@ export const AdminPanel: React.FC<{
                       onClick={() => setFrames({ ...frames, normal: '' })}
                       className="text-[10px] text-zinc-400 hover:text-blue-400 cursor-pointer"
                     >
-                      Clear (Nothing Frame)
+                      Clear (Normal)
                     </button>
                   </div>
                 </div>
@@ -812,7 +805,7 @@ export const AdminPanel: React.FC<{
                         className="w-28 h-28 rounded-xl shadow-lg"
                         showDifficultyBadge
                       />
-                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Hard Frame)</span>
+                      <span className="text-[10px] text-zinc-400 mt-2 font-mono">Live Preview (Hard)</span>
                     </div>
 
                     <div>
@@ -829,14 +822,7 @@ export const AdminPanel: React.FC<{
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-800/60">
-                    <button
-                      type="button"
-                      onClick={() => setFrames({ ...frames, hard: '/frames/hard-frame.svg' })}
-                      className="text-[10px] text-zinc-400 hover:text-rose-400 cursor-pointer"
-                    >
-                      Use Default SVG Frame
-                    </button>
+                  <div className="flex items-center justify-end pt-2 border-t border-zinc-800/60">
                     {frames.hard && (
                       <button
                         type="button"

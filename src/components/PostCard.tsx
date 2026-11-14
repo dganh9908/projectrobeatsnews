@@ -10,13 +10,9 @@ import {
   Crown, 
   X,
   Disc,
-  Sparkles,
-  Bell,
-  Sun,
   CornerDownRight,
   ExternalLink,
   Star,
-  Trophy,
   Copy,
   Check,
   Smile
@@ -25,6 +21,7 @@ import { CountdownBadge } from './CountdownTimer';
 import { FramedSongCover } from './FramedSongCover';
 import { safeJson } from '../utils/safeJson';
 import { UserAvatar } from './UserAvatar';
+import { EmojiPickerPopover } from './EmojiPickerPopover';
 import { NewsArticle, SongEntry, ElementConfig, RankConfig, hasDifficulty } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { fetchElementsList, fetchRanksList } from '../services/fandomService';
@@ -32,13 +29,7 @@ import { getElementData } from '../constants/elements';
 import { auth } from '../lib/firebase';
 import { togglePostReactionInFirestore, getFirebaseIdToken } from '../services/firestoreService';
 
-const REACTION_EMOJIS = [
-  { emoji: '🔥', label: 'Hype' },
-  { emoji: '👍', label: 'Like' },
-  { emoji: '🎵', label: 'Jam' },
-  { emoji: '💖', label: 'Love' },
-  { emoji: '⚡', label: 'GG' },
-];
+const DEFAULT_REACTION_EMOJI = '👍';
 
 interface PostCardProps {
   post: NewsArticle;
@@ -292,7 +283,6 @@ export const PostCard: React.FC<PostCardProps> = ({
             {post.category === 'Daily mission' && (
               <>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-950/80 text-purple-200 border border-purple-500/60 flex items-center gap-1.5 shadow-sm">
-                  <Sun className="w-3 h-3 text-purple-300" />
                   <span>Daily mission</span>
                 </span>
                 <CountdownBadge type="daily" compact />
@@ -301,7 +291,6 @@ export const PostCard: React.FC<PostCardProps> = ({
             {post.category === 'Weekly mission' && (
               <>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-950/80 text-orange-200 border border-orange-500/60 flex items-center gap-1.5 shadow-sm">
-                  <Calendar className="w-3 h-3 text-orange-300" />
                   <span>Weekly mission</span>
                 </span>
                 <CountdownBadge type="weekly" compact />
@@ -310,7 +299,6 @@ export const PostCard: React.FC<PostCardProps> = ({
             {post.category === 'Weekly Leaderboard' && (
               <>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-950/80 text-amber-200 border border-amber-500/60 flex items-center gap-1.5 shadow-sm">
-                  <Trophy className="w-3 h-3 text-amber-300" />
                   <span>Weekly Leaderboard</span>
                 </span>
                 <CountdownBadge type="leaderboard" compact />
@@ -318,13 +306,11 @@ export const PostCard: React.FC<PostCardProps> = ({
             )}
             {post.category === 'New song' && (
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-950/80 text-blue-200 border border-blue-500/60 flex items-center gap-1.5 shadow-sm">
-                <Sparkles className="w-3 h-3 text-blue-300" />
                 <span>New song</span>
               </span>
             )}
             {post.category === 'Updates' && (
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-200 border border-emerald-500/60 flex items-center gap-1.5 shadow-sm">
-                <Bell className="w-3 h-3 text-emerald-300" />
                 <span>Updates</span>
               </span>
             )}
@@ -754,62 +740,57 @@ export const PostCard: React.FC<PostCardProps> = ({
 
       {/* POST REACTIONS BAR */}
       <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
-        {/* Reaction Buttons Row */}
+        {/* Reaction Buttons Row: Default thumbsup + any active custom reactions */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {REACTION_EMOJIS.map(({ emoji, label }) => {
-            const count = reactions[emoji] || 0;
-            const hasReacted = userReactions.includes(emoji);
-
-            return (
-              <button
-                key={emoji}
-                type="button"
-                onClick={() => handleToggleReaction(emoji)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  hasReacted
-                    ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/50 shadow-xs shadow-cyan-500/20 scale-105'
-                    : count > 0
-                    ? 'bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800'
-                    : 'bg-zinc-900/40 text-zinc-500 border border-zinc-850 hover:text-zinc-300 hover:border-zinc-700'
-                }`}
-                title={`React with ${label}`}
-              >
-                <span className="text-sm leading-none">{emoji}</span>
-                {count > 0 && <span className="font-mono text-[11px] font-bold">{count}</span>}
-              </button>
+          {(() => {
+            const extraEmojis = Object.keys(reactions).filter(
+              emoji => emoji !== DEFAULT_REACTION_EMOJI && ((reactions[emoji] || 0) > 0 || userReactions.includes(emoji))
             );
-          })}
+            const displayedEmojis = [DEFAULT_REACTION_EMOJI, ...extraEmojis];
+
+            return displayedEmojis.map(emoji => {
+              const count = reactions[emoji] || 0;
+              const hasReacted = userReactions.includes(emoji);
+
+              return (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => handleToggleReaction(emoji)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    hasReacted
+                      ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/50 shadow-xs shadow-cyan-500/20 scale-105'
+                      : count > 0
+                      ? 'bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800'
+                      : 'bg-zinc-900/40 text-zinc-500 border border-zinc-850 hover:text-zinc-300 hover:border-zinc-700'
+                  }`}
+                  title={`React with ${emoji}`}
+                >
+                  <span className="text-sm leading-none">{emoji}</span>
+                  {count > 0 && <span className="font-mono text-[11px] font-bold">{count}</span>}
+                </button>
+              );
+            });
+          })()}
         </div>
 
-        {/* Quick Reaction Button with Popover */}
+        {/* Custom Emoji Reaction Picker Button */}
         <div className="relative">
           <button
             type="button"
-            onClick={() => setShowReactionPicker(!showReactionPicker)}
+            onClick={() => setShowReactionPicker(prev => !prev)}
             className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-cyan-300 text-xs font-medium cursor-pointer transition-colors"
-            title="Add Reaction"
+            title="Add custom emoji reaction"
           >
             <Smile className="w-3.5 h-3.5 text-cyan-400" />
             <span>React</span>
           </button>
 
           {showReactionPicker && (
-            <div className="absolute bottom-full right-0 mb-2 p-1.5 bg-[#121722] border border-zinc-700 rounded-2xl shadow-xl flex items-center gap-1 z-30 animate-scale-in">
-              {REACTION_EMOJIS.map(({ emoji, label }) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={() => {
-                    handleToggleReaction(emoji);
-                    setShowReactionPicker(false);
-                  }}
-                  className="w-8 h-8 rounded-xl hover:bg-zinc-800 flex items-center justify-center text-lg hover:scale-125 transition-transform cursor-pointer"
-                  title={label}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
+            <EmojiPickerPopover
+              onSelectEmoji={(emoji) => handleToggleReaction(emoji)}
+              onClose={() => setShowReactionPicker(false)}
+            />
           )}
         </div>
       </div>

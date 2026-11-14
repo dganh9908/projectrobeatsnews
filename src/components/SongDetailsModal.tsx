@@ -278,89 +278,58 @@ export const SongDetailsModal: React.FC<SongDetailsModalProps> = ({ song: initia
             </form>
           )}
 
-          {/* Cover Art Previews */}
+          {/* Difficulty Levels */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-                <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Cover Art</span>
+                <Music className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Difficulties</span>
               </label>
             </div>
 
             <div className={`grid ${gridColsClass} gap-2.5`}>
-              {/* Easy Preview (Easy Frame) - ONLY shown if song has Easy difficulty */}
+              {/* Easy - ONLY shown if song has Easy difficulty */}
               {hasEasy && (
                 <div 
                   onClick={() => setSelectedDifficulty('easy')}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
+                  className={`p-3 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
                     selectedDifficulty === 'easy'
                       ? 'bg-emerald-950/40 border-emerald-500/80 ring-2 ring-emerald-500/30'
                       : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
-                  <FramedSongCover
-                    coverArt={singleCover}
-                    difficulty="easy"
-                    frames={frames}
-                    song={song}
-                    hasEasyDifficulty={hasEasy}
-                    className="w-full aspect-square rounded-lg shadow-sm"
-                    showDifficultyBadge
-                  />
-                  <div className="text-center w-full">
-                    <div className="text-[11px] font-bold text-emerald-400">Easy (Easy Frame)</div>
-                    <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.easy}</div>
-                  </div>
+                  <div className="text-[11px] font-bold text-emerald-400">Easy</div>
+                  <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.easy}</div>
                 </div>
               )}
 
-              {/* Normal Preview (Nothing Frame) */}
+              {/* Normal */}
               {hasNormal && (
                 <div 
                   onClick={() => setSelectedDifficulty('normal')}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
+                  className={`p-3 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
                     selectedDifficulty === 'normal'
                       ? 'bg-blue-950/40 border-blue-500/80 ring-2 ring-blue-500/30'
                       : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
-                  <FramedSongCover
-                    coverArt={singleCover}
-                    difficulty="normal"
-                    frames={frames}
-                    song={song}
-                    className="w-full aspect-square rounded-lg shadow-sm"
-                    showDifficultyBadge
-                  />
-                  <div className="text-center w-full">
-                    <div className="text-[11px] font-bold text-blue-400">Normal (No Frame)</div>
-                    <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.normal}</div>
-                  </div>
+                  <div className="text-[11px] font-bold text-blue-400">Normal</div>
+                  <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.normal}</div>
                 </div>
               )}
 
-              {/* Hard Preview (Hard Frame) */}
+              {/* Hard */}
               {hasHard && (
                 <div 
                   onClick={() => setSelectedDifficulty('hard')}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-2 cursor-pointer transition-all ${
+                  className={`p-3 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
                     selectedDifficulty === 'hard'
                       ? 'bg-rose-950/40 border-rose-500/80 ring-2 ring-rose-500/30'
                       : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
-                  <FramedSongCover
-                    coverArt={singleCover}
-                    difficulty="hard"
-                    frames={frames}
-                    song={song}
-                    className="w-full aspect-square rounded-lg shadow-sm"
-                    showDifficultyBadge
-                  />
-                  <div className="text-center w-full">
-                    <div className="text-[11px] font-bold text-rose-400">Hard (Hard Frame)</div>
-                    <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.hard}</div>
-                  </div>
+                  <div className="text-[11px] font-bold text-rose-400">Hard</div>
+                  <div className="text-xs font-mono font-bold text-zinc-200">LV {song.difficulty?.hard}</div>
                 </div>
               )}
             </div>

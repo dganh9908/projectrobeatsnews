@@ -6,10 +6,16 @@ import {
 } from '../../cloudflare/firestoreRest.js';
 
 const DEFAULT_DIFFICULTY_FRAMES = {
-  easy: '/frames/easy-frame.svg',
+  easy: '',
   normal: '',
-  hard: '/frames/hard-frame.svg',
+  hard: '',
 };
+
+function sanitizeFrameUrl(val) {
+  const s = typeof val === 'string' ? val.trim() : '';
+  if (s === '/frames/easy-frame.svg' || s === '/frames/hard-frame.svg') return '';
+  return s;
+}
 
 export async function onRequestOptions() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -29,9 +35,9 @@ export async function onRequestGet(context) {
 
     return jsonResponse(
       {
-        easy: frames?.easy ?? DEFAULT_DIFFICULTY_FRAMES.easy,
-        normal: frames?.normal ?? DEFAULT_DIFFICULTY_FRAMES.normal,
-        hard: frames?.hard ?? DEFAULT_DIFFICULTY_FRAMES.hard,
+        easy: sanitizeFrameUrl(frames?.easy),
+        normal: sanitizeFrameUrl(frames?.normal),
+        hard: sanitizeFrameUrl(frames?.hard),
       },
       200
     );

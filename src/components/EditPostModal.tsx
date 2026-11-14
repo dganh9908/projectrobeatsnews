@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   X, 
-  Sparkles, 
   Plus, 
   Trash2, 
   Shuffle, 
   Search, 
   Music, 
   Check, 
-  Calendar,
   Shield,
   Crown,
   AlertCircle,
-  Sun,
   Disc,
   Save,
   Edit3,
-  Bell,
   ExternalLink,
   GripVertical,
   ShoppingBag,
@@ -506,11 +502,6 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
                     ? 'bg-emerald-500/15 text-emerald-200 border-emerald-400'
                     : 'bg-zinc-800 text-zinc-300 border-zinc-700'
                 }`}>
-                  {category === 'Daily mission' && <Sun className="w-3.5 h-3.5 text-purple-300" />}
-                  {category === 'Weekly mission' && <Calendar className="w-3.5 h-3.5 text-orange-300" />}
-                  {category === 'Weekly Leaderboard' && <Trophy className="w-3.5 h-3.5 text-amber-300" />}
-                  {category === 'New song' && <Sparkles className="w-3.5 h-3.5 text-blue-300" />}
-                  {category === 'Updates' && <Bell className="w-3.5 h-3.5 text-emerald-300" />}
                   <span>{category}</span>
                 </span>
               </div>

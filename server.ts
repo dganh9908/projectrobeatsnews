@@ -837,9 +837,9 @@ export interface DifficultyFramesConfig {
 }
 
 const DEFAULT_FRAMES: DifficultyFramesConfig = {
-  easy: '/frames/easy-frame.svg',
+  easy: '',
   normal: '',
-  hard: '/frames/hard-frame.svg',
+  hard: '',
 };
 
 function ensureDataFile() {
@@ -887,15 +887,21 @@ function ensureDataFile() {
   }
 }
 
+function sanitizeFramePath(val: unknown): string {
+  const s = typeof val === 'string' ? val.trim() : '';
+  if (s === '/frames/easy-frame.svg' || s === '/frames/hard-frame.svg') return '';
+  return s;
+}
+
 function readFrames(): DifficultyFramesConfig {
   ensureDataFile();
   try {
     const data = fs.readFileSync(FRAMES_FILE, 'utf-8');
     const parsed = JSON.parse(data);
     return {
-      easy: typeof parsed?.easy === 'string' ? parsed.easy : DEFAULT_FRAMES.easy,
-      normal: typeof parsed?.normal === 'string' ? parsed.normal : '',
-      hard: typeof parsed?.hard === 'string' ? parsed.hard : DEFAULT_FRAMES.hard,
+      easy: sanitizeFramePath(parsed?.easy),
+      normal: sanitizeFramePath(parsed?.normal),
+      hard: sanitizeFramePath(parsed?.hard),
     };
   } catch (err) {
     return DEFAULT_FRAMES;

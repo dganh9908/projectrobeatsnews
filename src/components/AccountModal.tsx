@@ -304,16 +304,16 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               </div>
 
               {/* Sign out bar */}
-              <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between">
-                <div className="text-[11px] text-zinc-500">
-                  Google Cloud Account Connected
+              <div className="pt-3 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2">
+                <div className="text-[11px] text-zinc-400 leading-relaxed flex-1 min-w-[200px]">
+                  Remember that Google sign in will available only for TESTING, all data will be deleted after robeats news website official release
                 </div>
                 <button
                   onClick={() => {
                     logout();
                     onClose();
                   }}
-                  className="py-1.5 px-3 rounded-lg text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="py-1.5 px-3 rounded-lg text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   Sign Out

@@ -350,7 +350,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                             ? 'bg-emerald-500 text-black font-bold shadow-sm'
                             : 'bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900/60'
                         }`}
-                        title="View Easy Frame Overlay"
+                        title="View Easy"
                       >
                         EZ {diff.easy}
                       </button>
@@ -364,7 +364,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                             ? 'bg-blue-500 text-white font-bold shadow-sm'
                             : 'bg-blue-950/60 text-blue-300 hover:bg-blue-900/60'
                         }`}
-                        title="View Normal (Nothing Frame)"
+                        title="View Normal"
                       >
                         NM {diff.normal}
                       </button>
@@ -378,7 +378,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                             ? 'bg-rose-500 text-white font-bold shadow-sm'
                             : 'bg-rose-950/60 text-rose-300 hover:bg-rose-900/60'
                         }`}
-                        title="View Hard Frame Overlay"
+                        title="View Hard"
                       >
                         HD {diff.hard}
                       </button>
@@ -671,7 +671,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                               className="w-14 h-14 rounded-lg shadow"
                               showDifficultyBadge
                             />
-                            <span className="text-[10px] font-bold text-emerald-400">Easy Frame</span>
+                            <span className="text-[10px] font-bold text-emerald-400">Easy</span>
                           </div>
                         )}
 
@@ -690,7 +690,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                               className="w-14 h-14 rounded-lg shadow"
                               showDifficultyBadge
                             />
-                            <span className="text-[10px] font-bold text-blue-400">Nothing Frame</span>
+                            <span className="text-[10px] font-bold text-blue-400">Normal</span>
                           </div>
                         )}
 
@@ -709,7 +709,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                               className="w-14 h-14 rounded-lg shadow"
                               showDifficultyBadge
                             />
-                            <span className="text-[10px] font-bold text-rose-400">Hard Frame</span>
+                            <span className="text-[10px] font-bold text-rose-400">Hard</span>
                           </div>
                         )}
                       </div>
