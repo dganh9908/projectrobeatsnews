@@ -46,9 +46,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
   const [editUsername, setEditUsername] = useState('');
   const [editDisplayName, setEditDisplayName] = useState('');
-  const [editBio, setEditBio] = useState('');
   const [editAvatar, setEditAvatar] = useState('');
-  const [editRobloxUsername, setEditRobloxUsername] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
@@ -62,9 +60,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       if (user) {
         setEditUsername(user.username || '');
         setEditDisplayName(user.displayName || user.username);
-        setEditBio(user.bio || '');
         setEditAvatar(user.avatar || DEFAULT_AVATAR);
-        setEditRobloxUsername(user.robloxUsername || '');
       }
     } else {
       setActiveTab('login');
@@ -99,9 +95,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     const ok = await updateProfile({
       username: cleanUsername,
       displayName: editDisplayName.trim(),
-      bio: editBio.trim(),
       avatar: editAvatar.trim() || DEFAULT_AVATAR,
-      robloxUsername: editRobloxUsername.trim(),
     });
 
     if (ok) {
@@ -279,15 +273,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                     </div>
                   </div>
 
-                  {user.robloxUsername && (
-                    <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-zinc-400 pt-0.5">
-                      <span className="text-zinc-500 font-medium">Roblox:</span>
-                      <span className="font-mono text-cyan-300 font-semibold">@{user.robloxUsername}</span>
-                    </div>
-                  )}
-
-                  <p className="text-xs text-zinc-300 pt-1 leading-relaxed">
-                    {user.bio || 'No bio set yet.'}
+                  <p className="text-xs text-zinc-400 pt-1 leading-relaxed">
+                    User profile informations will be added soon! Working on this :)
                   </p>
                 </div>
               </div>
@@ -368,33 +355,6 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   onChange={(e) => setEditDisplayName(e.target.value)}
                   placeholder="Your display name"
                   className="w-full px-3 py-2 text-xs bg-zinc-900/90 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/70 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                  Roblox Username
-                </label>
-                <input
-                  type="text"
-                  value={editRobloxUsername}
-                  onChange={(e) => setEditRobloxUsername(e.target.value)}
-                  placeholder="e.g. Meelo_RBX"
-                  className="w-full px-3 py-2 text-xs bg-zinc-900/90 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/70 transition-all font-mono"
-                />
-                <p className="text-[11px] text-zinc-500 mt-1">Displayed publicly on your profile</p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                  Bio / Player Motto
-                </label>
-                <textarea
-                  rows={3}
-                  value={editBio}
-                  onChange={(e) => setEditBio(e.target.value)}
-                  placeholder="Share a bio, favorite songs, or motto..."
-                  className="w-full px-3 py-2 text-xs bg-zinc-900/90 border border-zinc-800 rounded-xl text-white focus:outline-none focus:border-cyan-500/70 transition-all resize-none"
                 />
               </div>
 

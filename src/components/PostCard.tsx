@@ -380,33 +380,6 @@ export const PostCard: React.FC<PostCardProps> = ({
             <div className="flex items-center gap-1.5 text-zinc-400 text-[10px] font-mono-numbers mt-1 leading-none">
               <Calendar className="w-2.5 h-2.5 text-cyan-400/80" />
               <span>{formattedDate}</span>
-              <span className="text-zinc-600">·</span>
-              {post.category === 'Weekly mission' ? (
-                <span className="inline-flex items-center gap-1 text-orange-400 font-semibold">
-                  <Calendar className="w-2.5 h-2.5" />
-                  <span>Weekly missions</span>
-                </span>
-              ) : post.category === 'Daily mission' ? (
-                <span className="inline-flex items-center gap-1 text-purple-400 font-semibold">
-                  <Sun className="w-2.5 h-2.5" />
-                  <span>Daily missions</span>
-                </span>
-              ) : post.category === 'Weekly Leaderboard' ? (
-                <span className="inline-flex items-center gap-1 text-amber-400 font-semibold">
-                  <Trophy className="w-2.5 h-2.5" />
-                  <span>Weekly Leaderboard</span>
-                </span>
-              ) : post.category === 'New song' ? (
-                <span className="inline-flex items-center gap-1 text-blue-400 font-semibold">
-                  <Sparkles className="w-2.5 h-2.5" />
-                  <span>New song</span>
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
-                  <Bell className="w-2.5 h-2.5" />
-                  <span>{post.category || 'Updates'}</span>
-                </span>
-              )}
             </div>
           </div>
         </button>
