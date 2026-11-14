@@ -203,7 +203,7 @@ export default function App() {
   useEffect(() => {
     document.title = isPrivacyPage
       ? 'Privacy Policy - RoBeats! News'
-      : 'RoBeats! News - Where you can find latest robeats news';
+      : 'RoBeats! News';
   }, [isPrivacyPage]);
 
   const navigateTo = (targetPath: '/' | '/privacy') => {
