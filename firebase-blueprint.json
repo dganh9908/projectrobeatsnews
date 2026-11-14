@@ -158,6 +158,20 @@
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "updatedAt"]
+    },
+    "DiscordWebhookConfig": {
+      "title": "DiscordWebhookConfig",
+      "description": "Admin-only Discord webhook URLs per post category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "dailyMission": { "type": "string", "maxLength": 512 },
+        "weeklyMission": { "type": "string", "maxLength": 512 },
+        "newSong": { "type": "string", "maxLength": 512 },
+        "updates": { "type": "string", "maxLength": 512 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "updatedAt"]
     }
   },
   "firestore": {
@@ -196,6 +210,10 @@
     "/settings/{settingId}": {
       "schema": { "$ref": "#/entities/SiteSetting" },
       "description": "Non-secret site configuration such as difficulty frames"
+    },
+    "/webhooks/{webhookId}": {
+      "schema": { "$ref": "#/entities/DiscordWebhookConfig" },
+      "description": "Admin-only Discord category webhook URLs"
     }
   }
 }

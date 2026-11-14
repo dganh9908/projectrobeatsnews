@@ -142,6 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('robeats_current_user', JSON.stringify(updatedUser));
 
     try {
+      const uid = auth.currentUser.uid;
       const fsUpdate: Record<string, any> = { updatedAt: serverTimestamp() };
       if (profileData.displayName !== undefined) fsUpdate.displayName = String(profileData.displayName).slice(0, 80);
       if (profileData.robloxUsername !== undefined) fsUpdate.robloxUsername = String(profileData.robloxUsername).slice(0, 64);
@@ -151,9 +152,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (profileData.preferredNoteSpeed !== undefined) fsUpdate.preferredNoteSpeed = String(profileData.preferredNoteSpeed).slice(0, 20);
       if (profileData.currentStreak !== undefined) fsUpdate.currentStreak = Number(profileData.currentStreak);
       if (profileData.bestStreak !== undefined) fsUpdate.bestStreak = Number(profileData.bestStreak);
-      if (profileData.equippedAvatarFrame !== undefined) fsUpdate.equippedAvatarFrame = String(profileData.equippedAvatarFrame).slice(0, 64);
+      if (profileData.equippedAvatarFrame !== undefined) {
+        fsUpdate.equippedAvatarFrame = String(profileData.equippedAvatarFrame || '').slice(0, 64);
+      }
       if (profileData.unlockedFrames !== undefined) fsUpdate.unlockedFrames = profileData.unlockedFrames.slice(0, 20);
-      await updateDoc(doc(db, 'users', auth.currentUser.uid), fsUpdate);
+      await updateDoc(doc(db, 'users', uid), fsUpdate);
+
+      if (profileData.lastCheckInDate !== undefined) {
+        await updateDoc(doc(db, 'users', uid, 'private', 'info'), {
+          lastCheckInDate: String(profileData.lastCheckInDate).slice(0, 32),
+          updatedAt: serverTimestamp(),
+        }).catch(() => {});
+      }
     } catch (err) {
       console.warn('Firestore profile update warning:', err);
       setAuthError('Failed to update profile in Cloud Firestore.');
@@ -202,18 +212,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const adminGetStats = async (): Promise<any> => {
-    if (!token) return null;
     try {
-      const res = await fetch('/api/admin/stats', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'X-Firebase-Token': token,
-        },
-      });
-      if (res.ok) {
-        return await safeJson(res, null);
-      }
-      return null;
+      const list = await fetchAllUsersFromFirestore();
+      return {
+        totalUsers: list.length,
+        admins: list.filter((u) => u.role === 'admin').length,
+        staff: list.filter((u) => u.role === 'staff').length,
+        robeatsdev: list.filter((u) => u.role === 'robeatsdev').length,
+        players: list.filter((u) => u.role === 'player').length,
+        serverTime: new Date().toISOString(),
+      };
     } catch {
       return null;
     }

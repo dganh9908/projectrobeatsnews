@@ -338,10 +338,13 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
         tags: updatedTags,
       };
 
-      const fbToken = await getFirebaseIdToken();
       let updated: NewsArticle | null = null;
 
-      try {
+      if (auth.currentUser) {
+        await updatePostInFirestore(post.id, payload);
+        updated = { ...post, ...payload, updatedAt: new Date().toISOString() };
+      } else {
+        const fbToken = await getFirebaseIdToken();
         const res = await fetch(`/api/news/${post.id}`, {
           method: 'PUT',
           headers: {
@@ -352,23 +355,11 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
           body: JSON.stringify(payload),
         });
 
-        if (res.ok) {
-          updated = await safeJson(res, null);
-        } else if (!auth.currentUser) {
+        if (!res.ok) {
           const errData = await safeJson(res, {});
           throw new Error(errData?.error || 'Failed to update post');
         }
-      } catch (apiErr: any) {
-        if (!auth.currentUser) {
-          throw apiErr;
-        }
-      }
-
-      if (auth.currentUser) {
-        await updatePostInFirestore(post.id, payload);
-        if (!updated) {
-          updated = { ...post, ...payload, updatedAt: new Date().toISOString() };
-        }
+        updated = await safeJson(res, null);
       }
 
       if (updated) {

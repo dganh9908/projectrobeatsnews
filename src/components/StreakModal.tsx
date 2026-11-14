@@ -17,6 +17,11 @@ import { useAuth } from '../context/AuthContext';
 import { AVATAR_FRAME_REWARDS, AvatarFrameReward } from '../types';
 import { UserAvatar } from './UserAvatar';
 import { safeJson } from '../utils/safeJson';
+import { auth } from '../lib/firebase';
+import {
+  checkInStreakInFirestore,
+  equipAvatarFrameInFirestore,
+} from '../services/firestoreService';
 
 interface StreakModalProps {
   isOpen: boolean;
@@ -110,7 +115,38 @@ export const StreakModal: React.FC<StreakModalProps> = ({
     setNewlyUnlocked(null);
 
     try {
-      if (isAuthenticated && token) {
+      if (isAuthenticated && auth.currentUser) {
+        const data = await checkInStreakInFirestore();
+        if (data.success) {
+          setCurrentStreak(data.currentStreak);
+          setBestStreak(data.bestStreak);
+          setLastCheckInDate(data.lastCheckInDate);
+          setUnlockedFrames(data.unlockedFrames || []);
+          if (data.equippedAvatarFrame) {
+            setEquippedFrame(data.equippedAvatarFrame);
+          }
+          setCheckInMessage(`🔥 Day ${data.currentStreak} streak claimed! Saved to Firebase Cloud.`);
+
+          if (Array.isArray(data.newlyUnlockedFrames) && data.newlyUnlockedFrames.length > 0) {
+            const unlockedId = data.newlyUnlockedFrames[data.newlyUnlockedFrames.length - 1];
+            const foundReward = AVATAR_FRAME_REWARDS.find(r => r.id === unlockedId);
+            if (foundReward) {
+              setNewlyUnlocked(foundReward);
+            }
+          }
+
+          await updateProfile({
+            currentStreak: data.currentStreak,
+            bestStreak: data.bestStreak,
+            lastCheckInDate: data.lastCheckInDate,
+            unlockedFrames: data.unlockedFrames,
+            equippedAvatarFrame: data.equippedAvatarFrame || '',
+          });
+        } else if (data.alreadyCheckedIn) {
+          setLastCheckInDate(data.lastCheckInDate);
+          setCheckInMessage(data.message || 'Already checked in today!');
+        }
+      } else if (isAuthenticated && token) {
         const res = await fetch('/api/streak/check-in', {
           method: 'POST',
           headers: {
@@ -265,7 +301,11 @@ export const StreakModal: React.FC<StreakModalProps> = ({
     setIsEquipping(frameId);
 
     try {
-      if (isAuthenticated && token) {
+      if (isAuthenticated && auth.currentUser) {
+        const savedFrame = await equipAvatarFrameInFirestore(targetFrame);
+        setEquippedFrame(savedFrame);
+        await updateProfile({ equippedAvatarFrame: savedFrame || '' });
+      } else if (isAuthenticated && token) {
         const res = await fetch('/api/streak/equip-frame', {
           method: 'POST',
           headers: {

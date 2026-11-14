@@ -108,21 +108,22 @@ export const PostCard: React.FC<PostCardProps> = ({
     } catch {}
 
     try {
-      const fbToken = await getFirebaseIdToken();
-      const res = await fetch(`/api/news/${post.id}/reactions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
-        },
-        body: JSON.stringify({ emoji }),
-      });
-      if (res.ok) {
-        const data = await safeJson(res, null);
-        if (data && data.reactions) setReactions(data.reactions);
-      }
       if (auth.currentUser) {
-        await togglePostReactionInFirestore(post.id, nextReactions).catch(() => {});
+        await togglePostReactionInFirestore(post.id, nextReactions);
+      } else {
+        const fbToken = await getFirebaseIdToken();
+        const res = await fetch(`/api/news/${post.id}/reactions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
+          },
+          body: JSON.stringify({ emoji }),
+        });
+        if (res.ok) {
+          const data = await safeJson(res, null);
+          if (data && data.reactions) setReactions(data.reactions);
+        }
       }
     } catch (err) {
       console.error('Failed to update reaction', err);

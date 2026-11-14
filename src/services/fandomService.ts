@@ -1,7 +1,32 @@
-import { SongEntry, ElementConfig, RankConfig, DifficultyFramesConfig, DEFAULT_DIFFICULTY_FRAMES, User } from '../types';
+import {
+  SongEntry,
+  ElementConfig,
+  RankConfig,
+  DifficultyFramesConfig,
+  DEFAULT_DIFFICULTY_FRAMES,
+  DEFAULT_ROBEATS_RANKS,
+  User,
+  DiscordWebhooksConfig,
+} from '../types';
 import { buildDefaultElements } from '../constants/elements';
 import { safeJson } from '../utils/safeJson';
-import { getFirebaseIdToken } from './firestoreService';
+import { auth } from '../lib/firebase';
+import {
+  getFirebaseIdToken,
+  fetchSongsFromFirestore,
+  saveSongInFirestore,
+  deleteSongInFirestore,
+  fetchElementsFromFirestore,
+  saveElementsInFirestore,
+  fetchRanksFromFirestore,
+  saveRanksInFirestore,
+  fetchDifficultyFramesFromFirestore,
+  saveDifficultyFramesInFirestore,
+  fetchDiscordWebhooksFromFirestore,
+  saveDiscordWebhooksInFirestore,
+  fetchUserProfileFromFirestore,
+  fetchPostByIdFromFirestore,
+} from './firestoreService';
 
 // In-memory cache for fast local access
 let cachedSongs: SongEntry[] | null = null;
@@ -27,8 +52,7 @@ async function getAuthHeadersAsync(): Promise<Record<string, string>> {
 }
 
 /**
- * Fetches all songs directly from the server's local persistent database.
- * Completely disconnected from external Fandom wiki scraping.
+ * Fetches all songs directly from Cloud Firestore (with API/seed fallback if empty).
  */
 export async function fetchSongList(forceRefresh: boolean = false): Promise<SongEntry[]> {
   if (!forceRefresh && cachedSongs && cachedSongs.length > 0) {
@@ -36,26 +60,46 @@ export async function fetchSongList(forceRefresh: boolean = false): Promise<Song
   }
 
   try {
-    const res = await fetch('/api/songs');
-    if (!res.ok) {
-      throw new Error(`Failed to load songs: HTTP ${res.status}`);
+    const fsSongs = await fetchSongsFromFirestore();
+    if (fsSongs.length > 0) {
+      cachedSongs = fsSongs;
+      return fsSongs;
     }
-    const data: SongEntry[] = await safeJson(res, []);
-    cachedSongs = data;
-    return data;
   } catch (err) {
-    console.error('Error fetching songs from server database', err);
-    if (cachedSongs && cachedSongs.length > 0) {
-      return cachedSongs;
-    }
-    return DEFAULT_SEED_SONGS;
+    console.warn('Firestore fetchSongs fallback:', err);
   }
+
+  try {
+    const res = await fetch('/api/songs');
+    if (res.ok) {
+      const data: SongEntry[] = await safeJson(res, []);
+      if (Array.isArray(data) && data.length > 0) {
+        cachedSongs = data;
+        return data;
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching songs from API fallback', err);
+  }
+
+  if (cachedSongs && cachedSongs.length > 0) {
+    return cachedSongs;
+  }
+  return DEFAULT_SEED_SONGS;
 }
 
 /**
- * Admin action: Add a song entry to local database
+ * Admin action: Add a song entry to Cloud Firestore
  */
 export async function adminAddSong(song: Omit<SongEntry, 'id'>): Promise<SongEntry> {
+  if (auth.currentUser) {
+    const created = await saveSongInFirestore(song);
+    if (cachedSongs) {
+      cachedSongs = [created, ...cachedSongs];
+    }
+    return created;
+  }
+
   const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/songs', {
     method: 'POST',
@@ -79,15 +123,25 @@ export async function adminAddSong(song: Omit<SongEntry, 'id'>): Promise<SongEnt
 }
 
 /**
- * Admin action: Edit an existing song in local database
+ * Admin action: Edit an existing song in Cloud Firestore
  */
 export async function adminEditSong(songId: string, updates: Partial<SongEntry>): Promise<SongEntry> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    const baseSong = cachedSongs?.find((s) => s.id === songId);
+    const merged = baseSong ? { ...baseSong, ...updates } : updates;
+    const updated = await saveSongInFirestore(merged, songId);
+    if (cachedSongs) {
+      cachedSongs = cachedSongs.map((s) => (s.id === songId ? updated : s));
+    }
+    return updated;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch(`/api/songs/${encodeURIComponent(songId)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify(updates),
   });
@@ -99,21 +153,27 @@ export async function adminEditSong(songId: string, updates: Partial<SongEntry>)
 
   const updated: SongEntry = await safeJson(res, { id: songId, ...updates } as any);
   if (cachedSongs) {
-    cachedSongs = cachedSongs.map(s => s.id === songId ? updated : s);
+    cachedSongs = cachedSongs.map((s) => (s.id === songId ? updated : s));
   }
   return updated;
 }
 
 /**
- * Admin action: Delete a song from local database
+ * Admin action: Delete a song from Cloud Firestore
  */
 export async function adminDeleteSong(songId: string): Promise<void> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    await deleteSongInFirestore(songId);
+    if (cachedSongs) {
+      cachedSongs = cachedSongs.filter((s) => s.id !== songId);
+    }
+    return;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch(`/api/songs/${encodeURIComponent(songId)}`, {
     method: 'DELETE',
-    headers: {
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    },
+    headers: authHeaders,
   });
 
   if (!res.ok) {
@@ -122,15 +182,12 @@ export async function adminDeleteSong(songId: string): Promise<void> {
   }
 
   if (cachedSongs) {
-    cachedSongs = cachedSongs.filter(s => s.id !== songId);
+    cachedSongs = cachedSongs.filter((s) => s.id !== songId);
   }
 }
 
-/**
- * Admin action: Reset overrides (no-op since database is authoritative)
- */
 export function adminResetOverrides() {
-  // Database is server authoritative
+  cachedSongs = null;
 }
 
 /**
@@ -138,24 +195,44 @@ export function adminResetOverrides() {
  */
 export async function fetchElementsList(): Promise<ElementConfig[]> {
   try {
+    const fsElements = await fetchElementsFromFirestore();
+    if (fsElements.length > 0) {
+      cachedElements = fsElements;
+      return fsElements;
+    }
+  } catch (err) {
+    console.warn('Firestore fetchElements fallback:', err);
+  }
+
+  try {
     const res = await fetch('/api/elements');
-    if (!res.ok) throw new Error('Failed to fetch elements');
-    const data: ElementConfig[] = await safeJson(res, []);
-    cachedElements = data;
-    return data;
+    if (res.ok) {
+      const data: ElementConfig[] = await safeJson(res, []);
+      if (Array.isArray(data) && data.length > 0) {
+        cachedElements = data;
+        return data;
+      }
+    }
   } catch (err) {
     console.error('Error fetching elements', err);
-    if (!cachedElements) {
-      cachedElements = buildDefaultElements();
-    }
-    return cachedElements;
   }
+
+  if (!cachedElements) {
+    cachedElements = buildDefaultElements();
+  }
+  return cachedElements;
 }
 
 /**
- * Elements API: Update element image URLs (Admin only)
+ * Elements API: Update element image URLs in Cloud Firestore (Admin only)
  */
 export async function updateElementsList(elements: ElementConfig[]): Promise<ElementConfig[]> {
+  if (auth.currentUser) {
+    const saved = await saveElementsInFirestore(elements);
+    cachedElements = saved;
+    return saved;
+  }
+
   const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/elements', {
     method: 'PUT',
@@ -173,18 +250,20 @@ export async function updateElementsList(elements: ElementConfig[]): Promise<Ele
 
   const result = await safeJson(res, {});
   cachedElements = result?.elements || elements;
-  return (cachedElements || elements);
+  return cachedElements || elements;
 }
 
 /**
  * Discord Webhook API: Fetch current webhook configurations (Admin only)
  */
-export async function fetchDiscordWebhooks(): Promise<Record<string, string>> {
-  const token = getAuthToken();
+export async function fetchDiscordWebhooks(): Promise<Record<string, any>> {
+  if (auth.currentUser) {
+    return (await fetchDiscordWebhooksFromFirestore()) as Record<string, any>;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/admin/webhooks', {
-    headers: {
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-    },
+    headers: authHeaders,
   });
 
   if (!res.ok) {
@@ -196,15 +275,19 @@ export async function fetchDiscordWebhooks(): Promise<Record<string, string>> {
 }
 
 /**
- * Discord Webhook API: Save webhook configurations (Admin only)
+ * Discord Webhook API: Save webhook configurations to Cloud Firestore (Admin only)
  */
 export async function updateDiscordWebhooks(config: Record<string, any>): Promise<Record<string, any>> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    return (await saveDiscordWebhooksInFirestore(config as DiscordWebhooksConfig)) as Record<string, any>;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/admin/webhooks', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify(config),
   });
@@ -222,12 +305,12 @@ export async function updateDiscordWebhooks(config: Record<string, any>): Promis
  * Discord Webhook API: Send test notification (Admin only)
  */
 export async function testDiscordWebhook(category: string, webhookUrl?: string): Promise<{ success: boolean; message: string }> {
-  const token = getAuthToken();
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/admin/webhooks/test', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify({ category, webhookUrl }),
   });
@@ -281,15 +364,43 @@ export async function fetchPostDiscordTemplate(postId: string): Promise<{
 /**
  * Manual Discord Webhook publishing for an article (Staff and Admin only)
  */
-export async function publishNewsToDiscordWebhook(postId: string, updatedPayload?: any): Promise<{ success: boolean; message: string }> {
-  const token = getAuthToken();
+export async function publishNewsToDiscordWebhook(
+  postId: string,
+  updatedPayload?: any
+): Promise<{ success: boolean; message: string }> {
+  const authHeaders = await getAuthHeadersAsync();
+  let postData = updatedPayload ? { ...updatedPayload } : {};
+  let webhookUrl = '';
+
+  if (auth.currentUser) {
+    if (!postData.category) {
+      const existing = await fetchPostByIdFromFirestore(postId).catch(() => null);
+      if (existing) {
+        postData = { ...existing, ...postData };
+      }
+    }
+    try {
+      const hooks = await fetchDiscordWebhooksFromFirestore();
+      const cat = postData.category as keyof DiscordWebhooksConfig | undefined;
+      if (cat && hooks[cat]) {
+        const entry = hooks[cat];
+        webhookUrl = typeof entry === 'string' ? entry : entry?.url || '';
+      }
+    } catch {
+      // Ignore if non-admin Staff triggers webhook without direct read access
+    }
+  }
+
   const res = await fetch(`/api/news/${postId}/publish-webhook`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
-    body: JSON.stringify(updatedPayload || {}),
+    body: JSON.stringify({
+      ...postData,
+      ...(webhookUrl ? { webhookUrl } : {}),
+    }),
   });
 
   if (!res.ok) {
@@ -316,11 +427,12 @@ export function generateDailyMissionDiscordText(post: any): string {
   for (const song of songs) {
     const rawChosen = (song.chosenDifficulty || 'N').toUpperCase();
     const diffLetter = rawChosen.startsWith('E') ? 'E' : rawChosen.startsWith('H') ? 'H' : 'N';
-    const diffVal = diffLetter === 'E' 
-      ? (song.difficulty?.easy || '-') 
-      : diffLetter === 'H' 
-      ? (song.difficulty?.hard || '-') 
-      : (song.difficulty?.normal || '-');
+    const diffVal =
+      diffLetter === 'E'
+        ? song.difficulty?.easy || '-'
+        : diffLetter === 'H'
+        ? song.difficulty?.hard || '-'
+        : song.difficulty?.normal || '-';
     const difficultyText = diffLetter === 'E' ? 'Easy' : diffLetter === 'H' ? 'Hard' : 'Normal';
     const isNoMisses = Boolean(song.noMisses || song.isNoMisses);
 
@@ -357,14 +469,16 @@ export function generateDailyMissionDiscordText(post: any): string {
 
   const formatList = (items: Array<any>, _rankType: 'Star' | 'Pro' | 'Amateur' | 'Novice' | 'Beginner') => {
     if (items.length === 0) return '- "No missions" - None';
-    return items.map((s) => {
-      const elementStr = s.element || 'Standard';
-      const artistStr = s.artist || 'Unknown Artist';
-      if (s.isNoMisses) {
-        return `- :star: [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
-      }
-      return `- [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}]`;
-    }).join('\n');
+    return items
+      .map((s) => {
+        const elementStr = s.element || 'Standard';
+        const artistStr = s.artist || 'Unknown Artist';
+        if (s.isNoMisses) {
+          return `- :star: [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
+        }
+        return `- [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}]`;
+      })
+      .join('\n');
   };
 
   const starSongs = formatList(buckets.Star, 'Star');
@@ -395,12 +509,12 @@ export function generateDailyMissionDiscordText(post: any): string {
     `## <:beginner:1284381903578861578> \n - Beginner missions`,
     beginnerSongs,
     ``,
-    `Poster: "${posterName}" | Post date: "${postDate}"`
+    `Poster: "${posterName}" | Post date: "${postDate}"`,
   ].join('\n');
 }
 
 /**
- * Fetch all RoBeats ranks (Star, Pro, Amateur, Novice, Beginner)
+ * Fetch all RoBeats ranks from Cloud Firestore (Star, Pro, Amateur, Novice, Beginner)
  */
 export async function fetchRanksList(forceRefresh: boolean = false): Promise<RankConfig[]> {
   if (!forceRefresh && cachedRanks && cachedRanks.length > 0) {
@@ -408,33 +522,47 @@ export async function fetchRanksList(forceRefresh: boolean = false): Promise<Ran
   }
 
   try {
+    const fsRanks = await fetchRanksFromFirestore();
+    cachedRanks = fsRanks;
+    return fsRanks;
+  } catch (err) {
+    console.warn('Firestore fetchRanks fallback:', err);
+  }
+
+  try {
     const res = await fetch('/api/ranks');
-    if (!res.ok) throw new Error('Failed to fetch ranks');
-    const ranks = await safeJson(res, []);
-    cachedRanks = ranks;
-    return ranks;
+    if (res.ok) {
+      const ranks = await safeJson(res, []);
+      if (Array.isArray(ranks) && ranks.length > 0) {
+        cachedRanks = ranks;
+        return ranks;
+      }
+    }
   } catch (err) {
     console.error('Failed to load ranks:', err);
-    return [
-      { id: 'star', name: 'Star', iconUrl: 'https://raw.githubusercontent.com/feathericons/feather/master/icons/star.svg', color: '#F59E0B', description: 'Elite RoBeats master rhythm players' },
-      { id: 'pro', name: 'Pro', iconUrl: 'https://raw.githubusercontent.com/feathericons/feather/master/icons/zap.svg', color: '#A855F7', description: 'High tier competitive rhythm champions' },
-      { id: 'amateur', name: 'Amateur', iconUrl: 'https://raw.githubusercontent.com/feathericons/feather/master/icons/award.svg', color: '#3B82F6', description: 'Skilled rhythm players clearing advanced charts' },
-      { id: 'novice', name: 'Novice', iconUrl: 'https://raw.githubusercontent.com/feathericons/feather/master/icons/activity.svg', color: '#10B981', description: 'Intermediate rhythm players learning higher speeds' },
-      { id: 'beginner', name: 'Beginner', iconUrl: 'https://raw.githubusercontent.com/feathericons/feather/master/icons/disc.svg', color: '#64748B', description: 'Starting rhythm players beginning their journey' },
-    ];
   }
+
+  return DEFAULT_ROBEATS_RANKS;
 }
 
 /**
- * Update a specific rank's configuration (Admin only)
+ * Update a specific rank's configuration in Cloud Firestore (Admin only)
  */
 export async function updateRankConfig(id: string, updates: Partial<RankConfig>): Promise<RankConfig> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    const current = cachedRanks || (await fetchRanksFromFirestore());
+    const nextRanks = current.map((r) => (r.id === id ? { ...r, ...updates } : r));
+    await saveRanksInFirestore(nextRanks);
+    cachedRanks = nextRanks;
+    return nextRanks.find((r) => r.id === id) || ({ id, ...updates } as RankConfig);
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch(`/api/admin/ranks/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify(updates),
   });
@@ -446,19 +574,25 @@ export async function updateRankConfig(id: string, updates: Partial<RankConfig>)
 
   const result = await safeJson(res, {});
   if (result?.ranks) cachedRanks = result.ranks;
-  return result?.rank || { id, ...updates };
+  return result?.rank || ({ id, ...updates } as RankConfig);
 }
 
 /**
- * Batch update ranks (Admin only)
+ * Batch update ranks in Cloud Firestore (Admin only)
  */
 export async function updateAllRanks(ranks: RankConfig[]): Promise<RankConfig[]> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    const saved = await saveRanksInFirestore(ranks);
+    cachedRanks = saved;
+    return saved;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/admin/ranks', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify({ ranks }),
   });
@@ -469,18 +603,26 @@ export async function updateAllRanks(ranks: RankConfig[]): Promise<RankConfig[]>
   }
 
   const result = await safeJson(res, ranks);
-  const finalRanks: RankConfig[] = Array.isArray(result) ? result : (result?.ranks || ranks);
+  const finalRanks: RankConfig[] = Array.isArray(result) ? result : result?.ranks || ranks;
   cachedRanks = finalRanks;
   return finalRanks;
 }
 
 /**
- * Fetch difficulty cover art frames (easy, normal, hard)
+ * Fetch difficulty cover art frames from Cloud Firestore
  */
 export async function fetchDifficultyFrames(forceRefresh: boolean = false): Promise<DifficultyFramesConfig> {
   if (!forceRefresh && cachedFrames) {
     return cachedFrames;
   }
+  try {
+    const fsFrames = await fetchDifficultyFramesFromFirestore();
+    cachedFrames = fsFrames;
+    return fsFrames;
+  } catch (err) {
+    console.warn('Firestore fetchDifficultyFrames fallback:', err);
+  }
+
   try {
     const res = await fetch('/api/frames');
     if (!res.ok) throw new Error('Failed to fetch difficulty frames');
@@ -494,15 +636,21 @@ export async function fetchDifficultyFrames(forceRefresh: boolean = false): Prom
 }
 
 /**
- * Update difficulty cover art frames (Admin only)
+ * Update difficulty cover art frames in Cloud Firestore (Admin only)
  */
 export async function updateDifficultyFrames(frames: DifficultyFramesConfig): Promise<DifficultyFramesConfig> {
-  const token = getAuthToken();
+  if (auth.currentUser) {
+    const saved = await saveDifficultyFramesInFirestore(frames);
+    cachedFrames = saved;
+    return saved;
+  }
+
+  const authHeaders = await getAuthHeadersAsync();
   const res = await fetch('/api/admin/frames', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...authHeaders,
     },
     body: JSON.stringify(frames),
   });
@@ -523,10 +671,14 @@ export const DEFAULT_SEED_SONGS: SongEntry[] = [
     id: 'seed_1',
     title: 'Monday Night Monsters',
     artist: 'FinnMK',
-    coverArt: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
-    coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
+    coverArt:
+      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
+    coverArtEasy:
+      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
+    coverArtNormal:
+      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
+    coverArtHard:
+      'https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704',
     difficulty: { easy: '1', normal: '1', hard: '14' },
     element: 'Flow',
     duration: '2:14',
@@ -536,18 +688,25 @@ export const DEFAULT_SEED_SONGS: SongEntry[] = [
     id: 'seed_2',
     title: 'Daily Life',
     artist: 'FinnMK',
-    coverArt: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtEasy: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
-    coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
+    coverArt:
+      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
+    coverArtEasy:
+      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
+    coverArtNormal:
+      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
+    coverArtHard:
+      'https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437',
     difficulty: { easy: '-', normal: '2', hard: '17' },
     element: 'Chill',
     duration: '2:02',
     bpm: '106',
-  }
+  },
 ];
 
 export async function fetchUserProfile(identifier: string): Promise<User> {
+  const fsUser = await fetchUserProfileFromFirestore(identifier);
+  if (fsUser) return fsUser;
+
   const res = await fetch(`/api/users/${encodeURIComponent(identifier)}`);
   if (!res.ok) {
     const err = await safeJson(res, {});

@@ -120,19 +120,18 @@ export default function App() {
     // Real-time listener to Firebase Cloud Firestore posts
     const unsubscribe = subscribeToPublishedPosts(
       (fsPosts) => {
-        if (fsPosts.length > 0) {
-          setPosts((prev) => {
-            const map = new Map<string, NewsArticle>();
-            for (const p of prev) {
-              if (!p.id.startsWith('post_')) map.set(p.id, p);
-            }
-            for (const p of fsPosts) map.set(p.id, p);
-            return Array.from(map.values()).sort(
-              (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-            );
-          });
-          setIsLoadingPosts(false);
-        }
+        setPosts((prev) => {
+          if (fsPosts.length === 0) {
+            const nonFirestoreSeeds = prev.filter((p) => !p.id.startsWith('post_'));
+            return nonFirestoreSeeds.length > 0 ? nonFirestoreSeeds : DEFAULT_SEED_ARTICLES;
+          }
+          const map = new Map<string, NewsArticle>();
+          for (const p of fsPosts) map.set(p.id, p);
+          return Array.from(map.values()).sort(
+            (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+          );
+        });
+        setIsLoadingPosts(false);
       },
       (err) => {
         console.warn('Firestore realtime subscription warning:', err.message);
@@ -160,24 +159,26 @@ export default function App() {
 
   const handleDeletePost = async (id: string) => {
     try {
-      const fbToken = await getFirebaseIdToken();
-      await fetch(`/api/news/${id}`, {
-        method: 'DELETE',
-        headers: {
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
-        },
-      }).catch(() => {});
-
       if (auth.currentUser) {
-        await deletePostInFirestore(id).catch((err) => {
-          console.warn('Firestore delete warning:', err);
+        await deletePostInFirestore(id);
+      } else {
+        const fbToken = await getFirebaseIdToken();
+        const res = await fetch(`/api/news/${id}`, {
+          method: 'DELETE',
+          headers: {
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
+          },
         });
+        if (!res.ok) {
+          throw new Error('Failed to delete post');
+        }
       }
 
       setPosts(prev => prev.filter(p => p.id !== id));
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to delete post', err);
+      alert(err?.message || 'Failed to delete post');
     }
   };
 

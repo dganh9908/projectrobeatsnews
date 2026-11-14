@@ -218,6 +218,17 @@ service cloud.firestore {
         && (!('hard' in data) || (data.hard is string && data.hard.size() <= 2048));
     }
 
+    function isValidWebhookConfig(data) {
+      return data.keys().hasAll(['id', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'dailyMission', 'weeklyMission', 'newSong', 'updates', 'updatedAt'])
+        && isValidId(data.id)
+        && data.updatedAt is timestamp
+        && (!('dailyMission' in data) || (data.dailyMission is string && data.dailyMission.size() <= 512))
+        && (!('weeklyMission' in data) || (data.weeklyMission is string && data.weeklyMission.size() <= 512))
+        && (!('newSong' in data) || (data.newSong is string && data.newSong.size() <= 512))
+        && (!('updates' in data) || (data.updates is string && data.updates.size() <= 512));
+    }
+
     // ----------------------------------------------------
     // Collection Match Rules
     // ----------------------------------------------------
@@ -466,6 +477,28 @@ service cloud.firestore {
         ]);
 
       allow delete: if isAdmin() && isValidId(settingId);
+    }
+
+    match /webhooks/{webhookId} {
+      allow get: if isAdmin() && isValidId(webhookId);
+      allow list: if isSignedIn() && isBootstrapAdmin() && resource.data.id is string;
+
+      allow create: if isAdmin()
+        && isValidId(webhookId)
+        && isValidWebhookConfig(incoming())
+        && incoming().id == webhookId
+        && incoming().updatedAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(webhookId)
+        && isValidWebhookConfig(incoming())
+        && incoming().id == existing().id
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'dailyMission', 'weeklyMission', 'newSong', 'updates', 'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(webhookId);
     }
   }
 }

@@ -14,7 +14,20 @@ import {
 } from 'firebase/firestore';
 import { User as FirebaseUser } from 'firebase/auth';
 import { db, auth, OperationType, handleFirestoreError } from '../lib/firebase';
-import { NewsArticle, SongEntry, User, UserPermissions, UserRole, Comment } from '../types';
+import {
+  NewsArticle,
+  SongEntry,
+  User,
+  UserPermissions,
+  UserRole,
+  Comment,
+  ElementConfig,
+  RankConfig,
+  DifficultyFramesConfig,
+  DEFAULT_DIFFICULTY_FRAMES,
+  DEFAULT_ROBEATS_RANKS,
+  DiscordWebhooksConfig,
+} from '../types';
 
 export const BOOTSTRAP_ADMIN_EMAIL = 'chautuan9461@gmail.com';
 export const BOOTSTRAP_ADMIN_EMAILS = [
@@ -28,6 +41,31 @@ export function sanitizeFirestoreId(raw: string): string {
     .replace(/[^a-zA-Z0-9_-]/g, '_')
     .slice(0, 128);
   return cleaned || `doc_${Date.now()}`;
+}
+
+/**
+ * Recursively remove `undefined` values so Firestore setDoc/updateDoc never crashes
+ */
+export function stripUndefinedDeep<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== undefined)
+      .map((item) => stripUndefinedDeep(item)) as unknown as T;
+  }
+  if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
+    // Preserve Firestore FieldValue sentinels (e.g. serverTimestamp())
+    if (typeof (value as any)._methodName === 'string' || typeof (value as any).toDate === 'function') {
+      return value;
+    }
+    const out: Record<string, any> = {};
+    for (const [k, v] of Object.entries(value as Record<string, any>)) {
+      if (v !== undefined) {
+        out[k] = stripUndefinedDeep(v);
+      }
+    }
+    return out as T;
+  }
+  return value;
 }
 
 export async function getFirebaseIdToken(): Promise<string | null> {
@@ -61,9 +99,10 @@ function mapDocToArticle(docId: string, data: any): NewsArticle {
     content: data.content || '',
     summary: data.summary || '',
     category: data.category || 'Daily mission',
-    author: data.author && typeof data.author === 'object'
-      ? data.author
-      : { name: 'Staff', role: 'Staff', avatar: '' },
+    author:
+      data.author && typeof data.author === 'object'
+        ? data.author
+        : { name: 'Staff', role: 'Staff', avatar: '' },
     publishedAt: normalizeTimestamp(data.publishedAt || data.createdAt),
     updatedAt: normalizeTimestamp(data.updatedAt || data.createdAt),
     readTime: data.readTime || '1 min read',
@@ -83,35 +122,60 @@ function mapDocToArticle(docId: string, data: any): NewsArticle {
   };
 }
 
-function buildSafePostPayload(article: Partial<NewsArticle>, postId: string, authorUid: string, isCreate: boolean) {
+function buildSafePostPayload(
+  article: Partial<NewsArticle>,
+  postId: string,
+  authorUid: string,
+  isCreate: boolean
+) {
   const safeTags = Array.isArray(article.tags)
-    ? article.tags.filter((t): t is string => typeof t === 'string').slice(0, 15)
-    : [];
-  const safeSongs = Array.isArray(article.songs) ? article.songs.slice(0, 20) : [];
+    ? article.tags.filter((t): t is string => typeof t === 'string' && t.length > 0).slice(0, 15)
+    : undefined;
+  const safeSongs = Array.isArray(article.songs)
+    ? stripUndefinedDeep(article.songs.slice(0, 20))
+    : undefined;
 
   const base: Record<string, any> = {
-    title: String(article.title || 'RoBeats News').slice(0, 200),
-    category: String(article.category || 'Daily mission').slice(0, 64),
-    status: article.status === 'draft' ? 'draft' : 'published',
     updatedAt: serverTimestamp(),
   };
 
+  if (article.title !== undefined || isCreate) {
+    const cleanTitle = String(article.title || 'RoBeats News').trim().slice(0, 200);
+    base.title = cleanTitle || 'RoBeats News';
+  }
+  if (article.category !== undefined || isCreate) {
+    const cleanCat = String(article.category || 'Daily mission').trim().slice(0, 64);
+    base.category = cleanCat || 'Daily mission';
+  }
+  if (article.status !== undefined || isCreate) {
+    base.status = article.status === 'draft' ? 'draft' : 'published';
+  }
   if (article.subtitle !== undefined) base.subtitle = String(article.subtitle).slice(0, 300);
   if (article.content !== undefined) base.content = String(article.content).slice(0, 20000);
   if (article.summary !== undefined) base.summary = String(article.summary).slice(0, 500);
-  if (article.author !== undefined && typeof article.author === 'object') base.author = article.author;
+  if (article.author !== undefined && typeof article.author === 'object') {
+    base.author = stripUndefinedDeep(article.author);
+  }
   if (article.publishedAt !== undefined) base.publishedAt = String(article.publishedAt).slice(0, 64);
   if (article.readTime !== undefined) base.readTime = String(article.readTime).slice(0, 32);
-  if (article.coverImage) base.coverImage = String(article.coverImage).slice(0, 2048);
-  if (article.coverImageCaption !== undefined) base.coverImageCaption = String(article.coverImageCaption).slice(0, 300);
+  if (article.coverImage !== undefined) {
+    base.coverImage = String(article.coverImage || '').slice(0, 2048);
+  }
+  if (article.coverImageCaption !== undefined) {
+    base.coverImageCaption = String(article.coverImageCaption).slice(0, 300);
+  }
   if (article.isBreaking !== undefined) base.isBreaking = Boolean(article.isBreaking);
   if (article.isFeatured !== undefined) base.isFeatured = Boolean(article.isFeatured);
   if (article.isTrending !== undefined) base.isTrending = Boolean(article.isTrending);
-  if (article.missionRank) base.missionRank = String(article.missionRank).slice(0, 32);
+  if (article.missionRank !== undefined) {
+    base.missionRank = String(article.missionRank || '').slice(0, 32);
+  }
   if (article.views !== undefined) base.views = Math.max(0, Number(article.views) || 0);
-  if (article.tags !== undefined) base.tags = safeTags;
-  if (article.songs !== undefined) base.songs = safeSongs;
-  if (article.reactions !== undefined && typeof article.reactions === 'object') base.reactions = article.reactions;
+  if (safeTags !== undefined) base.tags = safeTags;
+  if (safeSongs !== undefined) base.songs = safeSongs;
+  if (article.reactions !== undefined && typeof article.reactions === 'object') {
+    base.reactions = stripUndefinedDeep(article.reactions);
+  }
 
   if (isCreate) {
     base.id = postId;
@@ -121,8 +185,12 @@ function buildSafePostPayload(article: Partial<NewsArticle>, postId: string, aut
     if (!base.reactions) base.reactions = {};
   }
 
-  return base;
+  return stripUndefinedDeep(base);
 }
+
+// ====================================================
+// POSTS & COMMENTS
+// ====================================================
 
 export async function fetchPostsFromFirestore(): Promise<NewsArticle[]> {
   const path = 'posts';
@@ -134,6 +202,18 @@ export async function fetchPostsFromFirestore(): Promise<NewsArticle[]> {
     return items;
   } catch (err) {
     handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export async function fetchPostByIdFromFirestore(postId: string): Promise<NewsArticle | null> {
+  const safeId = sanitizeFirestoreId(postId);
+  const path = `posts/${safeId}`;
+  try {
+    const snap = await getDoc(doc(db, 'posts', safeId));
+    if (!snap.exists()) return null;
+    return mapDocToArticle(snap.id, snap.data());
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, path);
   }
 }
 
@@ -163,18 +243,21 @@ export function subscribeToPublishedPosts(
 export async function createPostInFirestore(article: NewsArticle): Promise<NewsArticle> {
   const currentUser = auth.currentUser;
   if (!currentUser) {
-    throw new Error('Firebase authentication required to write directly to Firestore.');
+    throw new Error('Firebase Google authentication required to create posts.');
   }
-  const postId = sanitizeFirestoreId(article.id || `post_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`);
+  const postId = sanitizeFirestoreId(
+    article.id || `post_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+  );
   const path = `posts/${postId}`;
-  const payload = buildSafePostPayload(article, postId, currentUser.uid, true);
+  const authorUid = sanitizeFirestoreId(currentUser.uid);
+  const payload = buildSafePostPayload(article, postId, authorUid, true);
 
   try {
     await setDoc(doc(db, 'posts', postId), payload);
     return {
       ...article,
       id: postId,
-      authorUid: currentUser.uid,
+      authorUid,
       publishedAt: payload.publishedAt,
       updatedAt: new Date().toISOString(),
     };
@@ -183,15 +266,38 @@ export async function createPostInFirestore(article: NewsArticle): Promise<NewsA
   }
 }
 
-export async function updatePostInFirestore(postId: string, updates: Partial<NewsArticle>): Promise<void> {
+export async function updatePostInFirestore(
+  postId: string,
+  updates: Partial<NewsArticle>
+): Promise<void> {
   const currentUser = auth.currentUser;
-  if (!currentUser) return;
+  if (!currentUser) {
+    throw new Error('Firebase Google authentication required to update posts.');
+  }
   const safeId = sanitizeFirestoreId(postId);
   const path = `posts/${safeId}`;
-  const payload = buildSafePostPayload(updates, safeId, currentUser.uid, false);
+  const docRef = doc(db, 'posts', safeId);
+  const authorUid = sanitizeFirestoreId(currentUser.uid);
 
   try {
-    await updateDoc(doc(db, 'posts', safeId), payload);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const payload = buildSafePostPayload(updates, safeId, authorUid, false);
+      await updateDoc(docRef, payload);
+    } else {
+      const payload = buildSafePostPayload(
+        {
+          status: 'published',
+          views: 1,
+          reactions: {},
+          ...updates,
+        },
+        safeId,
+        authorUid,
+        true
+      );
+      await setDoc(docRef, payload);
+    }
   } catch (err) {
     handleFirestoreError(err, OperationType.UPDATE, path);
   }
@@ -199,7 +305,9 @@ export async function updatePostInFirestore(postId: string, updates: Partial<New
 
 export async function deletePostInFirestore(postId: string): Promise<void> {
   const currentUser = auth.currentUser;
-  if (!currentUser) return;
+  if (!currentUser) {
+    throw new Error('Firebase Google authentication required to delete posts.');
+  }
   const safeId = sanitizeFirestoreId(postId);
   const path = `posts/${safeId}`;
 
@@ -210,15 +318,21 @@ export async function deletePostInFirestore(postId: string): Promise<void> {
   }
 }
 
-export async function togglePostReactionInFirestore(postId: string, reactions: Record<string, number>): Promise<void> {
+export async function togglePostReactionInFirestore(
+  postId: string,
+  reactions: Record<string, number>
+): Promise<void> {
   const currentUser = auth.currentUser;
   if (!currentUser) return;
   const safeId = sanitizeFirestoreId(postId);
   const path = `posts/${safeId}`;
+  const docRef = doc(db, 'posts', safeId);
 
   try {
-    await updateDoc(doc(db, 'posts', safeId), {
-      reactions,
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) return;
+    await updateDoc(docRef, {
+      reactions: stripUndefinedDeep(reactions),
       updatedAt: serverTimestamp(),
     });
   } catch (err) {
@@ -250,20 +364,29 @@ export async function fetchCommentsFromFirestore(postId: string): Promise<Commen
   }
 }
 
-export async function addCommentInFirestore(postId: string, content: string, authorName: string, authorAvatar?: string, authorRole?: string): Promise<Comment> {
+export async function addCommentInFirestore(
+  postId: string,
+  content: string,
+  authorName: string,
+  authorAvatar?: string,
+  authorRole?: string
+): Promise<Comment> {
   const currentUser = auth.currentUser;
   if (!currentUser) {
-    throw new Error('Sign in with Google to post comments directly to Firestore.');
+    throw new Error('Sign in with Google to post comments.');
   }
   const safePostId = sanitizeFirestoreId(postId);
-  const commentId = sanitizeFirestoreId(`comment_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`);
+  const commentId = sanitizeFirestoreId(
+    `comment_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+  );
   const path = `posts/${safePostId}/comments/${commentId}`;
+  const authorUid = sanitizeFirestoreId(currentUser.uid);
 
   try {
     await setDoc(doc(db, 'posts', safePostId, 'comments', commentId), {
       id: commentId,
       postId: safePostId,
-      authorUid: currentUser.uid,
+      authorUid,
       authorName: String(authorName || currentUser.displayName || 'Player').slice(0, 80),
       authorAvatar: String(authorAvatar || currentUser.photoURL || '').slice(0, 2048),
       authorRole: String(authorRole || 'player').slice(0, 32),
@@ -273,7 +396,7 @@ export async function addCommentInFirestore(postId: string, content: string, aut
     return {
       id: commentId,
       postId: safePostId,
-      userId: currentUser.uid,
+      userId: authorUid,
       authorName: String(authorName || currentUser.displayName || 'Player'),
       authorAvatar: authorAvatar || currentUser.photoURL || '',
       authorRole: authorRole || 'player',
@@ -299,16 +422,383 @@ export async function deleteCommentInFirestore(postId: string, commentId: string
   }
 }
 
+// ====================================================
+// SONGS CATALOG
+// ====================================================
+
 export async function fetchSongsFromFirestore(): Promise<SongEntry[]> {
   const path = 'songs';
   try {
     const q = query(collection(db, path), where('id', '!=', ''));
     const snap = await getDocs(q);
-    return snap.docs.map((d) => d.data() as SongEntry);
+    return snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        ...data,
+        id: String(data.id || d.id),
+      } as SongEntry;
+    });
   } catch (err) {
     handleFirestoreError(err, OperationType.LIST, path);
   }
 }
+
+export async function saveSongInFirestore(
+  song: Partial<SongEntry>,
+  existingId?: string
+): Promise<SongEntry> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to save songs.');
+  }
+
+  const songId = sanitizeFirestoreId(
+    existingId || song.id || `song_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+  );
+  const path = `songs/${songId}`;
+  const songRef = doc(db, 'songs', songId);
+
+  try {
+    const snap = await getDoc(songRef);
+    if (snap.exists()) {
+      const existingData = snap.data() || {};
+      const updatePayload: Record<string, any> = {
+        updatedAt: serverTimestamp(),
+      };
+      if (song.title !== undefined) updatePayload.title = String(song.title || 'Untitled Song').trim().slice(0, 200);
+      if (song.artist !== undefined) updatePayload.artist = String(song.artist || 'Unknown Artist').trim().slice(0, 200);
+      if (song.mapper !== undefined) updatePayload.mapper = String(song.mapper || 'Official RoBeats').trim().slice(0, 120);
+      if (song.coverArt !== undefined) updatePayload.coverArt = String(song.coverArt || '').trim().slice(0, 2048);
+      if (song.coverArtEasy !== undefined) updatePayload.coverArtEasy = String(song.coverArtEasy || '').trim().slice(0, 2048);
+      if (song.coverArtNormal !== undefined) updatePayload.coverArtNormal = String(song.coverArtNormal || '').trim().slice(0, 2048);
+      if (song.coverArtHard !== undefined) updatePayload.coverArtHard = String(song.coverArtHard || '').trim().slice(0, 2048);
+      if (song.difficulty !== undefined) {
+        updatePayload.difficulty = {
+          easy: String(song.difficulty?.easy ?? existingData.difficulty?.easy ?? '-').slice(0, 16),
+          normal: String(song.difficulty?.normal ?? existingData.difficulty?.normal ?? '-').slice(0, 16),
+          hard: String(song.difficulty?.hard ?? existingData.difficulty?.hard ?? '-').slice(0, 16),
+        };
+      }
+      if (song.element !== undefined) updatePayload.element = String(song.element || 'Flow').slice(0, 64);
+      if (song.duration !== undefined) updatePayload.duration = String(song.duration || '').slice(0, 32);
+      if (song.bpm !== undefined) updatePayload.bpm = String(song.bpm || '').slice(0, 32);
+      if (song.dateAdded !== undefined) updatePayload.dateAdded = String(song.dateAdded || '').slice(0, 64);
+      if (song.isCustom !== undefined) updatePayload.isCustom = Boolean(song.isCustom);
+
+      await updateDoc(songRef, stripUndefinedDeep(updatePayload));
+      return {
+        ...existingData,
+        ...updatePayload,
+        id: songId,
+        updatedAt: new Date().toISOString(),
+      } as unknown as SongEntry;
+    }
+
+    const primaryCover = String(
+      song.coverArt || song.coverArtNormal || song.coverArtEasy || song.coverArtHard || ''
+    )
+      .trim()
+      .slice(0, 2048);
+
+    const safeDiff = {
+      easy: String(song.difficulty?.easy ?? '-').slice(0, 16),
+      normal: String(song.difficulty?.normal ?? '-').slice(0, 16),
+      hard: String(song.difficulty?.hard ?? '-').slice(0, 16),
+    };
+
+    const createPayload: Record<string, any> = stripUndefinedDeep({
+      id: songId,
+      title: String(song.title || 'Untitled Song').trim().slice(0, 200),
+      artist: String(song.artist || 'Unknown Artist').trim().slice(0, 200),
+      mapper: String(song.mapper || 'Official RoBeats').trim().slice(0, 120),
+      coverArt: primaryCover,
+      coverArtEasy: String(song.coverArtEasy || primaryCover).slice(0, 2048),
+      coverArtNormal: String(song.coverArtNormal || primaryCover).slice(0, 2048),
+      coverArtHard: String(song.coverArtHard || primaryCover).slice(0, 2048),
+      difficulty: safeDiff,
+      element: String(song.element || 'Flow').slice(0, 64),
+      duration: String(song.duration || '').slice(0, 32),
+      bpm: String(song.bpm || '').slice(0, 32),
+      dateAdded: String(song.dateAdded || new Date().toLocaleDateString('en-US')).slice(0, 64),
+      isCustom: Boolean(song.isCustom ?? true),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    await setDoc(songRef, createPayload);
+    return {
+      ...createPayload,
+      id: songId,
+      updatedAt: new Date().toISOString(),
+    } as unknown as SongEntry;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, path);
+  }
+}
+
+export async function deleteSongInFirestore(songId: string): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to delete songs.');
+  }
+  const safeId = sanitizeFirestoreId(songId);
+  const path = `songs/${safeId}`;
+
+  try {
+    await deleteDoc(doc(db, 'songs', safeId));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, path);
+  }
+}
+
+// ====================================================
+// ELEMENTS, RANKS, DIFFICULTY FRAMES, DISCORD WEBHOOKS
+// ====================================================
+
+export async function fetchElementsFromFirestore(): Promise<ElementConfig[]> {
+  const path = 'elements';
+  try {
+    const q = query(collection(db, path), where('id', '!=', ''));
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        name: String(data.name || d.id),
+        color: String(data.color || 'Cyan'),
+        hexColor: data.hexColor || undefined,
+        secondaryHexColor: data.secondaryHexColor || undefined,
+        imageUrl: data.imageUrl || undefined,
+      } as ElementConfig;
+    });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export async function saveElementsInFirestore(elements: ElementConfig[]): Promise<ElementConfig[]> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to update elements.');
+  }
+
+  for (const el of elements) {
+    const elementId = sanitizeFirestoreId((el as any).id || el.name.toLowerCase());
+    const path = `elements/${elementId}`;
+    const elRef = doc(db, 'elements', elementId);
+    const payload: Record<string, any> = stripUndefinedDeep({
+      name: String(el.name || elementId).slice(0, 64),
+      color: String(el.color || 'Cyan').slice(0, 64),
+      ...(el.hexColor !== undefined ? { hexColor: String(el.hexColor || '').slice(0, 32) } : {}),
+      ...(el.secondaryHexColor !== undefined
+        ? { secondaryHexColor: String(el.secondaryHexColor || '').slice(0, 32) }
+        : {}),
+      ...(el.imageUrl !== undefined ? { imageUrl: String(el.imageUrl || '').slice(0, 2048) } : {}),
+    });
+
+    try {
+      const snap = await getDoc(elRef);
+      if (snap.exists()) {
+        await updateDoc(elRef, payload);
+      } else {
+        await setDoc(elRef, { id: elementId, ...payload });
+      }
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, path);
+    }
+  }
+  return elements;
+}
+
+export async function fetchRanksFromFirestore(): Promise<RankConfig[]> {
+  const path = 'ranks';
+  try {
+    const q = query(collection(db, path), where('id', '!=', ''));
+    const snap = await getDocs(q);
+    const list = snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        id: String(data.id || d.id),
+        name: data.name,
+        iconUrl: String(data.iconUrl || ''),
+        color: String(data.color || '#64748B'),
+        description: data.description || '',
+      } as RankConfig;
+    });
+    if (list.length === 0) return DEFAULT_ROBEATS_RANKS;
+
+    // Sort Star -> Pro -> Amateur -> Novice -> Beginner when matching defaults
+    const order = ['star', 'pro', 'amateur', 'novice', 'beginner'];
+    list.sort((a, b) => {
+      const ia = order.indexOf(String(a.name).toLowerCase());
+      const ib = order.indexOf(String(b.name).toLowerCase());
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return String(a.name).localeCompare(String(b.name));
+    });
+    return list;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export async function saveRanksInFirestore(ranks: RankConfig[]): Promise<RankConfig[]> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to update ranks.');
+  }
+
+  const incomingIds = new Set<string>();
+  try {
+    const existingSnap = await getDocs(query(collection(db, 'ranks'), where('id', '!=', '')));
+    for (const rank of ranks) {
+      const rankId = sanitizeFirestoreId(rank.id || rank.name.toLowerCase());
+      incomingIds.add(rankId);
+      const rankRef = doc(db, 'ranks', rankId);
+      const payload = stripUndefinedDeep({
+        name: String(rank.name || rankId).slice(0, 64),
+        color: String(rank.color || '#64748B').slice(0, 32),
+        iconUrl: String(rank.iconUrl || '').slice(0, 2048),
+        description: String(rank.description || '').slice(0, 300),
+      });
+
+      const snap = await getDoc(rankRef);
+      if (snap.exists()) {
+        await updateDoc(rankRef, payload);
+      } else {
+        await setDoc(rankRef, { id: rankId, ...payload });
+      }
+    }
+
+    // Delete ranks removed by admin
+    for (const existingDoc of existingSnap.docs) {
+      if (!incomingIds.has(existingDoc.id)) {
+        await deleteDoc(doc(db, 'ranks', existingDoc.id));
+      }
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, 'ranks');
+  }
+
+  return ranks;
+}
+
+export async function fetchDifficultyFramesFromFirestore(): Promise<DifficultyFramesConfig> {
+  const path = 'settings/frames';
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'frames'));
+    if (!snap.exists()) return DEFAULT_DIFFICULTY_FRAMES;
+    const data = snap.data();
+    return {
+      easy: data.easy ?? DEFAULT_DIFFICULTY_FRAMES.easy,
+      normal: data.normal ?? DEFAULT_DIFFICULTY_FRAMES.normal,
+      hard: data.hard ?? DEFAULT_DIFFICULTY_FRAMES.hard,
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, path);
+  }
+}
+
+export async function saveDifficultyFramesInFirestore(
+  frames: DifficultyFramesConfig
+): Promise<DifficultyFramesConfig> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to update difficulty frames.');
+  }
+  const path = 'settings/frames';
+  const framesRef = doc(db, 'settings', 'frames');
+  const payload = {
+    easy: String(frames.easy ?? '').slice(0, 2048),
+    normal: String(frames.normal ?? '').slice(0, 2048),
+    hard: String(frames.hard ?? '').slice(0, 2048),
+    updatedAt: serverTimestamp(),
+  };
+
+  try {
+    const snap = await getDoc(framesRef);
+    if (snap.exists()) {
+      await updateDoc(framesRef, payload);
+    } else {
+      await setDoc(framesRef, { id: 'frames', ...payload });
+    }
+    return {
+      easy: payload.easy,
+      normal: payload.normal,
+      hard: payload.hard,
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, path);
+  }
+}
+
+export async function fetchDiscordWebhooksFromFirestore(): Promise<DiscordWebhooksConfig> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) return {};
+  const path = 'webhooks/discord';
+  try {
+    const snap = await getDoc(doc(db, 'webhooks', 'discord'));
+    if (!snap.exists()) {
+      return {
+        'Daily mission': '',
+        'Weekly mission': '',
+        'New song': '',
+        'Updates': '',
+      };
+    }
+    const data = snap.data();
+    return {
+      'Daily mission': data.dailyMission || '',
+      'Weekly mission': data.weeklyMission || '',
+      'New song': data.newSong || '',
+      'Updates': data.updates || '',
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, path);
+  }
+}
+
+export async function saveDiscordWebhooksInFirestore(
+  config: DiscordWebhooksConfig
+): Promise<DiscordWebhooksConfig> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to save Discord webhooks.');
+  }
+  const path = 'webhooks/discord';
+  const webhookRef = doc(db, 'webhooks', 'discord');
+  const extractUrl = (val: any) =>
+    (typeof val === 'string' ? val : val?.url || '').trim().slice(0, 512);
+
+  const fieldsPayload = {
+    dailyMission: extractUrl(config['Daily mission']),
+    weeklyMission: extractUrl(config['Weekly mission']),
+    newSong: extractUrl(config['New song']),
+    updates: extractUrl(config['Updates']),
+    updatedAt: serverTimestamp(),
+  };
+
+  try {
+    const snap = await getDoc(webhookRef);
+    if (snap.exists()) {
+      await updateDoc(webhookRef, fieldsPayload);
+    } else {
+      await setDoc(webhookRef, { id: 'discord', ...fieldsPayload });
+    }
+    return {
+      'Daily mission': fieldsPayload.dailyMission,
+      'Weekly mission': fieldsPayload.weeklyMission,
+      'New song': fieldsPayload.newSong,
+      'Updates': fieldsPayload.updates,
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, path);
+  }
+}
+
+// ====================================================
+// USERS, ROLES & STREAK REWARDS
+// ====================================================
 
 export async function resolveUserRoleFromFirestore(firebaseUser: FirebaseUser): Promise<UserRole> {
   const userEmail = firebaseUser.email?.toLowerCase() || '';
@@ -316,7 +806,7 @@ export async function resolveUserRoleFromFirestore(firebaseUser: FirebaseUser): 
     return 'admin';
   }
   try {
-    const adminDoc = await getDoc(doc(db, 'admins', firebaseUser.uid));
+    const adminDoc = await getDoc(doc(db, 'admins', sanitizeFirestoreId(firebaseUser.uid)));
     if (adminDoc.exists()) {
       const role = adminDoc.data()?.role;
       if (role === 'admin' || role === 'staff') return role;
@@ -380,25 +870,35 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
   const privateRef = doc(db, 'users', uid, 'private', 'info');
 
   let existingPublic: any = null;
+  let existingPrivate: any = null;
   try {
-    const snap = await getDoc(userRef);
+    const [snap, privSnap] = await Promise.all([getDoc(userRef), getDoc(privateRef)]);
     if (snap.exists()) existingPublic = snap.data();
+    if (privSnap.exists()) existingPrivate = privSnap.data();
   } catch (err) {
     handleFirestoreError(err, OperationType.GET, `users/${uid}`);
   }
 
-  const baseUsername = (
-    existingPublic?.username ||
-    firebaseUser.email?.split('@')[0] ||
-    firebaseUser.displayName ||
-    `player_${uid.slice(0, 6)}`
-  )
-    .toLowerCase()
-    .replace(/[^a-z0-9_]/g, '')
-    .slice(0, 64) || `player_${uid.slice(0, 6)}`;
+  const baseUsername =
+    (
+      existingPublic?.username ||
+      firebaseUser.email?.split('@')[0] ||
+      firebaseUser.displayName ||
+      `player_${uid.slice(0, 6)}`
+    )
+      .toLowerCase()
+      .replace(/[^a-z0-9_]/g, '')
+      .slice(0, 64) || `player_${uid.slice(0, 6)}`;
 
-  const displayName = (existingPublic?.displayName || firebaseUser.displayName || baseUsername).slice(0, 80);
-  const avatar = (existingPublic?.avatar || firebaseUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80').slice(0, 2048);
+  const displayName = (existingPublic?.displayName || firebaseUser.displayName || baseUsername).slice(
+    0,
+    80
+  );
+  const avatar = (
+    existingPublic?.avatar ||
+    firebaseUser.photoURL ||
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+  ).slice(0, 2048);
 
   if (!existingPublic) {
     try {
@@ -436,15 +936,19 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
 
   // Write PII strictly into isolated private subcollection
   try {
-    await setDoc(
-      privateRef,
-      {
-        uid,
-        email: (firebaseUser.email || '').slice(0, 254),
+    const emailStr = (firebaseUser.email || '').slice(0, 254);
+    if (existingPrivate) {
+      await updateDoc(privateRef, {
+        email: emailStr,
         updatedAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+      });
+    } else {
+      await setDoc(privateRef, {
+        uid,
+        email: emailStr,
+        updatedAt: serverTimestamp(),
+      });
+    }
   } catch (err) {
     handleFirestoreError(err, OperationType.WRITE, `users/${uid}/private/info`);
   }
@@ -464,9 +968,194 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
     createdAt: normalizeTimestamp(existingPublic?.createdAt),
     currentStreak: existingPublic?.currentStreak ?? 1,
     bestStreak: existingPublic?.bestStreak ?? 1,
+    lastCheckInDate: existingPrivate?.lastCheckInDate || '',
     unlockedFrames: Array.isArray(existingPublic?.unlockedFrames) ? existingPublic.unlockedFrames : [],
     equippedAvatarFrame: existingPublic?.equippedAvatarFrame || undefined,
   };
+}
+
+function getGmt8DateString(offsetDays = 0): string {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const gmt8Date = new Date(utc - 8 * 3600000 + offsetDays * 86400000);
+  const y = gmt8Date.getFullYear();
+  const m = String(gmt8Date.getMonth() + 1).padStart(2, '0');
+  const d = String(gmt8Date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+export async function checkInStreakInFirestore(): Promise<{
+  success: boolean;
+  alreadyCheckedIn: boolean;
+  message?: string;
+  currentStreak: number;
+  bestStreak: number;
+  lastCheckInDate: string;
+  unlockedFrames: string[];
+  equippedAvatarFrame?: string;
+  newlyUnlockedFrames: string[];
+}> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Google sign-in required for Cloud streak check-in.');
+  }
+
+  const uid = sanitizeFirestoreId(currentUser.uid);
+  const userRef = doc(db, 'users', uid);
+  const privateRef = doc(db, 'users', uid, 'private', 'info');
+  const today = getGmt8DateString(0);
+  const yesterday = getGmt8DateString(-1);
+
+  let pubData: any = {};
+  let privData: any = {};
+  try {
+    const [pubSnap, privSnap] = await Promise.all([getDoc(userRef), getDoc(privateRef)]);
+    if (pubSnap.exists()) pubData = pubSnap.data();
+    if (privSnap.exists()) privData = privSnap.data();
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, `users/${uid}`);
+  }
+
+  const lastCheckIn = String(privData?.lastCheckInDate || '');
+  const existingFrames = new Set<string>(
+    Array.isArray(pubData?.unlockedFrames) ? pubData.unlockedFrames : []
+  );
+
+  if (lastCheckIn === today) {
+    return {
+      success: false,
+      alreadyCheckedIn: true,
+      message: 'You have already checked in today! Come back tomorrow for the next streak day.',
+      currentStreak: pubData?.currentStreak || 1,
+      bestStreak: pubData?.bestStreak || 1,
+      lastCheckInDate: today,
+      unlockedFrames: Array.from(existingFrames),
+      equippedAvatarFrame: pubData?.equippedAvatarFrame || undefined,
+      newlyUnlockedFrames: [],
+    };
+  }
+
+  const newStreak = lastCheckIn === yesterday ? (Number(pubData?.currentStreak) || 0) + 1 : 1;
+  const bestStreak = Math.max(Number(pubData?.bestStreak) || 0, newStreak);
+  const newlyUnlocked: string[] = [];
+
+  if (newStreak >= 1 && !existingFrames.has('frame_novice')) {
+    existingFrames.add('frame_novice');
+    newlyUnlocked.push('frame_novice');
+  }
+  if (newStreak >= 3 && !existingFrames.has('frame_electro')) {
+    existingFrames.add('frame_electro');
+    newlyUnlocked.push('frame_electro');
+  }
+  if (newStreak >= 7 && !existingFrames.has('frame_gold')) {
+    existingFrames.add('frame_gold');
+    newlyUnlocked.push('frame_gold');
+  }
+  if (newStreak >= 14 && !existingFrames.has('frame_overdrive')) {
+    existingFrames.add('frame_overdrive');
+    newlyUnlocked.push('frame_overdrive');
+  }
+  if (newStreak >= 30 && !existingFrames.has('frame_cosmic')) {
+    existingFrames.add('frame_cosmic');
+    newlyUnlocked.push('frame_cosmic');
+  }
+
+  const updatedFrames = Array.from(existingFrames);
+  const equippedAvatarFrame =
+    pubData?.equippedAvatarFrame || (updatedFrames.length > 0 ? updatedFrames[0] : '');
+
+  try {
+    await updateDoc(userRef, {
+      currentStreak: newStreak,
+      bestStreak,
+      unlockedFrames: updatedFrames.slice(0, 20),
+      equippedAvatarFrame: String(equippedAvatarFrame || '').slice(0, 64),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `users/${uid}`);
+  }
+
+  try {
+    if (privData && privData.uid) {
+      await updateDoc(privateRef, {
+        lastCheckInDate: today,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      await setDoc(privateRef, {
+        uid,
+        email: (currentUser.email || '').slice(0, 254),
+        lastCheckInDate: today,
+        updatedAt: serverTimestamp(),
+      });
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, `users/${uid}/private/info`);
+  }
+
+  return {
+    success: true,
+    alreadyCheckedIn: false,
+    currentStreak: newStreak,
+    bestStreak,
+    lastCheckInDate: today,
+    unlockedFrames: updatedFrames,
+    equippedAvatarFrame: equippedAvatarFrame || undefined,
+    newlyUnlockedFrames: newlyUnlocked,
+  };
+}
+
+export async function equipAvatarFrameInFirestore(frameId?: string): Promise<string | undefined> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Google sign-in required to equip avatar frame.');
+  }
+  const uid = sanitizeFirestoreId(currentUser.uid);
+  const cleanFrame = String(frameId || '').slice(0, 64);
+
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      equippedAvatarFrame: cleanFrame,
+      updatedAt: serverTimestamp(),
+    });
+    return cleanFrame || undefined;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `users/${uid}`);
+  }
+}
+
+export async function fetchUserProfileFromFirestore(identifier: string): Promise<User | null> {
+  const clean = String(identifier || '').trim();
+  if (!clean) return null;
+
+  try {
+    const byIdSnap = await getDoc(doc(db, 'users', sanitizeFirestoreId(clean)));
+    if (byIdSnap.exists()) {
+      const data = byIdSnap.data();
+      const role = (data.role || 'player') as UserRole;
+      return {
+        id: String(data.id || byIdSnap.id),
+        username: String(data.username || 'player'),
+        displayName: String(data.displayName || data.username || 'Player'),
+        robloxUsername: data.robloxUsername || '',
+        avatar: data.avatar || '',
+        bio: data.bio || '',
+        roBeatsRank: data.roBeatsRank || 'Beginner',
+        preferredNoteSpeed: data.preferredNoteSpeed || '1.8x',
+        role,
+        permissions: getPermissionsForRole(role),
+        createdAt: normalizeTimestamp(data.createdAt),
+        currentStreak: data.currentStreak ?? 1,
+        bestStreak: data.bestStreak ?? 1,
+        unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
+        equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+      };
+    }
+  } catch {
+    // Public get on /users/{id} may be restricted to owner/admin; fallback to API cleanly
+  }
+  return null;
 }
 
 export async function fetchAllUsersFromFirestore(): Promise<User[]> {
@@ -516,7 +1205,9 @@ export async function updateUserInFirestoreAsAdmin(
   const userUpdate: Record<string, any> = {
     updatedAt: serverTimestamp(),
   };
-  if (updates.displayName !== undefined) userUpdate.displayName = String(updates.displayName).slice(0, 80);
+  if (updates.displayName !== undefined) {
+    userUpdate.displayName = String(updates.displayName).slice(0, 80);
+  }
   if (updates.avatar !== undefined) userUpdate.avatar = String(updates.avatar).slice(0, 2048);
   if (updates.role !== undefined) userUpdate.role = updates.role;
 

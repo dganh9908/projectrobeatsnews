@@ -38,6 +38,7 @@ import {
   DEFAULT_DIFFICULTY_FRAMES,
 } from '../types';
 import { fetchDifficultyFrames, updateDifficultyFrames } from '../services/fandomService';
+import { BOOTSTRAP_ADMIN_EMAILS } from '../services/firestoreService';
 import { FramedSongCover } from './FramedSongCover';
 import { safeJson } from '../utils/safeJson';
 
@@ -137,9 +138,13 @@ export const AdminPanel: React.FC<{
     return res;
   };
 
-  const handleDeleteUser = async (userId: string, username: string) => {
-    if (username.toLowerCase() === 'meelo') {
-      alert('The primary administrator account (@meelo) cannot be deleted.');
+  const handleDeleteUser = async (userId: string, username: string, email?: string) => {
+    const isProtectedBootstrap =
+      username.toLowerCase() === 'meelo' ||
+      (email ? BOOTSTRAP_ADMIN_EMAILS.includes(email.toLowerCase()) : false) ||
+      BOOTSTRAP_ADMIN_EMAILS.some((e) => e.split('@')[0].toLowerCase() === username.toLowerCase());
+    if (isProtectedBootstrap) {
+      alert('Primary administrator accounts cannot be deleted.');
       return;
     }
     if (currentUser?.id === userId) {
@@ -890,7 +895,10 @@ export const AdminPanel: React.FC<{
                     <tbody className="divide-y divide-zinc-800/60">
                       {userList.map((u) => {
                         const isSelf = currentUser?.id === u.id;
-                        const isPrimaryAdmin = u.username.toLowerCase() === 'meelo';
+                        const isPrimaryAdmin =
+                          u.username.toLowerCase() === 'meelo' ||
+                          (u.email ? BOOTSTRAP_ADMIN_EMAILS.includes(u.email.toLowerCase()) : false) ||
+                          BOOTSTRAP_ADMIN_EMAILS.some((e) => e.split('@')[0].toLowerCase() === u.username.toLowerCase());
 
                         return (
                           <tr key={u.id} className="hover:bg-zinc-800/30 transition">
@@ -978,7 +986,7 @@ export const AdminPanel: React.FC<{
                                 {!isPrimaryAdmin && !isSelf && (
                                   <button
                                     type="button"
-                                    onClick={() => handleDeleteUser(u.id, u.username)}
+                                    onClick={() => handleDeleteUser(u.id, u.username, u.email)}
                                     disabled={deletingUserId === u.id}
                                     className="p-1.5 hover:bg-red-950 text-zinc-500 hover:text-red-400 rounded-lg transition"
                                     title="Delete Account"

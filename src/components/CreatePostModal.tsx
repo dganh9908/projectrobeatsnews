@@ -511,34 +511,10 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         coverImage: finalCover || undefined,
       };
 
-      const fbToken = await getFirebaseIdToken();
       let createdPost: NewsArticle | null = null;
 
-      try {
-        const res = await fetch('/api/news', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (res.ok) {
-          createdPost = await safeJson(res, null);
-        } else if (!auth.currentUser) {
-          const errorData = await safeJson(res, {});
-          throw new Error(errorData?.error || 'Failed to create post');
-        }
-      } catch (apiErr: any) {
-        if (!auth.currentUser) {
-          throw apiErr;
-        }
-      }
-
       if (auth.currentUser) {
-        const baseArticle: NewsArticle = createdPost || {
+        const baseArticle: NewsArticle = {
           ...payload,
           id: postId,
           author: {
@@ -553,6 +529,23 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           reactions: {},
         };
         createdPost = await createPostInFirestore(baseArticle);
+      } else {
+        const fbToken = await getFirebaseIdToken();
+        const res = await fetch('/api/news', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            ...(fbToken ? { 'X-Firebase-Token': fbToken } : {}),
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const errorData = await safeJson(res, {});
+          throw new Error(errorData?.error || 'Failed to create post');
+        }
+        createdPost = await safeJson(res, null);
       }
 
       if (createdPost) {

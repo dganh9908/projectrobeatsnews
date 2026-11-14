@@ -17,8 +17,7 @@ import {
 } from 'lucide-react';
 import { User, RoBeatsRank, RankConfig } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { fetchRanksList } from '../services/fandomService';
-import { safeJson } from '../utils/safeJson';
+import { fetchRanksList, fetchUserProfile } from '../services/fandomService';
 import { UserAvatar } from './UserAvatar';
 
 interface UserProfileModalProps {
@@ -103,12 +102,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     }
 
     setIsLoading(true);
-    fetch(`/api/users/${encodeURIComponent(identifier)}`)
-      .then(async res => {
-        if (res.ok) return await safeJson(res, null);
-        return null;
-      })
-      .then(fullUser => {
+    fetchUserProfile(identifier)
+      .then((fullUser) => {
         if (fullUser) {
           setProfileData((prev: any) => ({
             ...prev,
