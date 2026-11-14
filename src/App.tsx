@@ -381,7 +381,7 @@ export default function App() {
                 </p>
               </div>
 
-              {canUserPost ? (
+              {canUserPost && (
                 <button
                   onClick={() => setIsCreatePostModalOpen(true)}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-xs font-semibold transition-all cursor-pointer"
@@ -389,10 +389,6 @@ export default function App() {
                   <PlusCircle className="w-4 h-4" />
                   <span>Create the first post</span>
                 </button>
-              ) : (
-                <p className="text-[11px] text-zinc-500">
-                  Staff and Admins can publish new posts for players.
-                </p>
               )}
             </div>
           ) : (

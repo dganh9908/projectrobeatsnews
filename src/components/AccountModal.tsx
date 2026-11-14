@@ -120,8 +120,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               <UserIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
-                {isAuthenticated ? 'Google Account Profile' : 'Sign in with Google'}
+              <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2 font-display">
+                {isAuthenticated ? 'RoBeats! News Profile' : 'Sign in with Google'}
                 {isAuthenticated && user?.role === 'admin' && (
                   <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                     Admin
@@ -207,7 +207,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               </div>
 
               <div className="space-y-1.5 max-w-md mx-auto">
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-base font-bold text-white font-display">
                   Sign In with Your Google Account
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -254,7 +254,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 <div className="flex-1 text-center sm:text-left space-y-1">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
                     <div>
-                      <h3 className="text-lg font-bold text-white tracking-tight">
+                      <h3 className="text-lg font-bold text-white tracking-tight font-display">
                         {user.displayName || user.username}
                       </h3>
                       <p className="text-xs text-cyan-400 font-mono">@{user.username}</p>

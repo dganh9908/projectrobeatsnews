@@ -137,7 +137,7 @@ export const StreakModal: React.FC<StreakModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-black text-white">Daily Streak</h3>
+                <h3 className="text-base sm:text-lg font-black text-white font-display">Daily Streak</h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/40 uppercase">
                   Login Streak
                 </span>

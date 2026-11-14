@@ -7,6 +7,11 @@
     color: #F4F4F5;
   }
 
+  h1, h2, .font-display {
+    font-family: 'Righteous', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-synthesis-weight: none;
+  }
+
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }

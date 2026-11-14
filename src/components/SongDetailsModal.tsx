@@ -163,7 +163,7 @@ export const SongDetailsModal: React.FC<SongDetailsModalProps> = ({ song: initia
             {/* Song Meta */}
             <div className="min-w-0 flex-1 space-y-1.5 text-center sm:text-left">
               <div className="flex items-center gap-1.5 flex-wrap justify-center sm:justify-start">
-                <h3 className="text-lg sm:text-xl font-black text-white leading-tight truncate">{song.title}</h3>
+                <h3 className="text-lg sm:text-xl font-black text-white leading-tight truncate font-display">{song.title}</h3>
                 {song.isCustom && (
                   <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono font-bold">
                     Custom

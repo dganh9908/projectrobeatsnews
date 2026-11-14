@@ -136,7 +136,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             </div>
 
             {/* Display Name & Username */}
-            <h3 className="text-lg font-black text-white leading-tight">{displayName}</h3>
+            <h3 className="text-lg font-black text-white leading-tight font-display">{displayName}</h3>
             <p className="text-xs text-cyan-400 font-mono mt-0.5">@{username}</p>
 
             {/* Role, Rank & Streak Badges */}

@@ -445,7 +445,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold text-white">Edit Post</h3>
+                <h3 className="text-base sm:text-lg font-bold text-white font-display">Edit Post</h3>
                 {user?.role === 'admin' ? (
                   <span className="flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
                     <Crown className="w-3 h-3" /> Admin
