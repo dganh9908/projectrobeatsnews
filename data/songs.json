@@ -1,0 +1,92 @@
+[
+  {
+    "id": "wiki_0",
+    "title": "Monday Night Monsters",
+    "artist": "FinnMK",
+    "mapper": "Official RoBeats",
+    "coverArt": "https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704",
+    "coverArtEasy": "https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704",
+    "coverArtNormal": "https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704",
+    "coverArtHard": "https://static.wikia.nocookie.net/robeats/images/f/f6/Mondaynightnormal.png/revision/latest/scale-to-width-down/100?cb=20200703131704",
+    "difficulty": {
+      "easy": "1",
+      "normal": "1",
+      "hard": "14"
+    },
+    "element": "Flow",
+    "bpm": "100",
+    "duration": "2:14"
+  },
+  {
+    "id": "wiki_1",
+    "title": "Daily Life",
+    "artist": "FinnMK",
+    "mapper": "Official RoBeats",
+    "coverArt": "https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437",
+    "coverArtEasy": "https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437",
+    "coverArtNormal": "https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437",
+    "coverArtHard": "https://static.wikia.nocookie.net/robeats/images/0/04/Daily_life.png/revision/latest/scale-to-width-down/100?cb=20210628193437",
+    "difficulty": {
+      "easy": "-",
+      "normal": "2",
+      "hard": "17"
+    },
+    "element": "Chill",
+    "bpm": "106",
+    "duration": "2:02"
+  },
+  {
+    "id": "wiki_2",
+    "title": "[@_@]",
+    "artist": "Chroma",
+    "mapper": "Official RoBeats",
+    "coverArt": "https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614",
+    "coverArtEasy": "https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614",
+    "coverArtNormal": "https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614",
+    "coverArtHard": "https://static.wikia.nocookie.net/robeats/images/2/2d/%40_%401.webp/revision/latest/scale-to-width-down/100?cb=20210317021614",
+    "difficulty": {
+      "easy": "1",
+      "normal": "3",
+      "hard": "25"
+    },
+    "element": "Chill",
+    "bpm": "128",
+    "duration": "2:20"
+  },
+  {
+    "id": "wiki_3",
+    "title": "Adopt Me",
+    "artist": "BSlick",
+    "mapper": "Official RoBeats",
+    "coverArt": "https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804",
+    "coverArtEasy": "https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804",
+    "coverArtNormal": "https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804",
+    "coverArtHard": "https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804",
+    "difficulty": {
+      "easy": "-",
+      "normal": "3",
+      "hard": "16"
+    },
+    "element": "VibeRush",
+    "bpm": "135",
+    "duration": "1:50"
+  },
+  {
+    "id": "wiki_4",
+    "title": "Better Run",
+    "artist": "Rutra",
+    "mapper": "Official RoBeats",
+    "coverArt": "https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801",
+    "coverArtEasy": "https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801",
+    "coverArtNormal": "https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801",
+    "coverArtHard": "https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801",
+    "difficulty": {
+      "easy": "-",
+      "normal": "3",
+      "hard": "21"
+    },
+    "element": "ChillRush",
+    "bpm": "150",
+    "duration": "2:05"
+  }
+]

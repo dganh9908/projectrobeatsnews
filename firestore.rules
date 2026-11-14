@@ -1,0 +1,471 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ----------------------------------------------------
+    // Global Helpers
+    // ----------------------------------------------------
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isBootstrapAdmin() {
+      return isVerified() && request.auth.token.email == 'chautuan9461@gmail.com';
+    }
+
+    function isAdmin() {
+      return isVerified() && (
+        isBootstrapAdmin() ||
+        (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin'
+        )
+      );
+    }
+
+    function isStaff() {
+      return isVerified() && (
+        isAdmin() ||
+        (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role in ['admin', 'staff']
+        )
+      );
+    }
+
+    // ----------------------------------------------------
+    // Validation Blueprints
+    // ----------------------------------------------------
+    function isValidUserPublic(data) {
+      return data.keys().hasAll(['id', 'username', 'role', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'id', 'username', 'displayName', 'robloxUsername', 'avatar', 'bio',
+          'roBeatsRank', 'preferredNoteSpeed', 'role', 'currentStreak',
+          'bestStreak', 'equippedAvatarFrame', 'unlockedFrames', 'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.id)
+        && data.username is string && data.username.size() >= 2 && data.username.size() <= 64
+        && data.role in ['admin', 'staff', 'editor', 'player', 'robeatsdev']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 80))
+        && (!('robloxUsername' in data) || (data.robloxUsername is string && data.robloxUsername.size() <= 64))
+        && (!('avatar' in data) || (data.avatar is string && data.avatar.size() <= 2048))
+        && (!('bio' in data) || (data.bio is string && data.bio.size() <= 500))
+        && (!('roBeatsRank' in data) || (data.roBeatsRank is string && data.roBeatsRank.size() <= 40))
+        && (!('preferredNoteSpeed' in data) || (data.preferredNoteSpeed is string && data.preferredNoteSpeed.size() <= 20))
+        && (!('currentStreak' in data) || (data.currentStreak is number && data.currentStreak >= 0 && data.currentStreak <= 10000))
+        && (!('bestStreak' in data) || (data.bestStreak is number && data.bestStreak >= 0 && data.bestStreak <= 10000))
+        && (!('equippedAvatarFrame' in data) || (data.equippedAvatarFrame is string && data.equippedAvatarFrame.size() <= 64))
+        && (!('unlockedFrames' in data) || (
+          data.unlockedFrames is list
+          && data.unlockedFrames.size() <= 20
+          && (data.unlockedFrames.size() == 0 || data.unlockedFrames[0] is string)
+        ));
+    }
+
+    function isValidUserPrivate(data) {
+      return data.keys().hasAll(['uid', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'lastCheckInDate', 'updatedAt'])
+        && isValidId(data.uid)
+        && data.updatedAt is timestamp
+        && (!('email' in data) || (data.email is string && data.email.size() <= 254))
+        && (!('lastCheckInDate' in data) || (data.lastCheckInDate is string && data.lastCheckInDate.size() <= 32));
+    }
+
+    function isValidAdminRole(data) {
+      return data.keys().hasAll(['uid', 'role', 'createdAt'])
+        && data.keys().hasOnly(['uid', 'role', 'email', 'grantedBy', 'createdAt'])
+        && isValidId(data.uid)
+        && data.role in ['admin', 'staff']
+        && data.createdAt is timestamp
+        && (!('email' in data) || (data.email is string && data.email.size() <= 254))
+        && (!('grantedBy' in data) || (data.grantedBy is string && data.grantedBy.size() <= 128));
+    }
+
+    function isValidPost(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'authorUid', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'id', 'title', 'subtitle', 'content', 'summary', 'category', 'authorUid',
+          'author', 'publishedAt', 'createdAt', 'updatedAt', 'readTime', 'coverImage',
+          'coverImageCaption', 'isBreaking', 'isFeatured', 'isTrending', 'missionRank',
+          'status', 'tags', 'views', 'songs', 'reactions'
+        ])
+        && isValidId(data.id)
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.category is string && data.category.size() >= 1 && data.category.size() <= 64
+        && isValidId(data.authorUid)
+        && data.status in ['draft', 'published']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (!('subtitle' in data) || (data.subtitle is string && data.subtitle.size() <= 300))
+        && (!('content' in data) || (data.content is string && data.content.size() <= 20000))
+        && (!('summary' in data) || (data.summary is string && data.summary.size() <= 500))
+        && (!('author' in data) || data.author is map)
+        && (!('publishedAt' in data) || (data.publishedAt is string && data.publishedAt.size() <= 64))
+        && (!('readTime' in data) || (data.readTime is string && data.readTime.size() <= 32))
+        && (!('coverImage' in data) || (data.coverImage is string && data.coverImage.size() <= 2048))
+        && (!('coverImageCaption' in data) || (data.coverImageCaption is string && data.coverImageCaption.size() <= 300))
+        && (!('isBreaking' in data) || data.isBreaking is bool)
+        && (!('isFeatured' in data) || data.isFeatured is bool)
+        && (!('isTrending' in data) || data.isTrending is bool)
+        && (!('missionRank' in data) || (data.missionRank is string && data.missionRank.size() <= 32))
+        && (!('views' in data) || (data.views is number && data.views >= 0))
+        && (!('tags' in data) || (
+          data.tags is list
+          && data.tags.size() <= 15
+          && (data.tags.size() == 0 || data.tags[0] is string)
+        ))
+        && (!('songs' in data) || (
+          data.songs is list
+          && data.songs.size() <= 20
+          && (data.songs.size() == 0 || data.songs[0] is map)
+        ))
+        && (!('reactions' in data) || data.reactions is map);
+    }
+
+    function isValidPostComment(data) {
+      return data.keys().hasAll(['id', 'postId', 'authorUid', 'authorName', 'content', 'createdAt'])
+        && data.keys().hasOnly(['id', 'postId', 'authorUid', 'authorName', 'authorAvatar', 'authorRole', 'content', 'createdAt'])
+        && isValidId(data.id)
+        && isValidId(data.postId)
+        && isValidId(data.authorUid)
+        && data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 80
+        && data.content is string && data.content.size() >= 1 && data.content.size() <= 1000
+        && data.createdAt is timestamp
+        && (!('authorAvatar' in data) || (data.authorAvatar is string && data.authorAvatar.size() <= 2048))
+        && (!('authorRole' in data) || (data.authorRole is string && data.authorRole.size() <= 32));
+    }
+
+    function isValidSong(data) {
+      return data.keys().hasAll(['id', 'title', 'artist', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'id', 'title', 'artist', 'mapper', 'coverArt', 'coverArtEasy', 'coverArtNormal',
+          'coverArtHard', 'difficulty', 'element', 'duration', 'bpm', 'dateAdded',
+          'isCustom', 'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.id)
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.artist is string && data.artist.size() >= 1 && data.artist.size() <= 200
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (!('mapper' in data) || (data.mapper is string && data.mapper.size() <= 120))
+        && (!('coverArt' in data) || (data.coverArt is string && data.coverArt.size() <= 2048))
+        && (!('coverArtEasy' in data) || (data.coverArtEasy is string && data.coverArtEasy.size() <= 2048))
+        && (!('coverArtNormal' in data) || (data.coverArtNormal is string && data.coverArtNormal.size() <= 2048))
+        && (!('coverArtHard' in data) || (data.coverArtHard is string && data.coverArtHard.size() <= 2048))
+        && (!('difficulty' in data) || data.difficulty is map)
+        && (!('element' in data) || (data.element is string && data.element.size() <= 64))
+        && (!('duration' in data) || (data.duration is string && data.duration.size() <= 32))
+        && (!('bpm' in data) || (data.bpm is string && data.bpm.size() <= 32))
+        && (!('dateAdded' in data) || (data.dateAdded is string && data.dateAdded.size() <= 64))
+        && (!('isCustom' in data) || data.isCustom is bool);
+    }
+
+    function isValidElement(data) {
+      return data.keys().hasAll(['id', 'name', 'color'])
+        && data.keys().hasOnly(['id', 'name', 'color', 'hexColor', 'secondaryHexColor', 'imageUrl'])
+        && isValidId(data.id)
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 64
+        && data.color is string && data.color.size() <= 64
+        && (!('hexColor' in data) || (data.hexColor is string && data.hexColor.size() <= 32))
+        && (!('secondaryHexColor' in data) || (data.secondaryHexColor is string && data.secondaryHexColor.size() <= 32))
+        && (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 2048));
+    }
+
+    function isValidRank(data) {
+      return data.keys().hasAll(['id', 'name', 'color'])
+        && data.keys().hasOnly(['id', 'name', 'iconUrl', 'color', 'description'])
+        && isValidId(data.id)
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 64
+        && data.color is string && data.color.size() <= 32
+        && (!('iconUrl' in data) || (data.iconUrl is string && data.iconUrl.size() <= 2048))
+        && (!('description' in data) || (data.description is string && data.description.size() <= 300));
+    }
+
+    function isValidSiteSetting(data) {
+      return data.keys().hasAll(['id', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'easy', 'normal', 'hard', 'updatedAt'])
+        && isValidId(data.id)
+        && data.updatedAt is timestamp
+        && (!('easy' in data) || (data.easy is string && data.easy.size() <= 2048))
+        && (!('normal' in data) || (data.normal is string && data.normal.size() <= 2048))
+        && (!('hard' in data) || (data.hard is string && data.hard.size() <= 2048));
+    }
+
+    // ----------------------------------------------------
+    // Collection Match Rules
+    // ----------------------------------------------------
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isSignedIn() && (isBootstrapAdmin() || resource.data.id == request.auth.uid);
+
+      allow create: if isVerified()
+        && isValidId(userId)
+        && isValidUserPublic(incoming())
+        && incoming().id == userId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (isAdmin() || (isOwner(userId) && incoming().role == 'player'));
+
+      allow update: if isVerified()
+        && isValidId(userId)
+        && isValidUserPublic(incoming())
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            isOwner(userId)
+            && incoming().role == existing().role
+            && incoming().diff(existing()).affectedKeys().hasOnly([
+              'displayName', 'robloxUsername', 'avatar', 'bio', 'roBeatsRank',
+              'preferredNoteSpeed', 'currentStreak', 'bestStreak',
+              'equippedAvatarFrame', 'unlockedFrames', 'updatedAt'
+            ])
+          )
+        );
+
+      allow delete: if isValidId(userId) && (isOwner(userId) || isAdmin());
+
+      match /private/{docId} {
+        allow get: if isValidId(userId) && isValidId(docId) && (isOwner(userId) || isAdmin());
+        allow list: if isSignedIn() && (isBootstrapAdmin() || resource.data.uid == request.auth.uid);
+
+        allow create: if isVerified()
+          && isValidId(userId)
+          && isValidId(docId)
+          && isValidUserPrivate(incoming())
+          && incoming().uid == userId
+          && incoming().updatedAt == request.time
+          && (isOwner(userId) || isAdmin());
+
+        allow update: if isVerified()
+          && isValidId(userId)
+          && isValidId(docId)
+          && isValidUserPrivate(incoming())
+          && incoming().uid == existing().uid
+          && incoming().updatedAt == request.time
+          && (isOwner(userId) || isAdmin())
+          && incoming().diff(existing()).affectedKeys().hasOnly(['email', 'lastCheckInDate', 'updatedAt']);
+
+        allow delete: if isValidId(userId) && isValidId(docId) && (isOwner(userId) || isAdmin());
+      }
+    }
+
+    match /admins/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isSignedIn() && (isBootstrapAdmin() || resource.data.uid == request.auth.uid);
+
+      allow create: if isAdmin()
+        && isValidId(userId)
+        && isValidAdminRole(incoming())
+        && incoming().uid == userId
+        && incoming().createdAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(userId)
+        && isValidAdminRole(incoming())
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['role', 'email', 'grantedBy']);
+
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    match /posts/{postId} {
+      allow get: if isValidId(postId) && (existing().status == 'published' || isStaff());
+      allow list: if resource.data.status == 'published'
+        || isBootstrapAdmin()
+        || (isSignedIn() && resource.data.authorUid == request.auth.uid);
+
+      allow create: if isStaff()
+        && isValidId(postId)
+        && isValidPost(incoming())
+        && incoming().id == postId
+        && incoming().authorUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isVerified()
+        && isValidId(postId)
+        && isValidPost(incoming())
+        && incoming().id == existing().id
+        && incoming().authorUid == existing().authorUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          (
+            isStaff()
+            && incoming().diff(existing()).affectedKeys().hasOnly([
+              'title', 'subtitle', 'content', 'summary', 'category', 'author',
+              'publishedAt', 'updatedAt', 'readTime', 'coverImage', 'coverImageCaption',
+              'isBreaking', 'isFeatured', 'isTrending', 'missionRank', 'status',
+              'tags', 'views', 'songs', 'reactions'
+            ])
+          ) ||
+          (
+            existing().status == 'published'
+            && incoming().diff(existing()).affectedKeys().hasOnly(['reactions', 'updatedAt'])
+          )
+        );
+
+      allow delete: if isStaff() && isValidId(postId);
+
+      match /comments/{commentId} {
+        allow get: if isValidId(postId)
+          && isValidId(commentId)
+          && exists(/databases/$(database)/documents/posts/$(postId))
+          && get(/databases/$(database)/documents/posts/$(postId)).data.status == 'published';
+
+        allow list: if resource.data.postId is string;
+
+        allow create: if isVerified()
+          && isValidId(postId)
+          && isValidId(commentId)
+          && isValidPostComment(incoming())
+          && incoming().id == commentId
+          && incoming().postId == postId
+          && incoming().authorUid == request.auth.uid
+          && incoming().createdAt == request.time
+          && exists(/databases/$(database)/documents/posts/$(postId))
+          && get(/databases/$(database)/documents/posts/$(postId)).data.status == 'published';
+
+        allow update: if isVerified()
+          && isValidId(postId)
+          && isValidId(commentId)
+          && isValidPostComment(incoming())
+          && incoming().id == existing().id
+          && incoming().postId == existing().postId
+          && incoming().authorUid == existing().authorUid
+          && incoming().createdAt == existing().createdAt
+          && exists(/databases/$(database)/documents/posts/$(postId))
+          && (
+            isStaff() ||
+            (
+              existing().authorUid == request.auth.uid
+              && incoming().diff(existing()).affectedKeys().hasOnly(['content'])
+            )
+          );
+
+        allow delete: if isValidId(postId)
+          && isValidId(commentId)
+          && (isStaff() || (isVerified() && existing().authorUid == request.auth.uid));
+      }
+    }
+
+    match /songs/{songId} {
+      allow get: if isValidId(songId);
+      allow list: if resource.data.id is string;
+
+      allow create: if isAdmin()
+        && isValidId(songId)
+        && isValidSong(incoming())
+        && incoming().id == songId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(songId)
+        && isValidSong(incoming())
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'artist', 'mapper', 'coverArt', 'coverArtEasy', 'coverArtNormal',
+          'coverArtHard', 'difficulty', 'element', 'duration', 'bpm', 'dateAdded',
+          'isCustom', 'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(songId);
+    }
+
+    match /elements/{elementId} {
+      allow get: if isValidId(elementId);
+      allow list: if resource.data.id is string;
+
+      allow create: if isAdmin()
+        && isValidId(elementId)
+        && isValidElement(incoming())
+        && incoming().id == elementId;
+
+      allow update: if isAdmin()
+        && isValidId(elementId)
+        && isValidElement(incoming())
+        && incoming().id == existing().id
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'color', 'hexColor', 'secondaryHexColor', 'imageUrl'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(elementId);
+    }
+
+    match /ranks/{rankId} {
+      allow get: if isValidId(rankId);
+      allow list: if resource.data.id is string;
+
+      allow create: if isAdmin()
+        && isValidId(rankId)
+        && isValidRank(incoming())
+        && incoming().id == rankId;
+
+      allow update: if isAdmin()
+        && isValidId(rankId)
+        && isValidRank(incoming())
+        && incoming().id == existing().id
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'iconUrl', 'color', 'description'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(rankId);
+    }
+
+    match /settings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if resource.data.id is string;
+
+      allow create: if isAdmin()
+        && isValidId(settingId)
+        && isValidSiteSetting(incoming())
+        && incoming().id == settingId
+        && incoming().updatedAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(settingId)
+        && isValidSiteSetting(incoming())
+        && incoming().id == existing().id
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'easy', 'normal', 'hard', 'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(settingId);
+    }
+  }
+}

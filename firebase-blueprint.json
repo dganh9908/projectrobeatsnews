@@ -1,0 +1,201 @@
+{
+  "entities": {
+    "UserPublic": {
+      "title": "UserPublic",
+      "description": "Public player or staff profile without PII",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "username": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "robloxUsername": { "type": "string", "maxLength": 64 },
+        "avatar": { "type": "string", "maxLength": 2048 },
+        "bio": { "type": "string", "maxLength": 500 },
+        "roBeatsRank": { "type": "string", "maxLength": 40 },
+        "preferredNoteSpeed": { "type": "string", "maxLength": 20 },
+        "role": { "type": "string", "enum": ["admin", "staff", "editor", "player", "robeatsdev"] },
+        "currentStreak": { "type": "number" },
+        "bestStreak": { "type": "number" },
+        "equippedAvatarFrame": { "type": "string", "maxLength": 64 },
+        "unlockedFrames": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "username", "role", "createdAt"]
+    },
+    "UserPrivate": {
+      "title": "UserPrivate",
+      "description": "Private user PII such as email and private streak check-in state",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 254 },
+        "lastCheckInDate": { "type": "string", "maxLength": 32 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid"]
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Server/Admin-managed RBAC role assignment document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "role": { "type": "string", "enum": ["admin", "staff"] },
+        "email": { "type": "string", "maxLength": 254 },
+        "grantedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "role", "createdAt"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "RoBeats news article, mission rotation, leaderboard, or update post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "subtitle": { "type": "string", "maxLength": 300 },
+        "content": { "type": "string", "maxLength": 20000 },
+        "summary": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "author": { "type": "object" },
+        "publishedAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "readTime": { "type": "string", "maxLength": 32 },
+        "coverImage": { "type": "string", "maxLength": 2048 },
+        "coverImageCaption": { "type": "string", "maxLength": 300 },
+        "isBreaking": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "isTrending": { "type": "boolean" },
+        "missionRank": { "type": "string", "maxLength": 32 },
+        "status": { "type": "string", "enum": ["draft", "published"] },
+        "tags": { "type": "array" },
+        "views": { "type": "number" },
+        "songs": { "type": "array" },
+        "reactions": { "type": "object" }
+      },
+      "required": ["id", "title", "category", "authorUid", "status", "createdAt", "updatedAt"]
+    },
+    "PostComment": {
+      "title": "PostComment",
+      "description": "Comment on a RoBeats news article",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "postId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "authorAvatar": { "type": "string", "maxLength": 2048 },
+        "authorRole": { "type": "string", "maxLength": 32 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "postId", "authorUid", "authorName", "content", "createdAt"]
+    },
+    "Song": {
+      "title": "Song",
+      "description": "RoBeats song catalog entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "artist": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "mapper": { "type": "string", "maxLength": 120 },
+        "coverArt": { "type": "string", "maxLength": 2048 },
+        "coverArtEasy": { "type": "string", "maxLength": 2048 },
+        "coverArtNormal": { "type": "string", "maxLength": 2048 },
+        "coverArtHard": { "type": "string", "maxLength": 2048 },
+        "difficulty": { "type": "object" },
+        "element": { "type": "string", "maxLength": 64 },
+        "duration": { "type": "string", "maxLength": 32 },
+        "bpm": { "type": "string", "maxLength": 32 },
+        "dateAdded": { "type": "string", "maxLength": 64 },
+        "isCustom": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "artist", "createdAt", "updatedAt"]
+    },
+    "Element": {
+      "title": "Element",
+      "description": "Song element visual metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "color": { "type": "string", "maxLength": 64 },
+        "hexColor": { "type": "string", "maxLength": 32 },
+        "secondaryHexColor": { "type": "string", "maxLength": 32 },
+        "imageUrl": { "type": "string", "maxLength": 2048 }
+      },
+      "required": ["id", "name", "color"]
+    },
+    "Rank": {
+      "title": "Rank",
+      "description": "RoBeats rank badge definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "iconUrl": { "type": "string", "maxLength": 2048 },
+        "color": { "type": "string", "maxLength": 32 },
+        "description": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["id", "name", "color"]
+    },
+    "SiteSetting": {
+      "title": "SiteSetting",
+      "description": "Difficulty frames and non-secret site configuration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "easy": { "type": "string", "maxLength": 2048 },
+        "normal": { "type": "string", "maxLength": 2048 },
+        "hard": { "type": "string", "maxLength": 2048 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPublic" },
+      "description": "Public user profiles (PII-free)"
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivate" },
+      "description": "Private user PII isolated under owner-only access"
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminRole" },
+      "description": "RBAC roles managed strictly by administrators"
+    },
+    "/posts/{postId}": {
+      "schema": { "$ref": "#/entities/Post" },
+      "description": "RoBeats news posts and missions"
+    },
+    "/posts/{postId}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/PostComment" },
+      "description": "Comments subcollection scoped to a parent post"
+    },
+    "/songs/{songId}": {
+      "schema": { "$ref": "#/entities/Song" },
+      "description": "RoBeats song database"
+    },
+    "/elements/{elementId}": {
+      "schema": { "$ref": "#/entities/Element" },
+      "description": "Song elements configuration"
+    },
+    "/ranks/{rankId}": {
+      "schema": { "$ref": "#/entities/Rank" },
+      "description": "RoBeats player rank configurations"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSetting" },
+      "description": "Non-secret site configuration such as difficulty frames"
+    }
+  }
+}
