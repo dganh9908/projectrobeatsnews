@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { CountdownBadge } from './components/CountdownTimer';
 import { safeJson } from './utils/safeJson';
-import { DEFAULT_SEED_ARTICLES } from './constants/seedArticles';
 import { auth } from './lib/firebase';
 import {
   subscribeToPublishedPosts,
@@ -97,18 +96,17 @@ export default function App() {
       }
 
       const mergedMap = new Map<string, NewsArticle>();
-      for (const p of apiPosts) mergedMap.set(p.id, p);
+      for (const p of apiPosts) {
+        if (p.id !== 'post-daily-missions-initial') mergedMap.set(p.id, p);
+      }
       for (const p of firestorePosts) mergedMap.set(p.id, p);
 
-      let loadedPosts = Array.from(mergedMap.values());
-      if (loadedPosts.length === 0) {
-        loadedPosts = DEFAULT_SEED_ARTICLES;
-      }
+      const loadedPosts = Array.from(mergedMap.values());
       loadedPosts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
       setPosts(loadedPosts);
     } catch (err) {
       console.error('Failed to fetch posts', err);
-      setPosts(DEFAULT_SEED_ARTICLES);
+      setPosts([]);
     } finally {
       setIsLoadingPosts(false);
     }
@@ -120,17 +118,10 @@ export default function App() {
     // Real-time listener to Firebase Cloud Firestore posts
     const unsubscribe = subscribeToPublishedPosts(
       (fsPosts) => {
-        setPosts((prev) => {
-          if (fsPosts.length === 0) {
-            const nonFirestoreSeeds = prev.filter((p) => !p.id.startsWith('post_'));
-            return nonFirestoreSeeds.length > 0 ? nonFirestoreSeeds : DEFAULT_SEED_ARTICLES;
-          }
-          const map = new Map<string, NewsArticle>();
-          for (const p of fsPosts) map.set(p.id, p);
-          return Array.from(map.values()).sort(
-            (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-          );
-        });
+        const sorted = [...fsPosts].sort(
+          (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
+        setPosts(sorted);
         setIsLoadingPosts(false);
       },
       (err) => {

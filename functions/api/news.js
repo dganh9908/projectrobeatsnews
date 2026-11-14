@@ -7,31 +7,6 @@ import {
   commitFirestoreDocument,
 } from '../../cloudflare/firestoreRest.js';
 
-const DEFAULT_SEED_POSTS = [
-  {
-    id: 'post-daily-missions-initial',
-    title: 'Today daily missions',
-    subtitle: "Complete today's daily mission tracks to earn bonus Star Coins, EXP, and rank badges!",
-    content: "Attention RoBeats players! Today's daily missions are officially live. Clear all featured tracks with at least an A rank or 90%+ accuracy to claim your mission rewards.",
-    summary: "Complete today's daily mission tracks to earn bonus Star Coins, EXP, and rank badges!",
-    category: 'Daily mission',
-    author: {
-      name: 'Meelo',
-      role: 'Admin',
-      avatar: 'https://down-vn.img.susercontent.com/file/sg-11134201-81zwv-mih44jns7q4n42',
-    },
-    publishedAt: '2026-10-17T00:19:22.047Z',
-    updatedAt: '2026-10-21T04:04:47.740Z',
-    readTime: '1 min read',
-    status: 'published',
-    tags: ['Daily mission', 'RoBeats', 'Songs'],
-    views: 28,
-    songs: [],
-    reactions: { '🔥': 4 },
-    comments: [],
-  },
-];
-
 export async function onRequestOptions() {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
@@ -56,8 +31,8 @@ export async function onRequestGet(context) {
       console.warn('[Cloudflare /api/news GET] Firestore query error:', fsErr.message);
     }
 
-    if (!Array.isArray(posts) || posts.length === 0) {
-      posts = DEFAULT_SEED_POSTS;
+    if (!Array.isArray(posts)) {
+      posts = [];
     }
 
     if (category && category !== 'All') {
