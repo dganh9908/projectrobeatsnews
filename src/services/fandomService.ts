@@ -8,13 +8,14 @@ import {
   User,
   DiscordWebhooksConfig,
 } from '../types';
-import { buildDefaultElements } from '../constants/elements';
+import { buildDefaultElements, normalizeElementName } from '../constants/elements';
 import { DEFAULT_GOOGLE_SHEET_URL, SHEET_SONGS } from '../constants/sheetSongs';
 import {
   clearLiveSheetCache,
   getCachedLiveSheetSongs,
   mergeSongsWithSheetData,
 } from './googleSheetsService';
+import { dispatchSongsUpdatedEvent } from '../utils/songSync';
 import { safeJson } from '../utils/safeJson';
 import { auth } from '../lib/firebase';
 import {
@@ -100,11 +101,17 @@ export async function fetchSongList(forceRefresh: boolean = false): Promise<Song
       baseSongs = mergeSongsWithSheetData(baseSongs, liveSheetSongs, {
         appendMissing: true,
         strictSheetCover: false,
+        strictSheetElement: false,
       });
     }
   } catch (err) {
-    console.warn('Live Google Sheet cover art merge skipped:', err);
+    console.warn('Live Google Sheet cover art & element merge skipped:', err);
   }
+
+  baseSongs = baseSongs.map((s) => ({
+    ...s,
+    element: normalizeElementName(s.element),
+  }));
 
   cachedSongs = baseSongs;
   return baseSongs;
@@ -141,6 +148,7 @@ export async function adminAddSong(song: Omit<SongEntry, 'id'>): Promise<SongEnt
   if (cachedSongs) {
     cachedSongs = [created, ...cachedSongs];
   }
+  dispatchSongsUpdatedEvent({ updatedSongs: [created] });
   return created;
 }
 
@@ -177,6 +185,7 @@ export async function adminEditSong(songId: string, updates: Partial<SongEntry>)
   if (cachedSongs) {
     cachedSongs = cachedSongs.map((s) => (s.id === songId ? updated : s));
   }
+  dispatchSongsUpdatedEvent({ updatedSongs: [updated] });
   return updated;
 }
 
@@ -189,6 +198,7 @@ export async function adminDeleteSong(songId: string): Promise<void> {
     if (cachedSongs) {
       cachedSongs = cachedSongs.filter((s) => s.id !== songId);
     }
+    dispatchSongsUpdatedEvent({ deletedSongId: songId });
     return;
   }
 
@@ -206,6 +216,7 @@ export async function adminDeleteSong(songId: string): Promise<void> {
   if (cachedSongs) {
     cachedSongs = cachedSongs.filter((s) => s.id !== songId);
   }
+  dispatchSongsUpdatedEvent({ deletedSongId: songId });
 }
 
 export function adminResetOverrides() {
@@ -478,7 +489,7 @@ export function generateDailyMissionDiscordText(post: any): string {
       level: cleanLevel,
       title: song.title || 'Unknown Song',
       artist: song.artist || 'Unknown Artist',
-      element: song.element || 'Standard',
+      element: normalizeElementName(song.element),
       isNoMisses,
       difficultyText,
     };
@@ -494,12 +505,13 @@ export function generateDailyMissionDiscordText(post: any): string {
     if (items.length === 0) return '- "No missions" - None';
     return items
       .map((s) => {
-        const elementStr = s.element || 'Standard';
+        const elementStr = normalizeElementName(s.element);
+        const elementPrefix = elementStr ? `${elementStr} / ` : '';
         const artistStr = s.artist || 'Unknown Artist';
         if (s.isNoMisses) {
-          return `- :star: [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
+          return `- :star: [${s.level}] ${elementPrefix}${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
         }
-        return `- [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}]`;
+        return `- [${s.level}] ${elementPrefix}${s.title} - ${artistStr} [${s.difficultyText}]`;
       })
       .join('\n');
   };

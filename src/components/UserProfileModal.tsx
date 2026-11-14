@@ -179,7 +179,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <UserAvatar
                 src={avatar}
                 alt={displayName}
-                frameId={profileData.equippedAvatarFrame}
                 size="xl"
               />
               {rawRole === 'admin' && (

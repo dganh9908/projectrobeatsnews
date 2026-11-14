@@ -6,8 +6,9 @@ export const ELEMENT_BASE_COLORS: Record<string, { color: string; hex: string; b
   Beat: { color: 'Orange', hex: '#F97316', bg: 'bg-orange-500/15', border: 'border-orange-500/30', text: 'text-orange-400' },
   Vibe: { color: 'Green', hex: '#22C55E', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', text: 'text-emerald-400' },
   Chill: { color: 'Blue', hex: '#3B82F6', bg: 'bg-blue-500/15', border: 'border-blue-500/30', text: 'text-blue-400' },
-  Standard: { color: 'Cyan', hex: '#06B6D4', bg: 'bg-cyan-500/15', border: 'border-cyan-500/30', text: 'text-cyan-400' },
 };
+
+const PRIMARY_ELEMENTS = ['Rush', 'Flow', 'Beat', 'Vibe', 'Chill'] as const;
 
 // Generate inline SVG element badge
 export function createDefaultElementSvg(name: string, primaryHex: string, secondaryHex?: string): string {
@@ -66,8 +67,8 @@ export function buildDefaultElements(): ElementConfig[] {
     const primary = parts[0];
     const secondary = parts[1];
 
-    const primInfo = ELEMENT_BASE_COLORS[primary] || ELEMENT_BASE_COLORS.Standard;
-    const secInfo = secondary ? (ELEMENT_BASE_COLORS[secondary] || ELEMENT_BASE_COLORS.Standard) : undefined;
+    const primInfo = ELEMENT_BASE_COLORS[primary] || ELEMENT_BASE_COLORS.Flow;
+    const secInfo = secondary ? ELEMENT_BASE_COLORS[secondary] : undefined;
 
     const colorDesc = secondary 
       ? `${primInfo.color} / ${secInfo?.color || ''}` 
@@ -83,30 +84,46 @@ export function buildDefaultElements(): ElementConfig[] {
   });
 }
 
+function normalizePrimaryToken(token: string): string {
+  const clean = token.trim();
+  const matched = PRIMARY_ELEMENTS.find(p => p.toLowerCase() === clean.toLowerCase());
+  return matched || clean;
+}
+
 export function normalizeElementName(elementName?: string): string {
-  if (!elementName) return 'Flow';
-  const trimmed = elementName.trim();
-  if (trimmed.includes('/')) return trimmed;
+  if (!elementName) return '';
+  const trimmed = String(elementName).trim();
+  const lower = trimmed.toLowerCase();
+  if (!trimmed || lower === 'standard' || lower === 'none' || lower === 'null' || lower === 'undefined' || lower === '-') {
+    return '';
+  }
+
+  if (trimmed.includes('/')) {
+    const parts = trimmed
+      .split('/')
+      .map(normalizePrimaryToken)
+      .filter(Boolean);
+    return parts.join('/');
+  }
   
-  // Check if it's two primary element names concatenated without slash, e.g. BeatChill -> Beat/Chill
-  const primaries = ['Rush', 'Flow', 'Beat', 'Vibe', 'Chill'];
-  for (const p1 of primaries) {
-    for (const p2 of primaries) {
-      if (p1 !== p2 && trimmed.toLowerCase() === `${p1}${p2}`.toLowerCase()) {
+  // Check if it's two primary element names concatenated without slash, e.g. BeatChill -> Beat/Chill, RushFlow -> Rush/Flow
+  for (const p1 of PRIMARY_ELEMENTS) {
+    for (const p2 of PRIMARY_ELEMENTS) {
+      if (p1 !== p2 && lower === `${p1}${p2}`.toLowerCase()) {
         return `${p1}/${p2}`;
       }
     }
   }
-  return trimmed;
+  return normalizePrimaryToken(trimmed);
 }
 
 export function getElementStyles(elementName: string) {
   const normName = normalizeElementName(elementName);
-  const parts = (normName || 'Standard').split('/');
+  const parts = (normName || 'Flow').split('/');
   const primary = parts[0].trim();
   const secondary = parts[1]?.trim();
 
-  const primInfo = ELEMENT_BASE_COLORS[primary] || ELEMENT_BASE_COLORS.Standard;
+  const primInfo = ELEMENT_BASE_COLORS[primary] || ELEMENT_BASE_COLORS.Flow;
   const secInfo = secondary ? ELEMENT_BASE_COLORS[secondary] : undefined;
 
   return {
@@ -123,6 +140,8 @@ export function getElementStyles(elementName: string) {
 
 export function getElementData(elementName: string, customElements?: ElementConfig[]) {
   const cleanName = normalizeElementName(elementName);
+  if (!cleanName) return null;
+
   const custom = customElements?.find(e => 
     e.name.toLowerCase() === cleanName.toLowerCase() ||
     e.name.replace(/[^a-zA-Z]/g, '').toLowerCase() === cleanName.replace(/[^a-zA-Z]/g, '').toLowerCase()

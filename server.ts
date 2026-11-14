@@ -234,12 +234,14 @@ export function buildDailyMissionDiscordPayload(post: NewsArticle) {
     }
 
     const cleanLevel = diffVal !== '-' ? diffVal : '1';
+    const rawElement = String(song.element || '').trim();
+    const cleanElement = rawElement.toLowerCase() === 'standard' ? '' : rawElement;
     const targetRank = rank as keyof typeof buckets;
     const songItem: SongMissionItem = {
       level: cleanLevel,
       title: song.title || 'Unknown Song',
       artist: song.artist || 'Unknown Artist',
-      element: song.element || 'Standard',
+      element: cleanElement,
       isNoMisses,
       difficultyText,
     };
@@ -254,12 +256,14 @@ export function buildDailyMissionDiscordPayload(post: NewsArticle) {
   const formatList = (items: Array<SongMissionItem>, _rankType: 'Star' | 'Pro' | 'Amateur' | 'Novice' | 'Beginner') => {
     if (items.length === 0) return '- "No missions" - None';
     return items.map((s) => {
-      const elementStr = s.element || 'Standard';
+      const rawEl = String(s.element || '').trim();
+      const elementStr = rawEl.toLowerCase() === 'standard' ? '' : rawEl;
+      const elementPrefix = elementStr ? `${elementStr} / ` : '';
       const artistStr = s.artist || 'Unknown Artist';
       if (s.isNoMisses) {
-        return `- :star: [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
+        return `- :star: [${s.level}] ${elementPrefix}${s.title} - ${artistStr} [${s.difficultyText}] (No Misses)`;
       }
-      return `- [${s.level}] ${elementStr} / ${s.title} - ${artistStr} [${s.difficultyText}]`;
+      return `- [${s.level}] ${elementPrefix}${s.title} - ${artistStr} [${s.difficultyText}]`;
     }).join('\n');
   };
 
@@ -361,7 +365,9 @@ async function sendDiscordWebhookForPost(post: NewsArticle) {
           const rawChosen = (s.chosenDifficulty || 'N').toUpperCase();
           const diffLetter = rawChosen.startsWith('E') ? 'E' : rawChosen.startsWith('H') ? 'H' : 'N';
           const diffNum = diffLetter === 'E' ? (s.difficulty?.easy || '-') : diffLetter === 'H' ? (s.difficulty?.hard || '-') : (s.difficulty?.normal || '-');
-          return `**${idx + 1}. ${s.title}** - *${s.artist}*\n↳ Difficulty: **${diffLetter} ${diffNum}** | Element: \`${s.element || 'Standard'}\``;
+          const rawEl = String(s.element || '').trim();
+          const elText = rawEl && rawEl.toLowerCase() !== 'standard' ? ` | Element: \`${rawEl}\`` : '';
+          return `**${idx + 1}. ${s.title}** - *${s.artist}*\n↳ Difficulty: **${diffLetter} ${diffNum}**${elText}`;
         }).join('\n\n');
         fields.push({
           name: `🎵 Released Songs (${post.songs.length})`,
@@ -385,7 +391,9 @@ async function sendDiscordWebhookForPost(post: NewsArticle) {
           }
 
           const scoreText = s.requiredScore ? ` (Score: ${s.requiredScore})` : '';
-          return `${rankPrefix}**${s.title}** by ${s.artist} [**${diffLetter} ${diffNum}** - ${s.element || 'Standard'}]${scoreText}`;
+          const rawEl = String(s.element || '').trim();
+          const elSuffix = rawEl && rawEl.toLowerCase() !== 'standard' ? ` - ${rawEl}` : '';
+          return `${rankPrefix}**${s.title}** by ${s.artist} [**${diffLetter} ${diffNum}**${elSuffix}]${scoreText}`;
         }).join('\n');
 
         fields.push({
@@ -802,7 +810,7 @@ const DEFAULT_SONGS: any[] = [
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804',
     coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/e/ea/Adopt_me_.png/revision/latest/scale-to-width-down/100?cb=20210724211804',
     difficulty: { easy: '-', normal: '3', hard: '16' },
-    element: 'VibeRush',
+    element: 'Vibe/Rush',
     bpm: '135',
     duration: '1:50'
   },
@@ -816,7 +824,7 @@ const DEFAULT_SONGS: any[] = [
     coverArtNormal: 'https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801',
     coverArtHard: 'https://static.wikia.nocookie.net/robeats/images/0/01/Betterrunnormal.png/revision/latest/scale-to-width-down/100?cb=20210329021801',
     difficulty: { easy: '-', normal: '3', hard: '21' },
-    element: 'ChillRush',
+    element: 'Chill/Rush',
     bpm: '150',
     duration: '2:05'
   }
@@ -2220,7 +2228,7 @@ app.post('/api/songs', requireAdmin, (req, res) => {
         normal: body.difficulty?.normal || '-',
         hard: body.difficulty?.hard || '-',
       },
-      element: body.element || 'Standard',
+      element: body.element && String(body.element).trim().toLowerCase() !== 'standard' ? String(body.element).trim() : '',
       duration: body.duration || '',
       bpm: body.bpm || '',
       dateAdded: new Date().toLocaleDateString('en-US'),
@@ -2248,6 +2256,8 @@ app.put('/api/songs/:id', requireAdmin, (req, res) => {
 
     // Single cover art per song
     const primaryCover = body.coverArt !== undefined ? String(body.coverArt).trim() : (body.coverArtNormal !== undefined ? String(body.coverArtNormal).trim() : (current.coverArt || ''));
+    const nextElementRaw = body.element !== undefined ? String(body.element || '').trim() : String(current.element || '').trim();
+    const nextElement = nextElementRaw.toLowerCase() === 'standard' ? '' : nextElementRaw;
 
     const updated = {
       ...current,
@@ -2263,7 +2273,7 @@ app.put('/api/songs/:id', requireAdmin, (req, res) => {
         normal: body.difficulty?.normal !== undefined ? body.difficulty.normal : current.difficulty.normal,
         hard: body.difficulty?.hard !== undefined ? body.difficulty.hard : current.difficulty.hard,
       },
-      element: body.element !== undefined ? body.element : current.element,
+      element: nextElement,
       duration: body.duration !== undefined ? body.duration : current.duration,
       bpm: body.bpm !== undefined ? body.bpm : current.bpm,
     };
@@ -2271,22 +2281,31 @@ app.put('/api/songs/:id', requireAdmin, (req, res) => {
     songs[idx] = updated;
     writeSongs(songs);
 
-    // Also update attached songs in existing articles so cover art per difficulty updates in posts
+    // Also update attached songs in existing articles so edited metadata, element, difficulty, & cover art update immediately in posts
     let articles = readArticles();
     let articlesModified = false;
+    const prevKey = `${String(current.title || '').toLowerCase().trim()}::${String(current.artist || '').toLowerCase().trim()}`;
     articles = articles.map(a => {
       if (!a.songs || a.songs.length === 0) return a;
       let songUpdatedInPost = false;
       const updatedPostSongs = a.songs.map(ps => {
-        if (ps.id === req.params.id) {
+        const psKey = `${String(ps.title || '').toLowerCase().trim()}::${String(ps.artist || '').toLowerCase().trim()}`;
+        if (ps.id === req.params.id || (prevKey !== '::' && psKey === prevKey)) {
           songUpdatedInPost = true;
           return {
             ...ps,
+            id: updated.id,
+            title: updated.title,
+            artist: updated.artist,
+            mapper: updated.mapper,
             coverArt: updated.coverArt,
             coverArtEasy: updated.coverArtEasy,
             coverArtNormal: updated.coverArtNormal,
             coverArtHard: updated.coverArtHard,
             difficulty: updated.difficulty,
+            element: updated.element,
+            bpm: updated.bpm,
+            duration: updated.duration,
           };
         }
         return ps;

@@ -76,7 +76,7 @@ export async function onRequestPost(context) {
         normal: String(body.difficulty?.normal || '-'),
         hard: String(body.difficulty?.hard || '-'),
       },
-      element: String(body.element || 'Standard').slice(0, 64),
+      element: body.element && String(body.element).trim().toLowerCase() !== 'standard' ? String(body.element).trim().slice(0, 64) : '',
       duration: String(body.duration || '').slice(0, 32),
       bpm: String(body.bpm || '').slice(0, 32),
       dateAdded: new Date().toLocaleDateString('en-US'),

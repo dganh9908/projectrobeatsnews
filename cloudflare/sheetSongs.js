@@ -1,4 +1,6 @@
-export const DEFAULT_GOOGLE_SHEET_ID = '1xfDC6nqXEO2hfWPV3zopZu4A-Vz40de3p9zNuks43i0';
+export const DEFAULT_GOOGLE_SHEET_ID = "1xfDC6nqXEO2hfWPV3zopZu4A-Vz40de3p9zNuks43i0";
+export const DEFAULT_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1xfDC6nqXEO2hfWPV3zopZu4A-Vz40de3p9zNuks43i0/edit";
+
 export const SHEET_SONGS = [
   {
     "id": "sheet_monday_night_monsters_finnmk",
@@ -14,7 +16,7 @@ export const SHEET_SONGS = [
       "normal": "1",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "Flow/Beat",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -33,7 +35,7 @@ export const SHEET_SONGS = [
       "normal": "2",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -52,7 +54,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -71,7 +73,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -90,7 +92,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -109,7 +111,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -128,7 +130,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -147,7 +149,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -166,7 +168,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -185,7 +187,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -204,7 +206,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -223,7 +225,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -242,7 +244,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "10"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -261,7 +263,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "12"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -280,7 +282,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -299,7 +301,7 @@ export const SHEET_SONGS = [
       "normal": "3",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -318,7 +320,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -337,7 +339,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -356,7 +358,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -375,7 +377,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -394,7 +396,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -413,7 +415,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -432,7 +434,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "13"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -451,7 +453,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -470,7 +472,7 @@ export const SHEET_SONGS = [
       "normal": "4",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -489,7 +491,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -508,7 +510,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -527,7 +529,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -546,7 +548,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -565,7 +567,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "12"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -584,7 +586,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -603,7 +605,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -622,7 +624,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -641,7 +643,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -660,7 +662,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -679,7 +681,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -698,7 +700,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -717,7 +719,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -736,7 +738,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -755,7 +757,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -774,7 +776,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -793,7 +795,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -812,7 +814,7 @@ export const SHEET_SONGS = [
       "normal": "5",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -831,7 +833,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -850,7 +852,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -869,7 +871,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -888,7 +890,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -907,7 +909,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -926,7 +928,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -945,7 +947,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -964,7 +966,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -983,7 +985,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1002,7 +1004,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1021,7 +1023,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1040,7 +1042,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1059,7 +1061,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1078,7 +1080,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1097,7 +1099,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1116,7 +1118,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1135,7 +1137,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1154,7 +1156,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1173,7 +1175,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1192,7 +1194,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1211,7 +1213,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1230,7 +1232,7 @@ export const SHEET_SONGS = [
       "normal": "6",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1249,7 +1251,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1268,7 +1270,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1287,7 +1289,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1306,7 +1308,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1325,7 +1327,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1344,7 +1346,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1363,7 +1365,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1382,7 +1384,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1401,7 +1403,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1420,7 +1422,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1439,7 +1441,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1458,7 +1460,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1477,7 +1479,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1496,7 +1498,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1515,7 +1517,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1534,7 +1536,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1553,7 +1555,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1572,7 +1574,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1591,7 +1593,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1610,7 +1612,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1629,7 +1631,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1648,7 +1650,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "14"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1667,7 +1669,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1686,7 +1688,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1705,7 +1707,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1724,7 +1726,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1743,7 +1745,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1762,7 +1764,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1781,7 +1783,7 @@ export const SHEET_SONGS = [
       "normal": "7",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1800,7 +1802,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1819,7 +1821,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1838,7 +1840,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1857,7 +1859,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1876,7 +1878,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1895,7 +1897,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1914,7 +1916,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1933,7 +1935,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1952,7 +1954,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1971,7 +1973,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -1990,7 +1992,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2009,7 +2011,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2028,7 +2030,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2047,7 +2049,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2066,7 +2068,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2085,7 +2087,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2104,7 +2106,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2123,7 +2125,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2142,7 +2144,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2161,7 +2163,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2180,7 +2182,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2199,7 +2201,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2218,7 +2220,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2237,7 +2239,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2256,7 +2258,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2275,7 +2277,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2294,7 +2296,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2313,7 +2315,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2332,7 +2334,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2351,7 +2353,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2370,7 +2372,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2389,7 +2391,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2408,7 +2410,7 @@ export const SHEET_SONGS = [
       "normal": "8",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2427,7 +2429,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2446,7 +2448,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2465,7 +2467,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2484,7 +2486,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2503,7 +2505,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2522,7 +2524,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2541,7 +2543,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2560,7 +2562,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2579,7 +2581,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2598,7 +2600,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2617,7 +2619,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2636,7 +2638,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2655,7 +2657,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "15"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2674,7 +2676,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2693,7 +2695,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2712,7 +2714,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2731,7 +2733,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2750,7 +2752,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2769,7 +2771,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2788,7 +2790,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2807,7 +2809,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2826,7 +2828,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2845,7 +2847,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2864,7 +2866,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2883,7 +2885,7 @@ export const SHEET_SONGS = [
       "normal": "9",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2902,7 +2904,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2921,7 +2923,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2940,7 +2942,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2959,7 +2961,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2978,7 +2980,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -2997,7 +2999,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3016,7 +3018,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3035,7 +3037,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3054,7 +3056,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3073,7 +3075,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3092,7 +3094,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3111,7 +3113,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3130,7 +3132,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3149,7 +3151,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3168,7 +3170,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3187,7 +3189,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3206,7 +3208,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3225,7 +3227,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3244,7 +3246,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3263,7 +3265,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3282,7 +3284,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3301,7 +3303,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3320,7 +3322,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3339,7 +3341,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3358,7 +3360,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3377,7 +3379,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3396,7 +3398,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3415,7 +3417,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3434,7 +3436,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3453,7 +3455,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3472,7 +3474,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3491,7 +3493,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3510,7 +3512,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3529,7 +3531,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3548,7 +3550,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3567,7 +3569,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3586,7 +3588,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3605,7 +3607,7 @@ export const SHEET_SONGS = [
       "normal": "10",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3624,7 +3626,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3643,7 +3645,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3662,7 +3664,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3681,7 +3683,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3700,7 +3702,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3719,7 +3721,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3738,7 +3740,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3757,7 +3759,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3776,7 +3778,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3795,7 +3797,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3814,7 +3816,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3833,7 +3835,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3852,7 +3854,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3871,7 +3873,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3890,7 +3892,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3909,7 +3911,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3928,7 +3930,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3947,7 +3949,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3966,7 +3968,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -3985,7 +3987,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4004,7 +4006,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4023,7 +4025,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4042,7 +4044,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4061,7 +4063,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4080,7 +4082,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4099,7 +4101,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4118,7 +4120,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4137,7 +4139,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4156,7 +4158,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4175,7 +4177,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4194,7 +4196,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4213,7 +4215,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4232,7 +4234,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4251,7 +4253,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4270,7 +4272,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4289,7 +4291,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4308,7 +4310,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4327,7 +4329,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4346,7 +4348,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4365,7 +4367,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4384,7 +4386,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4403,7 +4405,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4422,7 +4424,7 @@ export const SHEET_SONGS = [
       "normal": "11",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4441,7 +4443,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4460,7 +4462,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4479,7 +4481,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4498,7 +4500,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4517,7 +4519,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4536,7 +4538,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4555,7 +4557,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4574,7 +4576,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4593,7 +4595,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4612,7 +4614,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4631,7 +4633,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4650,7 +4652,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4669,7 +4671,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4688,7 +4690,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4707,7 +4709,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4726,7 +4728,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4745,7 +4747,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4764,7 +4766,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4783,7 +4785,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4802,7 +4804,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4821,7 +4823,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4840,7 +4842,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4859,7 +4861,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4878,7 +4880,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4897,7 +4899,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4916,7 +4918,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4935,7 +4937,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4954,7 +4956,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4973,7 +4975,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -4992,7 +4994,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5011,7 +5013,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5030,7 +5032,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5049,7 +5051,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5068,7 +5070,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5087,7 +5089,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5106,7 +5108,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5125,7 +5127,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5144,7 +5146,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5163,7 +5165,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5182,7 +5184,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5201,7 +5203,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5220,7 +5222,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5239,7 +5241,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5258,7 +5260,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5277,7 +5279,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5296,7 +5298,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5315,7 +5317,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5334,7 +5336,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5353,7 +5355,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5372,7 +5374,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5391,7 +5393,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5410,7 +5412,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5429,7 +5431,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5448,7 +5450,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5467,7 +5469,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5486,7 +5488,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5505,7 +5507,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5524,7 +5526,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5543,7 +5545,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5562,7 +5564,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5581,7 +5583,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5600,7 +5602,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5619,7 +5621,7 @@ export const SHEET_SONGS = [
       "normal": "12",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5638,7 +5640,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5657,7 +5659,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5676,7 +5678,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5695,7 +5697,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5714,7 +5716,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5733,7 +5735,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5752,7 +5754,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5771,7 +5773,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5790,7 +5792,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5809,7 +5811,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5828,7 +5830,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5847,7 +5849,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5866,7 +5868,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5885,7 +5887,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5904,7 +5906,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5923,7 +5925,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5942,7 +5944,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5961,7 +5963,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5980,7 +5982,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -5999,7 +6001,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6018,7 +6020,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6037,7 +6039,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6056,7 +6058,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6075,7 +6077,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6094,7 +6096,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6113,7 +6115,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6132,7 +6134,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6151,7 +6153,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6170,7 +6172,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6189,7 +6191,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6208,7 +6210,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6227,7 +6229,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6246,7 +6248,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6265,7 +6267,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6284,7 +6286,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6303,7 +6305,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6322,7 +6324,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6341,7 +6343,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6360,7 +6362,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6379,7 +6381,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6398,7 +6400,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6417,7 +6419,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6436,7 +6438,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6455,7 +6457,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6474,7 +6476,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6493,7 +6495,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6512,7 +6514,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6531,7 +6533,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6550,7 +6552,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6569,7 +6571,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6588,7 +6590,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6607,7 +6609,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6626,7 +6628,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6645,7 +6647,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6664,7 +6666,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6683,7 +6685,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6702,7 +6704,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6721,7 +6723,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6740,7 +6742,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6759,7 +6761,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6778,7 +6780,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6797,7 +6799,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6816,7 +6818,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6835,7 +6837,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6854,7 +6856,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6873,7 +6875,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6892,7 +6894,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "16"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6911,7 +6913,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6930,7 +6932,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6949,7 +6951,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6968,7 +6970,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -6987,7 +6989,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7006,7 +7008,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7025,7 +7027,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7044,7 +7046,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7063,7 +7065,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7082,7 +7084,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7101,7 +7103,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7120,7 +7122,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7139,7 +7141,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7158,7 +7160,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7177,7 +7179,7 @@ export const SHEET_SONGS = [
       "normal": "13",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7196,7 +7198,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7215,7 +7217,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7234,7 +7236,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7253,7 +7255,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7272,7 +7274,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7291,7 +7293,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7310,7 +7312,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7329,7 +7331,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7348,7 +7350,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7367,7 +7369,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7386,7 +7388,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7405,7 +7407,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7424,7 +7426,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7443,7 +7445,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7462,7 +7464,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7481,7 +7483,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7500,7 +7502,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7519,7 +7521,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7538,7 +7540,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7557,7 +7559,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7576,7 +7578,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7595,7 +7597,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7614,7 +7616,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7633,7 +7635,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "17"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7652,7 +7654,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7671,7 +7673,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7690,7 +7692,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7709,7 +7711,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7728,7 +7730,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7747,7 +7749,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7766,7 +7768,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7785,7 +7787,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7804,7 +7806,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7823,7 +7825,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7842,7 +7844,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7861,7 +7863,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7880,7 +7882,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7899,7 +7901,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7918,7 +7920,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7937,7 +7939,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7956,7 +7958,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7975,7 +7977,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -7994,7 +7996,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8013,7 +8015,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8032,7 +8034,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8051,7 +8053,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8070,7 +8072,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8089,7 +8091,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8108,7 +8110,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8127,7 +8129,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8146,7 +8148,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8165,7 +8167,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8184,7 +8186,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8203,7 +8205,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8222,7 +8224,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8241,7 +8243,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8260,7 +8262,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8279,7 +8281,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8298,7 +8300,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8317,7 +8319,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8336,7 +8338,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8355,7 +8357,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8374,7 +8376,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8393,7 +8395,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8412,7 +8414,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8431,7 +8433,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8450,7 +8452,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8469,7 +8471,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8488,7 +8490,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8507,7 +8509,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8526,7 +8528,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8545,7 +8547,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8564,7 +8566,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8583,7 +8585,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8602,7 +8604,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8621,7 +8623,7 @@ export const SHEET_SONGS = [
       "normal": "14",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8640,7 +8642,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8659,7 +8661,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8678,7 +8680,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8697,7 +8699,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8716,7 +8718,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "19"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8735,7 +8737,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8754,7 +8756,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8773,7 +8775,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8792,7 +8794,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8811,7 +8813,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "20"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8830,7 +8832,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8849,7 +8851,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8868,7 +8870,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8887,7 +8889,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8906,7 +8908,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8925,7 +8927,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8944,7 +8946,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8963,7 +8965,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -8982,7 +8984,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9001,7 +9003,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9020,7 +9022,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9039,7 +9041,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9058,7 +9060,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9077,7 +9079,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9096,7 +9098,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9115,7 +9117,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9134,7 +9136,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9153,7 +9155,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9172,7 +9174,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9191,7 +9193,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9210,7 +9212,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9229,7 +9231,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9248,7 +9250,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9267,7 +9269,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9286,7 +9288,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9305,7 +9307,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9324,7 +9326,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9343,7 +9345,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9362,7 +9364,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9381,7 +9383,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9400,7 +9402,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9419,7 +9421,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9438,7 +9440,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9457,7 +9459,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9476,7 +9478,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9495,7 +9497,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9514,7 +9516,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9533,7 +9535,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9552,7 +9554,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9571,7 +9573,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9590,7 +9592,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9609,7 +9611,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9628,7 +9630,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9647,7 +9649,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9666,7 +9668,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9685,7 +9687,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9704,7 +9706,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9723,7 +9725,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9742,7 +9744,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9761,7 +9763,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9780,7 +9782,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9799,7 +9801,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9818,7 +9820,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9837,7 +9839,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9856,7 +9858,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9875,7 +9877,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9894,7 +9896,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9913,7 +9915,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9932,7 +9934,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9951,7 +9953,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9970,7 +9972,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -9989,7 +9991,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10008,7 +10010,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10027,7 +10029,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10046,7 +10048,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10065,7 +10067,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "21"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10084,7 +10086,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10103,7 +10105,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10122,7 +10124,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10141,7 +10143,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10160,7 +10162,7 @@ export const SHEET_SONGS = [
       "normal": "15",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10179,7 +10181,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10198,7 +10200,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10217,7 +10219,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10236,7 +10238,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10255,7 +10257,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10274,7 +10276,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10293,7 +10295,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10312,7 +10314,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10331,7 +10333,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10350,7 +10352,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10369,7 +10371,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10388,7 +10390,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10407,7 +10409,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10426,7 +10428,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10445,7 +10447,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10464,7 +10466,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10483,7 +10485,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10502,7 +10504,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10521,7 +10523,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10540,7 +10542,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10559,7 +10561,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10578,7 +10580,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10597,7 +10599,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10616,7 +10618,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10635,7 +10637,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10654,7 +10656,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10673,7 +10675,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10692,7 +10694,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10711,7 +10713,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10730,7 +10732,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10749,7 +10751,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10768,7 +10770,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10787,7 +10789,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10806,7 +10808,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10825,7 +10827,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10844,7 +10846,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10863,7 +10865,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10882,7 +10884,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10901,7 +10903,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10920,7 +10922,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10939,7 +10941,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10958,7 +10960,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10977,7 +10979,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -10996,7 +10998,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11015,7 +11017,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11034,7 +11036,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11053,7 +11055,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11072,7 +11074,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11091,7 +11093,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11110,7 +11112,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11129,7 +11131,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11148,7 +11150,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11167,7 +11169,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11186,7 +11188,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11205,7 +11207,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11224,7 +11226,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11243,7 +11245,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11262,7 +11264,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11281,7 +11283,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11300,7 +11302,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11319,7 +11321,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11338,7 +11340,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11357,7 +11359,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11376,7 +11378,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11395,7 +11397,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11414,7 +11416,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11433,7 +11435,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11452,7 +11454,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11471,7 +11473,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11490,7 +11492,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "39"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11509,7 +11511,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11528,7 +11530,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11547,7 +11549,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "18"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11566,7 +11568,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11585,7 +11587,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11604,7 +11606,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11623,7 +11625,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11642,7 +11644,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11661,7 +11663,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11680,7 +11682,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11699,7 +11701,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11718,7 +11720,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11737,7 +11739,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11756,7 +11758,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11775,7 +11777,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11794,7 +11796,7 @@ export const SHEET_SONGS = [
       "normal": "16",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11813,7 +11815,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11832,7 +11834,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11851,7 +11853,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11870,7 +11872,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11889,7 +11891,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11908,7 +11910,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11927,7 +11929,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11946,7 +11948,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11965,7 +11967,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -11984,7 +11986,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12003,7 +12005,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12022,7 +12024,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12041,7 +12043,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12060,7 +12062,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12079,7 +12081,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12098,7 +12100,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12117,7 +12119,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12136,7 +12138,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12155,7 +12157,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12174,7 +12176,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12193,7 +12195,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12212,7 +12214,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "23"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12231,7 +12233,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12250,7 +12252,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12269,7 +12271,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12288,7 +12290,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12307,7 +12309,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12326,7 +12328,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12345,7 +12347,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12364,7 +12366,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12383,7 +12385,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12402,7 +12404,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12421,7 +12423,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12440,7 +12442,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12459,7 +12461,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12478,7 +12480,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12497,7 +12499,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12516,7 +12518,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12535,7 +12537,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12554,7 +12556,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12573,7 +12575,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12592,7 +12594,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12611,7 +12613,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12630,7 +12632,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12649,7 +12651,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "22"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12668,7 +12670,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12687,7 +12689,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12706,7 +12708,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12725,7 +12727,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12744,7 +12746,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12763,7 +12765,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12782,7 +12784,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12801,7 +12803,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12820,7 +12822,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12839,7 +12841,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12858,7 +12860,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12877,7 +12879,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12896,7 +12898,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12915,7 +12917,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12934,7 +12936,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12953,7 +12955,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12972,7 +12974,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -12991,7 +12993,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13010,7 +13012,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13029,7 +13031,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13048,7 +13050,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13067,7 +13069,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13086,7 +13088,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13105,7 +13107,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13124,7 +13126,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13143,7 +13145,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13162,7 +13164,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13181,7 +13183,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13200,7 +13202,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13219,7 +13221,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13238,7 +13240,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13257,7 +13259,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13276,7 +13278,7 @@ export const SHEET_SONGS = [
       "normal": "17",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13295,7 +13297,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13314,7 +13316,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13333,7 +13335,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13352,7 +13354,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13371,7 +13373,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13390,7 +13392,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13409,7 +13411,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13428,7 +13430,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13447,7 +13449,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13466,7 +13468,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13485,7 +13487,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13504,7 +13506,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13523,7 +13525,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13542,7 +13544,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13561,7 +13563,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13580,7 +13582,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13599,7 +13601,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13618,7 +13620,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13637,7 +13639,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13656,7 +13658,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13675,7 +13677,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13694,7 +13696,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13713,7 +13715,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13732,7 +13734,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13751,7 +13753,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13770,7 +13772,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13789,7 +13791,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13808,7 +13810,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13827,7 +13829,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13846,7 +13848,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13865,7 +13867,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13884,7 +13886,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13903,7 +13905,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13922,7 +13924,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13941,7 +13943,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13960,7 +13962,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13979,7 +13981,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -13998,7 +14000,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14017,7 +14019,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14036,7 +14038,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14055,7 +14057,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14074,7 +14076,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14093,7 +14095,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14112,7 +14114,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14131,7 +14133,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14150,7 +14152,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14169,7 +14171,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14188,7 +14190,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14207,7 +14209,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14226,7 +14228,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14245,7 +14247,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14264,7 +14266,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14283,7 +14285,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14302,7 +14304,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14321,7 +14323,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14340,7 +14342,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14359,7 +14361,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14378,7 +14380,7 @@ export const SHEET_SONGS = [
       "normal": "18",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14397,7 +14399,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14416,7 +14418,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14435,7 +14437,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14454,7 +14456,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14473,7 +14475,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14492,7 +14494,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14511,7 +14513,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14530,7 +14532,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14549,7 +14551,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14568,7 +14570,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14587,7 +14589,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14606,7 +14608,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14625,7 +14627,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14644,7 +14646,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14663,7 +14665,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14682,7 +14684,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "24"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14701,7 +14703,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14720,7 +14722,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14739,7 +14741,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14758,7 +14760,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14777,7 +14779,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14796,7 +14798,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14815,7 +14817,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14834,7 +14836,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14853,7 +14855,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14872,7 +14874,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14891,7 +14893,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14910,7 +14912,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14929,7 +14931,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14948,7 +14950,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14967,7 +14969,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -14986,7 +14988,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15005,7 +15007,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15024,7 +15026,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "38"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15043,7 +15045,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15062,7 +15064,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15081,7 +15083,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15100,7 +15102,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15119,7 +15121,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15138,7 +15140,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15157,7 +15159,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15176,7 +15178,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15195,7 +15197,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15214,7 +15216,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15233,7 +15235,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15252,7 +15254,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15271,7 +15273,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15290,7 +15292,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15309,7 +15311,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15328,7 +15330,7 @@ export const SHEET_SONGS = [
       "normal": "19",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15347,7 +15349,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15366,7 +15368,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15385,7 +15387,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15404,7 +15406,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15423,7 +15425,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15442,7 +15444,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "25"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15461,7 +15463,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15480,7 +15482,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15499,7 +15501,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15518,7 +15520,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15537,7 +15539,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15556,7 +15558,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15575,7 +15577,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15594,7 +15596,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15613,7 +15615,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15632,7 +15634,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15651,7 +15653,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15670,7 +15672,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15689,7 +15691,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15708,7 +15710,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15727,7 +15729,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15746,7 +15748,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15765,7 +15767,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15784,7 +15786,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15803,7 +15805,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15822,7 +15824,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15841,7 +15843,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15860,7 +15862,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15879,7 +15881,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15898,7 +15900,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15917,7 +15919,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15936,7 +15938,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15955,7 +15957,7 @@ export const SHEET_SONGS = [
       "normal": "20",
       "hard": "26"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15974,7 +15976,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -15993,7 +15995,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16012,7 +16014,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16031,7 +16033,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16050,7 +16052,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16069,7 +16071,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16088,7 +16090,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16107,7 +16109,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16126,7 +16128,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16145,7 +16147,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16164,7 +16166,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16183,7 +16185,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16202,7 +16204,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16221,7 +16223,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16240,7 +16242,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16259,7 +16261,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16278,7 +16280,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16297,7 +16299,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16316,7 +16318,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16335,7 +16337,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16354,7 +16356,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16373,7 +16375,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16392,7 +16394,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16411,7 +16413,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16430,7 +16432,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16449,7 +16451,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16468,7 +16470,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16487,7 +16489,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16506,7 +16508,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16525,7 +16527,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16544,7 +16546,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16563,7 +16565,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16582,7 +16584,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16601,7 +16603,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16620,7 +16622,7 @@ export const SHEET_SONGS = [
       "normal": "21",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16639,7 +16641,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16658,7 +16660,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16677,7 +16679,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16696,7 +16698,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16715,7 +16717,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16734,7 +16736,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16753,7 +16755,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16772,7 +16774,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16791,7 +16793,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16810,7 +16812,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16829,7 +16831,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16848,7 +16850,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16867,7 +16869,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16886,7 +16888,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16905,7 +16907,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16924,7 +16926,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16943,7 +16945,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16962,7 +16964,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -16981,7 +16983,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17000,7 +17002,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17019,7 +17021,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17038,7 +17040,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17057,7 +17059,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17076,7 +17078,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17095,7 +17097,7 @@ export const SHEET_SONGS = [
       "normal": "22",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17114,7 +17116,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17133,7 +17135,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17152,7 +17154,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17171,7 +17173,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17190,7 +17192,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17209,7 +17211,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17228,7 +17230,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17247,7 +17249,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17266,7 +17268,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17285,7 +17287,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17304,7 +17306,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17323,7 +17325,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17342,7 +17344,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17361,7 +17363,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17380,7 +17382,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17399,7 +17401,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17418,7 +17420,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17437,7 +17439,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "39"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17456,7 +17458,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17475,7 +17477,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17494,7 +17496,7 @@ export const SHEET_SONGS = [
       "normal": "23",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17513,7 +17515,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17532,7 +17534,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17551,7 +17553,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "38"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17570,7 +17572,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17589,7 +17591,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17608,7 +17610,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "27"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17627,7 +17629,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17646,7 +17648,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17665,7 +17667,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17684,7 +17686,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17703,7 +17705,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17722,7 +17724,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17741,7 +17743,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17760,7 +17762,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17779,7 +17781,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17798,7 +17800,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17817,7 +17819,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17836,7 +17838,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17855,7 +17857,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17874,7 +17876,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "28"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17893,7 +17895,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17912,7 +17914,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17931,7 +17933,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "39"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17950,7 +17952,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17969,7 +17971,7 @@ export const SHEET_SONGS = [
       "normal": "24",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -17988,7 +17990,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18007,7 +18009,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18026,7 +18028,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18045,7 +18047,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18064,7 +18066,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18083,7 +18085,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18102,7 +18104,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18121,7 +18123,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18140,7 +18142,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18159,7 +18161,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18178,7 +18180,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18197,7 +18199,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "31"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18216,7 +18218,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18235,7 +18237,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "33"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18254,7 +18256,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18273,7 +18275,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18292,7 +18294,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18311,7 +18313,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "40"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18330,7 +18332,7 @@ export const SHEET_SONGS = [
       "normal": "25",
       "hard": "29"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18340,16 +18342,16 @@ export const SHEET_SONGS = [
     "title": "%UnDeciphered-CryptoGraph in the Edifice%",
     "artist": "seatrus",
     "mapper": "Official RoBeats",
-    "coverArt": "",
-    "coverArtEasy": "",
-    "coverArtNormal": "",
-    "coverArtHard": "",
+    "coverArt": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIgH6AfZVUcHyBo2dV640vGyYUgg_HUIT5bF_VSj27lQ&s",
+    "coverArtEasy": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIgH6AfZVUcHyBo2dV640vGyYUgg_HUIT5bF_VSj27lQ&s",
+    "coverArtNormal": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIgH6AfZVUcHyBo2dV640vGyYUgg_HUIT5bF_VSj27lQ&s",
+    "coverArtHard": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIgH6AfZVUcHyBo2dV640vGyYUgg_HUIT5bF_VSj27lQ&s",
     "difficulty": {
       "easy": "8",
       "normal": "26",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "Rush/Flow",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18368,7 +18370,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "38"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18387,7 +18389,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18406,7 +18408,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18425,7 +18427,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "34"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18444,7 +18446,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18463,7 +18465,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18482,7 +18484,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "30"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18501,7 +18503,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18520,7 +18522,7 @@ export const SHEET_SONGS = [
       "normal": "26",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18539,7 +18541,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "32"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18558,7 +18560,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "37"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18577,7 +18579,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18596,7 +18598,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18615,7 +18617,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "39"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18634,7 +18636,7 @@ export const SHEET_SONGS = [
       "normal": "27",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18653,7 +18655,7 @@ export const SHEET_SONGS = [
       "normal": "28",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18663,16 +18665,16 @@ export const SHEET_SONGS = [
     "title": "Omega(x2)PARTS [EXTENDED CUT]",
     "artist": "Camellia",
     "mapper": "Official RoBeats",
-    "coverArt": "",
-    "coverArtEasy": "",
-    "coverArtNormal": "",
-    "coverArtHard": "",
+    "coverArt": "https://i1.sndcdn.com/artworks-wixYQQ6wed8BSJVb-5tzImw-t1080x1080.jpg",
+    "coverArtEasy": "https://i1.sndcdn.com/artworks-wixYQQ6wed8BSJVb-5tzImw-t1080x1080.jpg",
+    "coverArtNormal": "https://i1.sndcdn.com/artworks-wixYQQ6wed8BSJVb-5tzImw-t1080x1080.jpg",
+    "coverArtHard": "https://i1.sndcdn.com/artworks-wixYQQ6wed8BSJVb-5tzImw-t1080x1080.jpg",
     "difficulty": {
       "easy": "-",
       "normal": "28",
       "hard": "35"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18682,16 +18684,16 @@ export const SHEET_SONGS = [
     "title": "GHOUL",
     "artist": "Camellia",
     "mapper": "Official RoBeats",
-    "coverArt": "",
-    "coverArtEasy": "",
-    "coverArtNormal": "",
-    "coverArtHard": "",
+    "coverArt": "https://f4.bcbits.com/img/a2760613898_16.jpg",
+    "coverArtEasy": "https://f4.bcbits.com/img/a2760613898_16.jpg",
+    "coverArtNormal": "https://f4.bcbits.com/img/a2760613898_16.jpg",
+    "coverArtHard": "https://f4.bcbits.com/img/a2760613898_16.jpg",
     "difficulty": {
       "easy": "8",
       "normal": "29",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false
@@ -18710,7 +18712,7 @@ export const SHEET_SONGS = [
       "normal": "30",
       "hard": "36"
     },
-    "element": "Standard",
+    "element": "",
     "bpm": "",
     "duration": "",
     "isCustom": false

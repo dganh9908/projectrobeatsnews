@@ -350,7 +350,6 @@ export const PostCard: React.FC<PostCardProps> = ({
             <UserAvatar
               src={post.author?.avatar}
               alt={post.author?.name || 'Author'}
-              frameId={post.author?.equippedAvatarFrame}
               size="sm"
             />
             {post.author?.role?.toLowerCase() === 'admin' && (

@@ -661,8 +661,12 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
                             <span className="text-xs font-semibold text-white block truncate">{song.title}</span>
                             <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
                               <span>{song.artist}</span>
-                              <span>·</span>
-                              <span className={elData.text}>{elData.name}</span>
+                              {elData && (
+                                <>
+                                  <span>·</span>
+                                  <span className={elData.text}>{elData.name}</span>
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -823,9 +827,11 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
                         </div>
 
                         {/* Element badge */}
-                        <div className={`px-1.5 py-0.2 rounded border text-[9px] font-bold ${elData.bg} ${elData.border} ${elData.text}`}>
-                          {elData.name}
-                        </div>
+                        {elData && (
+                          <div className={`px-1.5 py-0.2 rounded border text-[9px] font-bold ${elData.bg} ${elData.border} ${elData.text}`}>
+                            {elData.name}
+                          </div>
+                        )}
                       </div>
 
                       {/* RoBeats Rank Selector per song (Daily & Weekly missions) */}
@@ -1004,7 +1010,7 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
           onClose={() => setSelectedSongDetail(null)}
           onSongUpdated={(updated) => {
             setSelectedSongDetail(updated);
-            setSelectedSongs(prev => prev.map(s => s.id === updated.id ? { ...s, ...updated } : s));
+            setSelectedSongs(prev => prev.map(s => s.id === updated.id ? { ...updated, uniqueKey: s.uniqueKey, chosenDifficulty: s.chosenDifficulty, missionRank: s.missionRank, noMisses: s.noMisses, isNoMisses: s.isNoMisses, requiredScore: s.requiredScore } : s));
           }}
         />
       )}

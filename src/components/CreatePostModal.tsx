@@ -31,7 +31,7 @@ import {
 import { NewsArticle, SongEntry, ElementConfig, RankConfig, RoBeatsRank, hasDifficulty } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { fetchSongList, fetchElementsList, fetchRanksList } from '../services/fandomService';
-import { getElementData } from '../constants/elements';
+import { getElementData, normalizeElementName } from '../constants/elements';
 import { SongDetailsModal } from './SongDetailsModal';
 import { FramedSongCover } from './FramedSongCover';
 import { safeJson } from '../utils/safeJson';
@@ -101,7 +101,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
       coverArtEasy: '',
       coverArtNormal: '',
       coverArtHard: '',
-      element: 'Flow',
+      element: '',
     }
   ]);
 
@@ -160,10 +160,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           if (Array.isArray(rankList) && rankList.length > 0) {
             setRanks(rankList);
           }
-          // Set default element if available
-          if (elList && elList.length > 0) {
-            setNewSongDrafts(prev => prev.map(d => d.element ? d : { ...d, element: elList[0].name }));
-          }
         })
         .catch((err: any) => {
           console.error('Failed to load data for post creator', err);
@@ -188,7 +184,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   // Mini-form handlers for New Song posts
   const handleAddNewSongDraft = () => {
-    const defaultEl = elements[0]?.name || 'Flow';
     setNewSongDrafts(prev => [
       ...prev,
       {
@@ -206,7 +201,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         coverArtEasy: '',
         coverArtNormal: '',
         coverArtHard: '',
-        element: defaultEl,
+        element: '',
       }
     ]);
   };
@@ -457,7 +452,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               hard: s.hardLevel.trim() || '-',
             },
             chosenDifficulty: diffTier,
-            element: s.element || 'Flow',
+            element: normalizeElementName(s.element),
             isCustom: true,
           };
         });
@@ -1144,15 +1139,28 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                         })()}
                       </div>
 
-                      {/* Elements: Manual choose from available added elements */}
+                      {/* Elements: Manual choose from available added elements (optional) */}
                       <div>
                         <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
-                          Song element:
+                          Song element (optional):
                         </label>
                         <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateNewSongDraft(draft.id, { element: '' })}
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs cursor-pointer transition-all ${
+                              !normalizeElementName(draft.element)
+                                ? 'bg-zinc-800 border-zinc-500 text-white font-bold'
+                                : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                            }`}
+                          >
+                            <span>None</span>
+                            {!normalizeElementName(draft.element) && <Check className="w-3 h-3 ml-0.5" />}
+                          </button>
                           {elements.map(el => {
                             const isSelected = draft.element.toLowerCase() === el.name.toLowerCase();
                             const elData = getElementData(el.name, elements);
+                            if (!elData) return null;
                             return (
                               <button
                                 key={el.name}
@@ -1258,20 +1266,26 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                               <span className="text-xs font-semibold text-white block truncate">{song.title}</span>
                               <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
                                 <span>{song.artist}</span>
-                                <span>·</span>
-                                <span className={elData.text}>{elData.name}</span>
+                                {elData && (
+                                  <>
+                                    <span>·</span>
+                                    <span className={elData.text}>{elData.name}</span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-2 shrink-0">
                             {/* Element mini badge */}
-                            <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] ${elData.bg} ${elData.border}`}>
-                              {elData.imageUrl && (
-                                <img src={elData.imageUrl} alt={elData.name} className="w-2.5 h-2.5 object-contain" />
-                              )}
-                              <span className={`font-bold ${elData.text}`}>{elData.name}</span>
-                            </div>
+                            {elData && (
+                              <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] ${elData.bg} ${elData.border}`}>
+                                {elData.imageUrl && (
+                                  <img src={elData.imageUrl} alt={elData.name} className="w-2.5 h-2.5 object-contain" />
+                                )}
+                                <span className={`font-bold ${elData.text}`}>{elData.name}</span>
+                              </div>
+                            )}
 
                             <span className="text-[10px] font-mono text-zinc-400">
                               {song.difficulty?.normal || '-'}/{song.difficulty?.hard || '-'}
@@ -1442,9 +1456,11 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                         </div>
 
                         {/* Element badge */}
-                        <div className={`px-1.5 py-0.2 rounded border text-[9px] font-bold ${elData.bg} ${elData.border} ${elData.text}`}>
-                          {elData.name}
-                        </div>
+                        {elData && (
+                          <div className={`px-1.5 py-0.2 rounded border text-[9px] font-bold ${elData.bg} ${elData.border} ${elData.text}`}>
+                            {elData.name}
+                          </div>
+                        )}
                       </div>
 
                       {/* RoBeats Rank Selector per song (Daily & Weekly missions) */}
@@ -1590,7 +1606,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           onClose={() => setSelectedSongDetail(null)}
           onSongUpdated={(updated) => {
             setSelectedSongDetail(updated);
-            setSelectedSongs(prev => prev.map(s => s.id === updated.id ? { ...s, ...updated } : s));
+            setSelectedSongs(prev => prev.map(s => (s.id === updated.id ? { ...updated, uniqueKey: s.uniqueKey, chosenDifficulty: s.chosenDifficulty, missionRank: s.missionRank, noMisses: s.noMisses, isNoMisses: s.isNoMisses, requiredScore: s.requiredScore } : s)));
           }}
         />
       )}

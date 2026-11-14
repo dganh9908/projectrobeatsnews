@@ -29,6 +29,12 @@ import {
   DEFAULT_ROBEATS_RANKS,
   DiscordWebhooksConfig,
 } from '../types';
+import { normalizeElementName } from '../constants/elements';
+import {
+  buildCatalogLookup,
+  mergePostSongWithCatalog,
+  dispatchSongsUpdatedEvent,
+} from '../utils/songSync';
 
 export const BOOTSTRAP_ADMIN_EMAIL = 'chautuan9461@gmail.com';
 export const BOOTSTRAP_ADMIN_EMAILS = [
@@ -436,10 +442,63 @@ export async function fetchSongsFromFirestore(): Promise<SongEntry[]> {
       return {
         ...data,
         id: String(data.id || d.id),
+        element: normalizeElementName(data.element),
       } as SongEntry;
     });
   } catch (err) {
     handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export async function propagateSongUpdatesToPostsInFirestore(
+  updatedSongs: SongEntry[]
+): Promise<number> {
+  if (!auth.currentUser || !Array.isArray(updatedSongs) || updatedSongs.length === 0) {
+    return 0;
+  }
+
+  try {
+    const lookup = buildCatalogLookup(updatedSongs);
+    const snap = await getDocs(collection(db, 'posts'));
+    const pendingUpdates: Array<{ ref: any; songs: SongEntry[] }> = [];
+
+    for (const d of snap.docs) {
+      const data = d.data() || {};
+      const currentSongs = Array.isArray(data.songs) ? (data.songs as SongEntry[]) : [];
+      if (currentSongs.length === 0) continue;
+
+      let changed = false;
+      const nextSongs = currentSongs.slice(0, 20).map((ps) => {
+        const merged = mergePostSongWithCatalog(ps, lookup);
+        if (JSON.stringify(merged) !== JSON.stringify(ps)) {
+          changed = true;
+        }
+        return stripUndefinedDeep(merged);
+      });
+
+      if (changed) {
+        pendingUpdates.push({ ref: d.ref, songs: nextSongs });
+      }
+    }
+
+    if (pendingUpdates.length === 0) return 0;
+
+    const CHUNK_SIZE = 350;
+    for (let i = 0; i < pendingUpdates.length; i += CHUNK_SIZE) {
+      const batch = writeBatch(db);
+      for (const item of pendingUpdates.slice(i, i + CHUNK_SIZE)) {
+        batch.update(item.ref, {
+          songs: item.songs,
+          updatedAt: serverTimestamp(),
+        });
+      }
+      await batch.commit();
+    }
+
+    return pendingUpdates.length;
+  } catch (err) {
+    console.warn('Could not propagate song edits to Firestore posts:', err);
+    return 0;
   }
 }
 
@@ -479,19 +538,25 @@ export async function saveSongInFirestore(
           hard: String(song.difficulty?.hard ?? existingData.difficulty?.hard ?? '-').slice(0, 16),
         };
       }
-      if (song.element !== undefined) updatePayload.element = String(song.element || 'Flow').slice(0, 64);
+      if (song.element !== undefined) updatePayload.element = normalizeElementName(song.element).slice(0, 64);
       if (song.duration !== undefined) updatePayload.duration = String(song.duration || '').slice(0, 32);
       if (song.bpm !== undefined) updatePayload.bpm = String(song.bpm || '').slice(0, 32);
       if (song.dateAdded !== undefined) updatePayload.dateAdded = String(song.dateAdded || '').slice(0, 64);
       if (song.isCustom !== undefined) updatePayload.isCustom = Boolean(song.isCustom);
 
       await updateDoc(songRef, stripUndefinedDeep(updatePayload));
-      return {
+      const savedSong = {
         ...existingData,
         ...updatePayload,
         id: songId,
+        element: normalizeElementName(
+          updatePayload.element !== undefined ? updatePayload.element : existingData.element
+        ),
         updatedAt: new Date().toISOString(),
       } as unknown as SongEntry;
+      dispatchSongsUpdatedEvent({ updatedSongs: [savedSong] });
+      await propagateSongUpdatesToPostsInFirestore([savedSong]);
+      return savedSong;
     }
 
     const primaryCover = String(
@@ -516,7 +581,7 @@ export async function saveSongInFirestore(
       coverArtNormal: String(song.coverArtNormal || primaryCover).slice(0, 2048),
       coverArtHard: String(song.coverArtHard || primaryCover).slice(0, 2048),
       difficulty: safeDiff,
-      element: String(song.element || 'Flow').slice(0, 64),
+      element: normalizeElementName(song.element).slice(0, 64),
       duration: String(song.duration || '').slice(0, 32),
       bpm: String(song.bpm || '').slice(0, 32),
       dateAdded: String(song.dateAdded || new Date().toLocaleDateString('en-US')).slice(0, 64),
@@ -526,11 +591,14 @@ export async function saveSongInFirestore(
     });
 
     await setDoc(songRef, createPayload);
-    return {
+    const createdSong = {
       ...createPayload,
       id: songId,
       updatedAt: new Date().toISOString(),
     } as unknown as SongEntry;
+    dispatchSongsUpdatedEvent({ updatedSongs: [createdSong] });
+    await propagateSongUpdatesToPostsInFirestore([createdSong]);
+    return createdSong;
   } catch (err) {
     handleFirestoreError(err, OperationType.WRITE, path);
   }
@@ -585,6 +653,7 @@ export async function syncSongsBatchInFirestore(
   let updated = 0;
   const CHUNK_SIZE = 400;
   const total = sheetSongs.length;
+  const syncedSongs: SongEntry[] = [];
 
   for (let i = 0; i < total; i += CHUNK_SIZE) {
     const chunk = sheetSongs.slice(i, i + CHUNK_SIZE);
@@ -613,7 +682,7 @@ export async function syncSongsBatchInFirestore(
         .trim()
         .slice(0, 2048);
 
-      const incomingElement = String(rawSong.element || '').trim().slice(0, 64);
+      const incomingElement = normalizeElementName(rawSong.element).slice(0, 64);
 
       if (existingData) {
         const updatePayload: Record<string, any> = {
@@ -630,11 +699,19 @@ export async function syncSongsBatchInFirestore(
           updatePayload.coverArtHard = incomingCover;
         }
 
-        if (incomingElement && (incomingElement !== 'Standard' || !preserveMedia || !existingData.element)) {
+        const existingElement = normalizeElementName(existingData.element);
+        if (incomingElement || !preserveMedia || existingElement !== String(existingData.element || '')) {
           updatePayload.element = incomingElement;
         }
 
         batch.update(songRef, stripUndefinedDeep(updatePayload));
+        syncedSongs.push({
+          ...existingData,
+          ...updatePayload,
+          id: songId,
+          element: updatePayload.element !== undefined ? updatePayload.element : existingElement,
+          updatedAt: new Date().toISOString(),
+        } as unknown as SongEntry);
         updated++;
       } else {
         const createPayload: Record<string, any> = stripUndefinedDeep({
@@ -647,7 +724,7 @@ export async function syncSongsBatchInFirestore(
           coverArtNormal: incomingCover,
           coverArtHard: incomingCover,
           difficulty: safeDiff,
-          element: incomingElement || 'Standard',
+          element: incomingElement,
           duration: String(rawSong.duration || '').slice(0, 32),
           bpm: String(rawSong.bpm || '').slice(0, 32),
           dateAdded: new Date().toLocaleDateString('en-US'),
@@ -658,6 +735,11 @@ export async function syncSongsBatchInFirestore(
 
         batch.set(songRef, createPayload);
         existingById.set(songId, createPayload);
+        syncedSongs.push({
+          ...createPayload,
+          id: songId,
+          updatedAt: new Date().toISOString(),
+        } as unknown as SongEntry);
         created++;
       }
     }
@@ -671,6 +753,9 @@ export async function syncSongsBatchInFirestore(
       handleFirestoreError(err, OperationType.WRITE, 'songs');
     }
   }
+
+  dispatchSongsUpdatedEvent({ updatedSongs: syncedSongs, forceRefresh: true });
+  await propagateSongUpdatesToPostsInFirestore(syncedSongs);
 
   return { created, updated, total };
 }
@@ -1031,9 +1116,8 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
         avatar,
         bio: role === 'admin' ? 'Administrator of RoBeats News' : 'RoBeats rhythm player',
         role: role === 'admin' ? 'admin' : 'player',
-        currentStreak: 1,
-        bestStreak: 1,
-        unlockedFrames: [],
+        currentStreak: 0,
+        bestStreak: 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -1088,11 +1172,9 @@ export async function syncFirebaseUserDocs(firebaseUser: FirebaseUser): Promise<
     role,
     permissions: getPermissionsForRole(role),
     createdAt: normalizeTimestamp(existingPublic?.createdAt),
-    currentStreak: existingPublic?.currentStreak ?? 1,
-    bestStreak: existingPublic?.bestStreak ?? 1,
+    currentStreak: existingPublic?.currentStreak ?? 0,
+    bestStreak: existingPublic?.bestStreak ?? 0,
     lastCheckInDate: existingPrivate?.lastCheckInDate || '',
-    unlockedFrames: Array.isArray(existingPublic?.unlockedFrames) ? existingPublic.unlockedFrames : [],
-    equippedAvatarFrame: existingPublic?.equippedAvatarFrame || undefined,
   };
 }
 
@@ -1113,13 +1195,10 @@ export async function checkInStreakInFirestore(): Promise<{
   currentStreak: number;
   bestStreak: number;
   lastCheckInDate: string;
-  unlockedFrames: string[];
-  equippedAvatarFrame?: string;
-  newlyUnlockedFrames: string[];
 }> {
   const currentUser = auth.currentUser;
   if (!currentUser) {
-    throw new Error('Google sign-in required for Cloud streak check-in.');
+    throw new Error('Google sign-in required for Login Streak check-in.');
   }
 
   const uid = sanitizeFirestoreId(currentUser.uid);
@@ -1139,9 +1218,6 @@ export async function checkInStreakInFirestore(): Promise<{
   }
 
   const lastCheckIn = String(privData?.lastCheckInDate || '');
-  const existingFrames = new Set<string>(
-    Array.isArray(pubData?.unlockedFrames) ? pubData.unlockedFrames : []
-  );
 
   if (lastCheckIn === today) {
     return {
@@ -1151,47 +1227,16 @@ export async function checkInStreakInFirestore(): Promise<{
       currentStreak: pubData?.currentStreak || 1,
       bestStreak: pubData?.bestStreak || 1,
       lastCheckInDate: today,
-      unlockedFrames: Array.from(existingFrames),
-      equippedAvatarFrame: pubData?.equippedAvatarFrame || undefined,
-      newlyUnlockedFrames: [],
     };
   }
 
   const newStreak = lastCheckIn === yesterday ? (Number(pubData?.currentStreak) || 0) + 1 : 1;
   const bestStreak = Math.max(Number(pubData?.bestStreak) || 0, newStreak);
-  const newlyUnlocked: string[] = [];
-
-  if (newStreak >= 1 && !existingFrames.has('frame_novice')) {
-    existingFrames.add('frame_novice');
-    newlyUnlocked.push('frame_novice');
-  }
-  if (newStreak >= 3 && !existingFrames.has('frame_electro')) {
-    existingFrames.add('frame_electro');
-    newlyUnlocked.push('frame_electro');
-  }
-  if (newStreak >= 7 && !existingFrames.has('frame_gold')) {
-    existingFrames.add('frame_gold');
-    newlyUnlocked.push('frame_gold');
-  }
-  if (newStreak >= 14 && !existingFrames.has('frame_overdrive')) {
-    existingFrames.add('frame_overdrive');
-    newlyUnlocked.push('frame_overdrive');
-  }
-  if (newStreak >= 30 && !existingFrames.has('frame_cosmic')) {
-    existingFrames.add('frame_cosmic');
-    newlyUnlocked.push('frame_cosmic');
-  }
-
-  const updatedFrames = Array.from(existingFrames);
-  const equippedAvatarFrame =
-    pubData?.equippedAvatarFrame || (updatedFrames.length > 0 ? updatedFrames[0] : '');
 
   try {
     await updateDoc(userRef, {
       currentStreak: newStreak,
       bestStreak,
-      unlockedFrames: updatedFrames.slice(0, 20),
-      equippedAvatarFrame: String(equippedAvatarFrame || '').slice(0, 64),
       updatedAt: serverTimestamp(),
     });
   } catch (err) {
@@ -1222,29 +1267,7 @@ export async function checkInStreakInFirestore(): Promise<{
     currentStreak: newStreak,
     bestStreak,
     lastCheckInDate: today,
-    unlockedFrames: updatedFrames,
-    equippedAvatarFrame: equippedAvatarFrame || undefined,
-    newlyUnlockedFrames: newlyUnlocked,
   };
-}
-
-export async function equipAvatarFrameInFirestore(frameId?: string): Promise<string | undefined> {
-  const currentUser = auth.currentUser;
-  if (!currentUser) {
-    throw new Error('Google sign-in required to equip avatar frame.');
-  }
-  const uid = sanitizeFirestoreId(currentUser.uid);
-  const cleanFrame = String(frameId || '').slice(0, 64);
-
-  try {
-    await updateDoc(doc(db, 'users', uid), {
-      equippedAvatarFrame: cleanFrame,
-      updatedAt: serverTimestamp(),
-    });
-    return cleanFrame || undefined;
-  } catch (err) {
-    handleFirestoreError(err, OperationType.UPDATE, `users/${uid}`);
-  }
 }
 
 export async function fetchUserProfileFromFirestore(identifier: string): Promise<User | null> {
@@ -1268,10 +1291,8 @@ export async function fetchUserProfileFromFirestore(identifier: string): Promise
         role,
         permissions: getPermissionsForRole(role),
         createdAt: normalizeTimestamp(data.createdAt),
-        currentStreak: data.currentStreak ?? 1,
-        bestStreak: data.bestStreak ?? 1,
-        unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
-        equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+        currentStreak: data.currentStreak ?? 0,
+        bestStreak: data.bestStreak ?? 0,
       };
     }
   } catch {
@@ -1299,10 +1320,8 @@ export async function fetchAllUsersFromFirestore(): Promise<User[]> {
         role,
         permissions: getPermissionsForRole(role),
         createdAt: normalizeTimestamp(data.createdAt),
-        currentStreak: data.currentStreak ?? 1,
-        bestStreak: data.bestStreak ?? 1,
-        unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
-        equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+        currentStreak: data.currentStreak ?? 0,
+        bestStreak: data.bestStreak ?? 0,
       };
     });
     list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -1383,10 +1402,8 @@ export async function updateUserInFirestoreAsAdmin(
       role: finalRole,
       permissions: getPermissionsForRole(finalRole),
       createdAt: normalizeTimestamp(data.createdAt),
-      currentStreak: data.currentStreak ?? 1,
-      bestStreak: data.bestStreak ?? 1,
-      unlockedFrames: Array.isArray(data.unlockedFrames) ? data.unlockedFrames : [],
-      equippedAvatarFrame: data.equippedAvatarFrame || undefined,
+      currentStreak: data.currentStreak ?? 0,
+      bestStreak: data.bestStreak ?? 0,
     };
   } catch {
     return null;

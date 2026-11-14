@@ -256,7 +256,7 @@ service cloud.firestore {
             isOwner(userId)
             && incoming().role == existing().role
             && incoming().diff(existing()).affectedKeys().hasOnly([
-              'displayName', 'robloxUsername', 'avatar', 'bio', 'roBeatsRank',
+              'username', 'displayName', 'robloxUsername', 'avatar', 'bio', 'roBeatsRank',
               'preferredNoteSpeed', 'currentStreak', 'bestStreak',
               'equippedAvatarFrame', 'unlockedFrames', 'updatedAt'
             ])

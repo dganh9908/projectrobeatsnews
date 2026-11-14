@@ -44,6 +44,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [activeTab, setActiveTab] = useState<'login' | 'profile' | 'edit'>('login');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const [editUsername, setEditUsername] = useState('');
   const [editDisplayName, setEditDisplayName] = useState('');
   const [editBio, setEditBio] = useState('');
   const [editAvatar, setEditAvatar] = useState('');
@@ -59,6 +60,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     if (isAuthenticated) {
       setActiveTab(initialTab === 'profile' ? 'profile' : 'profile');
       if (user) {
+        setEditUsername(user.username || '');
         setEditDisplayName(user.displayName || user.username);
         setEditBio(user.bio || '');
         setEditAvatar(user.avatar || DEFAULT_AVATAR);
@@ -88,7 +90,14 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     clearError();
     setSuccessMessage(null);
 
+    const cleanUsername = editUsername
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_]/g, '')
+      .slice(0, 64);
+
     const ok = await updateProfile({
+      username: cleanUsername,
       displayName: editDisplayName.trim(),
       bio: editBio.trim(),
       avatar: editAvatar.trim() || DEFAULT_AVATAR,
@@ -208,7 +217,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   Sign In with Your Google Account
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Manual account creation and passwords are disabled. Sign in with Google to sync your profile, daily streak, reactions, and Staff/Admin permissions directly with Firebase Cloud Firestore.
+                  Log in to access all features (as well as new features to be added in the future). Please read the &quot;Privacy&quot; section before sign in.
                 </p>
               </div>
 
@@ -245,7 +254,6 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 <UserAvatar
                   src={user.avatar || DEFAULT_AVATAR}
                   alt={user.displayName}
-                  frameId={user.equippedAvatarFrame}
                   size="lg"
                 />
 
@@ -330,6 +338,26 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           {/* ----------------- EDIT PROFILE ----------------- */}
           {isAuthenticated && user && activeTab === 'edit' && (
             <form onSubmit={handleUpdateProfile} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1">
+                  Username (@handle)
+                </label>
+                <div className="flex items-center bg-zinc-900/90 border border-zinc-800 rounded-xl focus-within:border-cyan-500/70 transition-all overflow-hidden">
+                  <span className="pl-3 pr-1 text-xs font-mono text-zinc-500 select-none">@</span>
+                  <input
+                    type="text"
+                    required
+                    minLength={2}
+                    maxLength={64}
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                    placeholder="your_username"
+                    className="w-full pr-3 py-2 text-xs bg-transparent text-white focus:outline-none font-mono"
+                  />
+                </div>
+                <p className="text-[11px] text-zinc-500 mt-1">Letters, numbers, and underscores only (minimum 2 characters)</p>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-zinc-300 mb-1">
                   Display Name

@@ -1,7 +1,8 @@
 import { Article, Song, ElementConfig, RankConfig, DiscordWebhooksConfig, Comment } from '../types';
-import { buildDefaultElements } from '../constants/elements';
+import { buildDefaultElements, normalizeElementName } from '../constants/elements';
 import { DEFAULT_GOOGLE_SHEET_URL, SHEET_SONGS } from '../constants/sheetSongs';
 import { getCachedLiveSheetSongs, mergeSongsWithSheetData } from './googleSheetsService';
+import { dispatchSongsUpdatedEvent } from '../utils/songSync';
 import { safeJson } from '../utils/safeJson';
 import { auth } from '../lib/firebase';
 import {
@@ -224,13 +225,17 @@ export async function fetchSongsList(forceRefreshSheet: boolean = false): Promis
       return mergeSongsWithSheetData(baseSongs, liveSheetSongs, {
         appendMissing: true,
         strictSheetCover: false,
+        strictSheetElement: false,
       });
     }
   } catch (err) {
-    console.warn('Live Google Sheet cover art merge skipped:', err);
+    console.warn('Live Google Sheet cover art & element merge skipped:', err);
   }
 
-  return baseSongs;
+  return baseSongs.map((s) => ({
+    ...s,
+    element: normalizeElementName(s.element),
+  }));
 }
 
 export async function saveSong(song: Partial<Song>, id?: string): Promise<Song> {
@@ -249,12 +254,17 @@ export async function saveSong(song: Partial<Song>, id?: string): Promise<Song> 
     body: JSON.stringify(song),
   });
   if (!res.ok) throw new Error('Failed to save song');
-  return safeJson(res, null as any);
+  const saved = await safeJson(res, null as any);
+  if (saved) {
+    dispatchSongsUpdatedEvent({ updatedSongs: [saved] });
+  }
+  return saved;
 }
 
 export async function deleteSong(id: string): Promise<void> {
   if (auth.currentUser) {
     await deleteSongInFirestore(id);
+    dispatchSongsUpdatedEvent({ deletedSongId: id });
     return;
   }
   const headers = await getAuthHeadersWithFirebase();
@@ -263,6 +273,7 @@ export async function deleteSong(id: string): Promise<void> {
     headers,
   });
   if (!res.ok) throw new Error('Failed to delete song');
+  dispatchSongsUpdatedEvent({ deletedSongId: id });
 }
 
 export async function fetchElementsList(): Promise<ElementConfig[]> {

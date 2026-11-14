@@ -180,21 +180,23 @@ export const SongDetailsModal: React.FC<SongDetailsModalProps> = ({ song: initia
 
               {/* Linked Element Image & Name, BPM, Duration */}
               <div className="flex items-center gap-2 pt-1.5 flex-wrap justify-center sm:justify-start">
-                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${elementData.bg} ${elementData.border}`}>
-                  {elementData.imageUrl ? (
-                    <img 
-                      src={elementData.imageUrl} 
-                      alt={elementData.name} 
-                      className="w-3.5 h-3.5 object-contain" 
-                      onError={e => { (e.target as HTMLElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <Disc className={`w-3.5 h-3.5 ${elementData.text}`} />
-                  )}
-                  <span className={`text-xs font-bold ${elementData.text}`}>
-                    {elementData.name}
-                  </span>
-                </div>
+                {elementData && (
+                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${elementData.bg} ${elementData.border}`}>
+                    {elementData.imageUrl ? (
+                      <img 
+                        src={elementData.imageUrl} 
+                        alt={elementData.name} 
+                        className="w-3.5 h-3.5 object-contain" 
+                        onError={e => { (e.target as HTMLElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <Disc className={`w-3.5 h-3.5 ${elementData.text}`} />
+                    )}
+                    <span className={`text-xs font-bold ${elementData.text}`}>
+                      {elementData.name}
+                    </span>
+                  </div>
+                )}
 
                 {/* Song BPM */}
                 <div 

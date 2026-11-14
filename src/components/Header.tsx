@@ -191,17 +191,19 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Daily Streak Check-in button */}
-            <button
-              onClick={onOpenStreak}
-              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-orange-500/15 hover:bg-orange-500/25 text-orange-300 border border-orange-500/30 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-xs shadow-orange-500/10 shrink-0"
-              title="Daily Streak & Avatar Frame Rewards"
-            >
-              <Flame className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
-              <span className="font-mono">
-                {user?.currentStreak ? `${user.currentStreak}d` : 'Streak'}
-              </span>
-            </button>
+            {/* Daily Streak Check-in button (signed-in users only) */}
+            {isAuthenticated && user && (
+              <button
+                onClick={onOpenStreak}
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-orange-500/15 hover:bg-orange-500/25 text-orange-300 border border-orange-500/30 text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-xs shadow-orange-500/10 shrink-0"
+                title="Login Streak"
+              >
+                <Flame className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
+                <span className="font-mono">
+                  {user.currentStreak ? `${user.currentStreak}d` : 'Streak'}
+                </span>
+              </button>
+            )}
 
             {/* Merged Account Button: Same line with Date and Hello "user" */}
             {isAuthenticated && user ? (
@@ -212,7 +214,6 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <UserAvatar
                   src={user.avatar}
-                  frameId={user.equippedAvatarFrame}
                   size="xs"
                 />
                 <span className="font-semibold text-white group-hover:text-cyan-300 transition-colors truncate max-w-[80px] sm:max-w-none">

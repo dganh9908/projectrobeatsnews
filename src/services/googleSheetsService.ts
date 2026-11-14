@@ -1,5 +1,6 @@
 import { SongEntry } from '../types';
 import { DEFAULT_GOOGLE_SHEET_ID, DEFAULT_GOOGLE_SHEET_URL } from '../constants/sheetSongs';
+import { normalizeElementName } from '../constants/elements';
 
 export interface ParsedSheetSong {
   id: string;
@@ -214,7 +215,7 @@ export async function fetchSongsFromGoogleSheet(
           const easy = normalizeDiffValue(getVal(easyIdx));
           const normal = normalizeDiffValue(getVal(normalIdx));
           const hard = normalizeDiffValue(getVal(hardIdx));
-          const element = getVal(elementIdx) || 'Standard';
+          const element = normalizeElementName(getVal(elementIdx));
 
           songs.push({
             id: makeSheetSlugId(title, artist, usedIds),
@@ -275,7 +276,7 @@ export async function fetchSongsFromGoogleSheet(
       const easy = normalizeDiffValue(row[easyIdx] || '');
       const normal = normalizeDiffValue(row[normalIdx] || '');
       const hard = normalizeDiffValue(row[hardIdx] || '');
-      const element = String(row[elementIdx] || '').trim() || 'Standard';
+      const element = normalizeElementName(row[elementIdx] || '');
 
       songs.push({
         id: makeSheetSlugId(title, artist, usedIds),
@@ -358,16 +359,19 @@ export function mapParsedSheetSongToEntry(item: ParsedSheetSong): SongEntry {
 }
 
 /**
- * Merges cover art URLs (and optionally missing songs) from Google Sheet onto base songs.
- * Whenever the Sheet has a cover art URL for song A, that link becomes song A's cover art.
+ * Merges cover art URLs, elements (and optionally missing songs) from Google Sheet onto base songs.
+ * Whenever the Sheet has a cover art URL or Element for song A, that value becomes song A's cover art / element.
  */
 export function mergeSongsWithSheetData(
   baseSongs: SongEntry[],
   sheetSongs: ParsedSheetSong[],
-  options?: { appendMissing?: boolean; strictSheetCover?: boolean }
+  options?: { appendMissing?: boolean; strictSheetCover?: boolean; strictSheetElement?: boolean }
 ): SongEntry[] {
   if (!Array.isArray(sheetSongs) || sheetSongs.length === 0) {
-    return baseSongs;
+    return baseSongs.map((s) => ({
+      ...s,
+      element: normalizeElementName(s.element),
+    }));
   }
 
   const byTitleArtist = new Map<string, ParsedSheetSong>();
@@ -392,26 +396,48 @@ export function mergeSongsWithSheetData(
 
   const seenKeys = new Set<string>();
   const merged = baseSongs.map((song) => {
+    const normalizedExistingElement = normalizeElementName(song.element);
     const t = String(song.title || '').toLowerCase().trim();
     const a = String(song.artist || '').toLowerCase().trim();
     const key = `${t}::${a}`;
     seenKeys.add(key);
 
     const sheetMatch = byTitleArtist.get(key) || byTitleUnique.get(t);
-    if (!sheetMatch) return song;
-
-    const sheetCover = sheetMatch.coverArt.trim();
-    if (sheetCover || options?.strictSheetCover) {
-      return {
-        ...song,
-        coverArt: sheetCover,
-        coverArtEasy: sheetCover,
-        coverArtNormal: sheetCover,
-        coverArtHard: sheetCover,
-      };
+    if (!sheetMatch) {
+      return normalizedExistingElement === (song.element || '')
+        ? song
+        : { ...song, element: normalizedExistingElement };
     }
 
-    return song;
+    const sheetCover = sheetMatch.coverArt.trim();
+    const sheetElement = normalizeElementName(sheetMatch.element);
+    const nextElement = sheetElement || (options?.strictSheetElement ? '' : normalizedExistingElement);
+
+    const updatedCover = sheetCover || options?.strictSheetCover;
+    const coverChanged =
+      updatedCover &&
+      (song.coverArt !== sheetCover ||
+        song.coverArtNormal !== sheetCover ||
+        song.coverArtEasy !== sheetCover ||
+        song.coverArtHard !== sheetCover);
+    const elementChanged = nextElement !== (song.element || '');
+
+    if (!coverChanged && !elementChanged) {
+      return song;
+    }
+
+    return {
+      ...song,
+      ...(updatedCover
+        ? {
+            coverArt: sheetCover,
+            coverArtEasy: sheetCover,
+            coverArtNormal: sheetCover,
+            coverArtHard: sheetCover,
+          }
+        : {}),
+      element: nextElement,
+    };
   });
 
   if (options?.appendMissing !== false) {

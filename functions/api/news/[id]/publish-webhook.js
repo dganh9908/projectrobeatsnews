@@ -47,11 +47,13 @@ function buildDailyMissionEmbedDescription(post) {
       }
     }
 
+    const rawEl = String(song.element || '').trim();
+    const cleanEl = rawEl.toLowerCase() === 'standard' ? '' : rawEl;
     const item = {
       level: diffVal !== '-' ? diffVal : '1',
       title: song.title || 'Unknown Song',
       artist: song.artist || 'Unknown Artist',
-      element: song.element || 'Standard',
+      element: cleanEl,
       isNoMisses,
       difficultyText,
     };
@@ -63,11 +65,12 @@ function buildDailyMissionEmbedDescription(post) {
   const formatList = (items) => {
     if (items.length === 0) return '- "No missions" - None';
     return items
-      .map((s) =>
-        s.isNoMisses
-          ? `- :star: [${s.level}] ${s.element} / ${s.title} - ${s.artist} [${s.difficultyText}] (No Misses)`
-          : `- [${s.level}] ${s.element} / ${s.title} - ${s.artist} [${s.difficultyText}]`
-      )
+      .map((s) => {
+        const elementPrefix = s.element ? `${s.element} / ` : '';
+        return s.isNoMisses
+          ? `- :star: [${s.level}] ${elementPrefix}${s.title} - ${s.artist} [${s.difficultyText}] (No Misses)`
+          : `- [${s.level}] ${elementPrefix}${s.title} - ${s.artist} [${s.difficultyText}]`;
+      })
       .join('\n');
   };
 
@@ -203,7 +206,9 @@ export async function onRequestPost(context) {
               ? s.difficulty?.hard || '-'
               : s.difficulty?.normal || '-';
           const scoreText = s.requiredScore ? ` (Score: ${s.requiredScore})` : '';
-          return `**${idx + 1}. ${s.title}** by ${s.artist} [**${diffLetter} ${diffNum}** - ${s.element || 'Standard'}]${scoreText}`;
+          const rawEl = String(s.element || '').trim();
+          const elSuffix = rawEl && rawEl.toLowerCase() !== 'standard' ? ` - ${rawEl}` : '';
+          return `**${idx + 1}. ${s.title}** by ${s.artist} [**${diffLetter} ${diffNum}**${elSuffix}]${scoreText}`;
         })
         .join('\n');
       fields.push({

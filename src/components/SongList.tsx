@@ -7,6 +7,7 @@ import { Music, Plus, Trash2, Edit2, Search, Image as ImageIcon, Eye, Sparkles, 
 import { SongDetailsModal } from './SongDetailsModal';
 import { FramedSongCover } from './FramedSongCover';
 import { DEFAULT_GOOGLE_SHEET_URL } from '../constants/sheetSongs';
+import { getElementData, normalizeElementName } from '../constants/elements';
 import { fetchSongsFromGoogleSheet, ParsedSheetSong, clearLiveSheetCache } from '../services/googleSheetsService';
 import { syncSongsBatchInFirestore } from '../services/firestoreService';
 import { auth } from '../lib/firebase';
@@ -78,6 +79,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
         title: editingSong.title.trim(),
         artist: editingSong.artist?.trim() || 'Unknown Artist',
         mapper: editingSong.mapper?.trim() || 'Official RoBeats',
+        element: normalizeElementName(editingSong.element),
         coverArt: singleCover,
         coverArtNormal: singleCover,
         coverArtEasy: singleCover,
@@ -157,7 +159,9 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
       s.title.toLowerCase().includes(search.toLowerCase()) ||
       s.artist.toLowerCase().includes(search.toLowerCase()) ||
       (s.mapper && s.mapper.toLowerCase().includes(search.toLowerCase()));
-    const matchElement = selectedElement === 'all' || s.element?.toLowerCase() === selectedElement.toLowerCase();
+    const matchElement =
+      selectedElement === 'all' ||
+      normalizeElementName(s.element).toLowerCase() === selectedElement.toLowerCase();
     return matchSearch && matchElement;
   });
 
@@ -204,7 +208,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                   title: '',
                   artist: '',
                   mapper: 'Official RoBeats',
-                  element: 'Flow',
+                  element: '',
                   difficulty: { easy: '1', normal: '5', hard: '12' },
                   coverArt: '',
                 });
@@ -386,11 +390,18 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                     )}
                   </div>
 
-                  {song.element && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700/50">
-                      {song.element}
-                    </span>
-                  )}
+                  {(() => {
+                    const elData = getElementData(song.element || '', elements);
+                    if (!elData) return null;
+                    return (
+                      <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-semibold ${elData.bg} ${elData.border} ${elData.text}`}>
+                        {elData.imageUrl && (
+                          <img src={elData.imageUrl} alt={elData.name} className="w-3 h-3 object-contain" />
+                        )}
+                        {elData.name}
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 {/* Bottom Controls */}
@@ -497,10 +508,11 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                 <div>
                   <label className="text-zinc-400 block mb-1 font-medium">Element</label>
                   <select
-                    value={editingSong.element || 'Flow'}
+                    value={normalizeElementName(editingSong.element)}
                     onChange={(e) => setEditingSong({ ...editingSong, element: e.target.value })}
                     className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 focus:outline-none focus:border-cyan-500"
                   >
+                    <option value="">No Element</option>
                     {elements.map((el) => (
                       <option key={el.name} value={el.name}>
                         {el.name}
@@ -782,7 +794,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                 className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 font-mono text-[11px]"
               />
               <p className="text-[11px] text-zinc-500">
-                Requires the Google Sheet to be shared as &quot;Anyone with the link can view&quot;. Cover art URLs in the &quot;Cover art(s)&quot; column are automatically synced to the website and Firestore.
+                Requires the Google Sheet to be shared as &quot;Anyone with the link can view&quot;. Cover art URLs and Elements in the Sheet are automatically synced to the website, News posts, and Firestore.
               </p>
               <label className="flex items-center gap-2 pt-1 text-[11px] text-zinc-300 cursor-pointer select-none">
                 <input
@@ -791,7 +803,7 @@ export const SongList: React.FC<{ onOpenAccount?: (tab?: 'login' | 'profile') =>
                   onChange={(e) => setStrictSheetCoverArt(e.target.checked)}
                   className="rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500"
                 />
-                <span>Use Google Sheet Cover Art strictly (empty cell clears old Firestore cover art)</span>
+                <span>Use Google Sheet Cover Art &amp; Element strictly (empty cell clears old Firestore value)</span>
               </label>
             </div>
 

@@ -69,7 +69,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBackToFeed }) =>
           </ul>
 
           <p className="text-zinc-400 text-xs sm:text-sm">
-            If you choose to participate in community features, we also store optional profile fields you voluntarily submit (such as your Roblox username, player bio, or preferred avatar frame) along with your comments, post reactions, and daily streak check-in progress. We do not collect passwords, payment details, location data, or access any other Google Workspace data.
+            If you choose to participate in community features, we also store optional profile fields you voluntarily submit (such as your custom username, Roblox username, or player bio) along with your comments, post reactions, and daily login streak progress. We do not collect passwords, payment details, location data, or access any other Google Workspace data.
           </p>
         </section>
 
@@ -91,7 +91,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBackToFeed }) =>
               <strong className="text-white font-medium">Account Creation &amp; Authentication:</strong> Creating your RoBeats! News profile and verifying your identity securely each time you sign in.
             </li>
             <li>
-              <strong className="text-white font-medium">Progress &amp; Streak Tracking:</strong> Saving your daily check-in streak, best streak records, and unlocked avatar frames across sessions and devices.
+              <strong className="text-white font-medium">Progress &amp; Streak Tracking:</strong> Saving your daily login check-in streak and best streak records across sessions and devices.
             </li>
             <li>
               <strong className="text-white font-medium">Comments &amp; Community Interactions:</strong> Displaying your name and avatar next to your published comments, news reactions, and staff/admin articles.
@@ -148,7 +148,7 @@ export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBackToFeed }) =>
 
           <ul className="space-y-2 pl-5 list-disc marker:text-cyan-400 text-zinc-300">
             <li>
-              <strong className="text-white font-medium">Update Profile Information:</strong> Sign in and open your Account Profile modal to edit your display name, Roblox username, bio, or avatar at any time.
+              <strong className="text-white font-medium">Update Profile Information:</strong> Sign in and open your Account Profile modal to edit your username, display name, Roblox username, bio, or avatar at any time.
             </li>
             <li>
               <strong className="text-white font-medium">Request Data Deletion:</strong> To permanently delete your RoBeats! News account record, daily streak history, and associated comments from our database, please send an email to our privacy contact below with the subject line <span className="font-mono text-xs text-zinc-200">&quot;Data Deletion Request&quot;</span> from the Google email address associated with your account. Requests are processed within 7 business days.

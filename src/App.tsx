@@ -31,6 +31,12 @@ import {
   deletePostInFirestore,
   getFirebaseIdToken,
 } from './services/firestoreService';
+import { fetchSongsList } from './services/api';
+import {
+  SONGS_UPDATED_EVENT,
+  SongsUpdatedEventDetail,
+  applyCatalogUpdatesToSongs,
+} from './utils/songSync';
 
 export default function App() {
   const { user, token, isAuthenticated } = useAuth();
@@ -45,6 +51,9 @@ export default function App() {
   // Posts State
   const [posts, setPosts] = useState<NewsArticle[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
+
+  // Live Songs Catalog State (used to reflect song edits & Sheet updates immediately in News)
+  const [songsCatalog, setSongsCatalog] = useState<SongEntry[]>([]);
 
   // Account Modal State
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
@@ -138,6 +147,52 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+
+    const loadCatalog = (forceRefreshSheet: boolean = false) => {
+      fetchSongsList(forceRefreshSheet)
+        .then((list) => {
+          if (mounted && Array.isArray(list) && list.length > 0) {
+            setSongsCatalog(list);
+          }
+        })
+        .catch(() => {});
+    };
+
+    loadCatalog(false);
+
+    const handleSongsUpdated = (evt: Event) => {
+      const customEvt = evt as CustomEvent<SongsUpdatedEventDetail>;
+      const detail = customEvt.detail || {};
+
+      if (detail.deletedSongId) {
+        setSongsCatalog((prev) => prev.filter((s) => s.id !== detail.deletedSongId));
+      }
+
+      if (Array.isArray(detail.updatedSongs) && detail.updatedSongs.length > 0) {
+        setSongsCatalog((prev) => {
+          const map = new Map<string, SongEntry>();
+          for (const item of prev) map.set(item.id, item);
+          for (const upd of detail.updatedSongs!) {
+            if (upd?.id) map.set(upd.id, { ...(map.get(upd.id) || {}), ...upd });
+          }
+          return Array.from(map.values());
+        });
+      }
+
+      if (detail.forceRefresh) {
+        loadCatalog(true);
+      }
+    };
+
+    window.addEventListener(SONGS_UPDATED_EVENT, handleSongsUpdated);
+    return () => {
+      mounted = false;
+      window.removeEventListener(SONGS_UPDATED_EVENT, handleSongsUpdated);
+    };
+  }, []);
+
+  useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname);
     };
@@ -213,9 +268,17 @@ export default function App() {
     setSelectedSongDetail(song);
   };
 
+  const enrichedPosts = useMemo(() => {
+    return posts.map((post) => {
+      if (!Array.isArray(post.songs) || post.songs.length === 0) return post;
+      const syncedSongs = applyCatalogUpdatesToSongs(post.songs, songsCatalog);
+      return syncedSongs === post.songs ? post : { ...post, songs: syncedSongs };
+    });
+  }, [posts, songsCatalog]);
+
   // Filter posts by category and search
   const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
+    return enrichedPosts.filter(post => {
       // Category filter
       if (currentCategory !== 'All') {
         if (post.category.toLowerCase() !== currentCategory.toLowerCase()) {
@@ -225,7 +288,7 @@ export default function App() {
 
       return true;
     });
-  }, [posts, currentCategory]);
+  }, [enrichedPosts, currentCategory]);
 
   return (
     <div className="min-h-screen bg-[#0B0E14] text-zinc-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
@@ -388,6 +451,26 @@ export default function App() {
         <SongDetailsModal
           song={selectedSongDetail}
           onClose={() => setSelectedSongDetail(null)}
+          onSongUpdated={(updated) => {
+            setSelectedSongDetail((prev) =>
+              prev
+                ? {
+                    ...updated,
+                    uniqueKey: prev.uniqueKey,
+                    chosenDifficulty: prev.chosenDifficulty,
+                    missionRank: prev.missionRank,
+                    noMisses: prev.noMisses,
+                    isNoMisses: prev.isNoMisses,
+                    requiredScore: prev.requiredScore,
+                  }
+                : updated
+            );
+            setSongsCatalog((prev) => {
+              const idx = prev.findIndex((s) => s.id === updated.id);
+              if (idx === -1) return [updated, ...prev];
+              return prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s));
+            });
+          }}
         />
       )}
 
@@ -404,7 +487,7 @@ export default function App() {
         />
       )}
 
-      {/* Daily Streak & Avatar Frame Rewards Modal */}
+      {/* Login Streak Modal */}
       <StreakModal
         isOpen={isStreakModalOpen}
         onClose={() => setIsStreakModalOpen(false)}
