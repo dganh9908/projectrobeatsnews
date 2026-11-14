@@ -37,6 +37,7 @@ const SONGS_FILE = path.join(DATA_DIR, 'songs.json');
 const ELEMENTS_FILE = path.join(DATA_DIR, 'elements.json');
 const COMMENTS_FILE = path.join(DATA_DIR, 'comments.json');
 const FRAMES_FILE = path.join(DATA_DIR, 'frames.json');
+const WEB_UPDATES_FILE = path.join(DATA_DIR, 'web_updates.json');
 
 export function safeWriteJson(filePath: string, data: any) {
   try {
@@ -885,6 +886,9 @@ function ensureDataFile() {
   if (!fs.existsSync(FRAMES_FILE)) {
     safeWriteJson(FRAMES_FILE, DEFAULT_FRAMES);
   }
+  if (!fs.existsSync(WEB_UPDATES_FILE)) {
+    safeWriteJson(WEB_UPDATES_FILE, []);
+  }
 }
 
 function sanitizeFramePath(val: unknown): string {
@@ -987,6 +991,32 @@ function readArticles(): NewsArticle[] {
 function writeArticles(articles: NewsArticle[]) {
   if (!Array.isArray(articles)) return;
   safeWriteJson(NEWS_FILE, articles);
+}
+
+export interface WebUpdateRecord {
+  id: string;
+  title: string;
+  description: string;
+  authorUid: string;
+  authorName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function readWebUpdates(): WebUpdateRecord[] {
+  ensureDataFile();
+  try {
+    const data = fs.readFileSync(WEB_UPDATES_FILE, 'utf-8');
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeWebUpdates(updates: WebUpdateRecord[]) {
+  if (!Array.isArray(updates)) return;
+  safeWriteJson(WEB_UPDATES_FILE, updates);
 }
 
 // ----------------------------------------------------
@@ -2588,6 +2618,61 @@ Return ONLY the numbered list of headlines without preamble.`;
     res.json({ suggestions: response.text || '' });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to generate headlines' });
+  }
+});
+
+// ----------------------------------------------------
+// WEB UPDATES ROUTES (Completely separate from News, Admin-only write)
+// ----------------------------------------------------
+app.get('/api/web-updates', (_req, res) => {
+  try {
+    const updates = readWebUpdates();
+    updates.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    res.json(updates);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to load web updates' });
+  }
+});
+
+app.post('/api/web-updates', requireAdmin, (req: any, res) => {
+  try {
+    const title = String(req.body?.title || '').trim().slice(0, 200);
+    const description = String(req.body?.description || '').trim().slice(0, 10000);
+    if (!title || !description) {
+      return res.status(400).json({ error: 'Both Title and Description are required.' });
+    }
+    const now = new Date().toISOString();
+    const adminUser = req.adminUser;
+    const entry: WebUpdateRecord = {
+      id: `webupdate_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      title,
+      description,
+      authorUid: String(adminUser?.id || 'admin'),
+      authorName: String(adminUser?.displayName || adminUser?.username || 'Admin').slice(0, 80),
+      createdAt: now,
+      updatedAt: now,
+    };
+    const updates = readWebUpdates();
+    updates.unshift(entry);
+    writeWebUpdates(updates);
+    res.status(201).json(entry);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to create web update' });
+  }
+});
+
+app.delete('/api/web-updates/:id', requireAdmin, (req, res) => {
+  try {
+    const updates = readWebUpdates();
+    const exists = updates.some((u) => u.id === req.params.id);
+    if (!exists) {
+      return res.status(404).json({ error: 'Web update not found' });
+    }
+    const filtered = updates.filter((u) => u.id !== req.params.id);
+    writeWebUpdates(filtered);
+    res.json({ success: true, id: req.params.id });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to delete web update' });
   }
 });
 

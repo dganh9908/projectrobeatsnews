@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Shield, PlusCircle, Clock, Music, Flame, Lock } from 'lucide-react';
+import { User, Shield, PlusCircle, Clock, Music, Flame, Lock, Megaphone } from 'lucide-react';
 import { NewsCategory } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { UserAvatar } from './UserAvatar';
@@ -15,6 +15,8 @@ interface HeaderProps {
   onOpenStreak?: () => void;
   isPrivacyPage?: boolean;
   onOpenPrivacy?: () => void;
+  isWebUpdatesPage?: boolean;
+  onOpenWebUpdates?: () => void;
 }
 
 const CATEGORIES: NewsCategory[] = [
@@ -68,6 +70,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenStreak,
   isPrivacyPage = false,
   onOpenPrivacy,
+  isWebUpdatesPage = false,
+  onOpenWebUpdates,
 }) => {
   const { user, isAuthenticated } = useAuth();
 
@@ -142,6 +146,24 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Lock className="w-2.5 h-2.5 text-cyan-400" />
                 <span>Privacy</span>
+              </a>
+            )}
+            {onOpenWebUpdates && (
+              <a
+                href="/webupdate"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenWebUpdates();
+                }}
+                className={`font-sans shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-colors cursor-pointer ${
+                  isWebUpdatesPage
+                    ? 'bg-cyan-500/20 text-cyan-200 border-cyan-400/60'
+                    : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-cyan-300 border-zinc-700/80 hover:border-cyan-500/40'
+                }`}
+                title="View Web Updates (/webupdate)"
+              >
+                <Megaphone className="w-2.5 h-2.5 text-cyan-400" />
+                <span>Web Updates</span>
               </a>
             )}
           </div>

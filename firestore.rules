@@ -229,6 +229,18 @@ service cloud.firestore {
         && (!('updates' in data) || (data.updates is string && data.updates.size() <= 512));
     }
 
+    function isValidWebUpdate(data) {
+      return data.keys().hasAll(['id', 'title', 'description', 'authorUid', 'authorName', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'title', 'description', 'authorUid', 'authorName', 'createdAt', 'updatedAt'])
+        && isValidId(data.id)
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.description is string && data.description.size() >= 1 && data.description.size() <= 10000
+        && isValidId(data.authorUid)
+        && data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 80
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
     // ----------------------------------------------------
     // Collection Match Rules
     // ----------------------------------------------------
@@ -499,6 +511,30 @@ service cloud.firestore {
         ]);
 
       allow delete: if isAdmin() && isValidId(webhookId);
+    }
+
+    match /web_updates/{updateId} {
+      allow get: if isValidId(updateId);
+      allow list: if true;
+
+      allow create: if isAdmin()
+        && isValidId(updateId)
+        && isValidWebUpdate(incoming())
+        && incoming().id == updateId
+        && incoming().authorUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(updateId)
+        && isValidWebUpdate(incoming())
+        && incoming().id == existing().id
+        && incoming().authorUid == existing().authorUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'updatedAt']);
+
+      allow delete: if isAdmin() && isValidId(updateId);
     }
   }
 }

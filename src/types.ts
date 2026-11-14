@@ -176,6 +176,16 @@ export interface Article {
 
 export type NewsArticle = Article;
 
+export interface WebUpdateEntry {
+  id: string;
+  title: string;
+  description: string;
+  authorUid: string;
+  authorName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface WebhookTemplateConfig {
   titleTemplate?: string;
   bodyTemplate?: string;

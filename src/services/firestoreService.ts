@@ -28,6 +28,7 @@ import {
   DEFAULT_DIFFICULTY_FRAMES,
   DEFAULT_ROBEATS_RANKS,
   DiscordWebhooksConfig,
+  WebUpdateEntry,
 } from '../types';
 import { normalizeElementName } from '../constants/elements';
 import {
@@ -1423,5 +1424,119 @@ export async function deleteUserInFirestoreAsAdmin(targetUid: string): Promise<v
     await deleteDoc(doc(db, 'users', safeUid));
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, `users/${safeUid}`);
+  }
+}
+
+// ====================================================
+// WEB UPDATES (Separate from News, Admin-only write)
+// ====================================================
+
+function mapDocToWebUpdate(docId: string, data: any): WebUpdateEntry {
+  return {
+    id: String(data.id || docId),
+    title: String(data.title || 'Untitled Update'),
+    description: String(data.description || ''),
+    authorUid: String(data.authorUid || ''),
+    authorName: String(data.authorName || 'Admin'),
+    createdAt: normalizeTimestamp(data.createdAt),
+    updatedAt: normalizeTimestamp(data.updatedAt || data.createdAt),
+  };
+}
+
+export async function fetchWebUpdatesFromFirestore(): Promise<WebUpdateEntry[]> {
+  const path = 'web_updates';
+  try {
+    const snap = await getDocs(collection(db, path));
+    const items = snap.docs.map((d) => mapDocToWebUpdate(d.id, d.data()));
+    items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return items;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, path);
+  }
+}
+
+export function subscribeToWebUpdates(
+  onData: (updates: WebUpdateEntry[]) => void,
+  onError?: (error: Error) => void
+): Unsubscribe {
+  const path = 'web_updates';
+  return onSnapshot(
+    collection(db, path),
+    (snapshot) => {
+      const items = snapshot.docs.map((d) => mapDocToWebUpdate(d.id, d.data()));
+      items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      onData(items);
+    },
+    (error) => {
+      try {
+        handleFirestoreError(error, OperationType.LIST, path);
+      } catch (wrapped: any) {
+        if (onError) onError(wrapped);
+      }
+    }
+  );
+}
+
+export async function createWebUpdateInFirestore(
+  title: string,
+  description: string,
+  authorName?: string
+): Promise<WebUpdateEntry> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to publish web updates.');
+  }
+
+  const cleanTitle = String(title || '').trim().slice(0, 200);
+  const cleanDescription = String(description || '').trim().slice(0, 10000);
+  if (!cleanTitle || !cleanDescription) {
+    throw new Error('Both Title and Description are required.');
+  }
+
+  const updateId = sanitizeFirestoreId(
+    `webupdate_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+  );
+  const authorUid = sanitizeFirestoreId(currentUser.uid);
+  const safeAuthorName = String(authorName || currentUser.displayName || 'Admin').trim().slice(0, 80) || 'Admin';
+  const path = `web_updates/${updateId}`;
+
+  const payload = stripUndefinedDeep({
+    id: updateId,
+    title: cleanTitle,
+    description: cleanDescription,
+    authorUid,
+    authorName: safeAuthorName,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+
+  try {
+    await setDoc(doc(db, 'web_updates', updateId), payload);
+    const nowIso = new Date().toISOString();
+    return {
+      id: updateId,
+      title: cleanTitle,
+      description: cleanDescription,
+      authorUid,
+      authorName: safeAuthorName,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.CREATE, path);
+  }
+}
+
+export async function deleteWebUpdateInFirestore(updateId: string): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Admin Google authentication required to delete web updates.');
+  }
+  const safeId = sanitizeFirestoreId(updateId);
+  const path = `web_updates/${safeId}`;
+  try {
+    await deleteDoc(doc(db, 'web_updates', safeId));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, path);
   }
 }

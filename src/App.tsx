@@ -11,6 +11,8 @@ import { SongDetailsModal } from './components/SongDetailsModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { StreakModal } from './components/StreakModal';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { WebUpdatesPage } from './components/WebUpdatesPage';
+import { WelcomePopupModal } from './components/WelcomePopupModal';
 import { useAuth } from './context/AuthContext';
 import { 
   PlusCircle, 
@@ -47,6 +49,10 @@ export default function App() {
     typeof window !== 'undefined' ? window.location.pathname : '/'
   );
   const isPrivacyPage = currentPath === '/privacy' || currentPath === '/privacy/';
+  const isWebUpdatesPage = currentPath === '/webupdate' || currentPath === '/webupdate/';
+
+  // Welcome Demo Notice Pop-up (opens automatically on site entry)
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
 
   // Posts State
   const [posts, setPosts] = useState<NewsArticle[]>([]);
@@ -203,10 +209,12 @@ export default function App() {
   useEffect(() => {
     document.title = isPrivacyPage
       ? 'Privacy Policy - RoBeats! News'
+      : isWebUpdatesPage
+      ? 'Web Updates - RoBeats! News'
       : 'RoBeats! News';
-  }, [isPrivacyPage]);
+  }, [isPrivacyPage, isWebUpdatesPage]);
 
-  const navigateTo = (targetPath: '/' | '/privacy') => {
+  const navigateTo = (targetPath: '/' | '/privacy' | '/webupdate') => {
     if (typeof window !== 'undefined' && window.location.pathname !== targetPath) {
       window.history.pushState({}, '', targetPath);
     }
@@ -218,7 +226,7 @@ export default function App() {
 
   const handleSelectCategory = (cat: NewsCategory) => {
     setCurrentCategory(cat);
-    if (isPrivacyPage) {
+    if (isPrivacyPage || isWebUpdatesPage) {
       navigateTo('/');
     }
   };
@@ -306,11 +314,15 @@ export default function App() {
         onOpenStreak={() => setIsStreakModalOpen(true)}
         isPrivacyPage={isPrivacyPage}
         onOpenPrivacy={() => navigateTo('/privacy')}
+        isWebUpdatesPage={isWebUpdatesPage}
+        onOpenWebUpdates={() => navigateTo('/webupdate')}
       />
 
       {/* Main Content Area */}
       {isPrivacyPage ? (
         <PrivacyPolicy onBackToFeed={() => navigateTo('/')} />
+      ) : isWebUpdatesPage ? (
+        <WebUpdatesPage onBackToFeed={() => navigateTo('/')} />
       ) : currentCategory === 'Song List' ? (
         <main className="flex-1">
           {user?.role === 'admin' ? (
@@ -490,6 +502,13 @@ export default function App() {
         onOpenAccount={handleOpenAccount}
       />
 
+      {/* Welcome Demo Website Pop-up */}
+      <WelcomePopupModal
+        isOpen={isWelcomeModalOpen}
+        onClose={() => setIsWelcomeModalOpen(false)}
+        onOpenWebUpdates={() => navigateTo('/webupdate')}
+      />
+
       {/* Modern Minimal Dark Footer */}
       <footer className="border-t border-zinc-900 bg-[#0B0E14] py-8 text-zinc-500 text-xs mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
@@ -506,6 +525,17 @@ export default function App() {
               className="text-zinc-400 hover:text-cyan-300 transition-colors underline-offset-4 hover:underline"
             >
               Privacy Policy
+            </a>
+            <span aria-hidden="true" className="text-zinc-700">·</span>
+            <a
+              href="/webupdate"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo('/webupdate');
+              }}
+              className="text-zinc-400 hover:text-cyan-300 transition-colors underline-offset-4 hover:underline"
+            >
+              Web Updates
             </a>
             <span aria-hidden="true" className="text-zinc-700">·</span>
             <span>© 2026 RoBeats! News</span>

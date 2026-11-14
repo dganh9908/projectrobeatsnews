@@ -5,7 +5,7 @@ interface PrivacyPolicyProps {
   onBackToFeed: () => void;
 }
 
-const CONTACT_EMAIL = 'chautuan9461@gmail.com';
+const CONTACT_EMAIL = 'anh6052018@gmail.com';
 
 export const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBackToFeed }) => {
   return (

@@ -172,6 +172,21 @@
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "updatedAt"]
+    },
+    "WebUpdate": {
+      "title": "WebUpdate",
+      "description": "Admin-only website owner announcements and changelogs, completely separate from news posts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 10000 },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "description", "authorUid", "authorName", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -214,6 +229,10 @@
     "/webhooks/{webhookId}": {
       "schema": { "$ref": "#/entities/DiscordWebhookConfig" },
       "description": "Admin-only Discord category webhook URLs"
+    },
+    "/web_updates/{updateId}": {
+      "schema": { "$ref": "#/entities/WebUpdate" },
+      "description": "Website owner updates archive managed strictly by Admin accounts"
     }
   }
 }
